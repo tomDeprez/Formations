@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cours C / C++ — IT-Akademy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0b0d11;
+    --bg2: #13161e;
+    --bg3: #1a1e28;
+    --border: #252a38;
+    --accent: #00e5ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --danger: #ef4444;
+    --success: #22c55e;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0d1117;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0b0d11 0%, #13161e 50%, #1a1228 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(0,229,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 1.2rem;
+  }
+  header h1 {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+  }
+  header h1 span {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto 1.5rem;
+  }
+  .meta-pills {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .pill {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .pill strong { color: var(--text); }
+
+  /* NAV */
+  nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  nav a .num {
+    background: var(--bg3);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* LAYOUT */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 4rem;
+    scroll-margin-top: 60px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+  }
+  .section h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 1.8rem 0 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section p { color: #94a3b8; margin-bottom: 1rem; }
+
+  /* CODE BLOCKS */
+  .code-block {
+    position: relative;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 1rem 0;
+    overflow: hidden;
+  }
+  .code-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .code-dots span:nth-child(1) { background: #ef4444; }
+  .code-dots span:nth-child(2) { background: #f59e0b; }
+  .code-dots span:nth-child(3) { background: #22c55e; }
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+  pre {
+    padding: 1.2rem 1.4rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .k { color: #c792ea; } /* keyword */
+  .t { color: #82aaff; } /* type */
+  .f { color: #82e0ff; } /* function */
+  .s { color: #c3e88d; } /* string */
+  .c { color: #546e7a; font-style: italic; } /* comment */
+  .n { color: #f78c6c; } /* number */
+  .p { color: #89ddff; } /* punctuation */
+  .inc { color: #ffcb6b; } /* include */
+  .op { color: #89ddff; } /* operator */
+
+  /* CALLOUTS */
+  .callout {
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 1.2rem 0;
+    border-left: 3px solid;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .callout p { margin: 0; font-size: 14px; }
+  .callout.info { background: rgba(0,229,255,0.06); border-color: var(--accent); }
+  .callout.warn { background: rgba(245,158,11,0.07); border-color: var(--accent3); }
+  .callout.danger { background: rgba(239,68,68,0.07); border-color: var(--danger); }
+  .callout.success { background: rgba(34,197,94,0.07); border-color: var(--success); }
+  .callout strong { color: var(--text); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; margin: 1rem 0; border-radius: 10px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  th {
+    background: var(--bg3);
+    color: var(--accent);
+    font-weight: 700;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: #94a3b8;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  td strong { color: var(--text); font-family: 'Space Grotesk', sans-serif; }
+  .tag-c { color: #60a5fa; }
+  .tag-cpp { color: #a78bfa; }
+  .tag-both { color: #34d399; }
+
+  /* EXERCISES */
+  .exercise {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    overflow: hidden;
+  }
+  .exercise-header {
+    background: linear-gradient(90deg, rgba(124,58,237,0.15), rgba(0,229,255,0.05));
+    border-bottom: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .exercise-num {
+    background: var(--accent2);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .exercise-title {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .exercise-emoji { font-size: 1.2rem; }
+  .exercise-body { padding: 1.2rem 1.4rem; }
+  .exercise-body p { color: #94a3b8; font-size: 14px; }
+  .exercise-body ul {
+    margin: 0.8rem 0 1rem 1.2rem;
+    color: #94a3b8;
+    font-size: 14px;
+  }
+  .exercise-body li { margin-bottom: 4px; }
+
+  /* SOLUTION */
+  .solution-toggle {
+    cursor: pointer;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--accent3);
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0.8rem;
+    user-select: none;
+    transition: all 0.2s;
+  }
+  .solution-toggle:hover { background: rgba(245,158,11,0.1); border-color: var(--accent3); }
+  .solution-content {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border);
+  }
+  .solution-content.open { display: block; }
+  .solution-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--success);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* CHAPTER INTRO */
+  .chapter-intro {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1.5rem;
+    color: #94a3b8;
+    font-size: 14.5px;
+  }
+
+  /* DIFF TABLE */
+  .diff-c { color: #60a5fa; font-weight: 600; }
+  .diff-cpp { color: #a78bfa; font-weight: 600; }
+
+  /* MEMORY DIAGRAM */
+  .memory-diagram {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .mem-row {
+    display: grid;
+    grid-template-columns: 120px 80px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .mem-row:last-child { border-bottom: none; }
+  .mem-addr { color: var(--muted); padding: 5px 8px; border-right: 1px solid var(--border); }
+  .mem-val { color: var(--accent3); padding: 5px 8px; border-right: 1px solid var(--border); text-align: center; }
+  .mem-label { color: var(--accent); padding: 5px 12px; }
+  .mem-header .mem-addr,
+  .mem-header .mem-val,
+  .mem-header .mem-label { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .mem-zone { font-size: 10px; padding: 3px 8px; text-align: center; border-radius: 4px; margin: 6px 0; }
+  .zone-stack { background: rgba(0,229,255,0.1); color: var(--accent); }
+  .zone-heap { background: rgba(124,58,237,0.1); color: var(--accent2); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+  }
+  footer strong { color: var(--accent); }
+
+  /* PROGRESS */
+  .progress-bar {
+    display: flex;
+    gap: 4px;
+    margin: 1rem 0;
+  }
+  .progress-seg {
+    height: 4px;
+    border-radius: 2px;
+    flex: 1;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+  .progress-seg.done { opacity: 1; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    color: var(--accent);
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 2rem 1rem; }
+    .section h2 { font-size: 1.3rem; }
+    pre { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">IT-Akademy</div>
+  <h1>Cours <span>C &amp; C++</span><br>de zéro à la mémoire</h1>
+  <p>Un cours complet, des exercices fun, des explications humaines.</p>
+  <div class="meta-pills">
+    <span class="pill">⏱ <strong>~6h de contenu</strong></span>
+    <span class="pill">🎮 <strong>12 exercices</strong></span>
+    <span class="pill">💡 <strong>Débutant friendly</strong></span>
+    <span class="pill">🔥 <strong>Cyber flavor</strong></span>
+  </div>
+</header>
+
+<nav>
+  <a href="#s0"><span class="num">00</span> Prérequis</a>
+  <a href="#s1"><span class="num">01</span> Les bases</a>
+  <a href="#s2"><span class="num">02</span> Flux</a>
+  <a href="#s3"><span class="num">03</span> Fonctions</a>
+  <a href="#s4"><span class="num">04</span> Mémoire</a>
+  <a href="#s5"><span class="num">05</span> Pointeurs</a>
+  <a href="#s6"><span class="num">06</span> C++</a>
+  <a href="#s7"><span class="num">07</span> Compilation</a>
+  <a href="#s8"><span class="num">08</span> 40 fonctions</a>
+  <a href="#s9"><span class="num">09</span> Mini-OS</a>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════ SECTION 0 ═══════════════════════════════ -->
+<section class="section" id="s0">
+  <div class="section-header">
+    <span class="section-num">00</span>
+    <h2>Prérequis & Installation</h2>
+  </div>
+  <div class="chapter-intro">
+    Avant d'écrire du C, faut un compilateur. C'est lui qui transforme ton code lisible en programme exécutable par ta machine. Deux minutes et c'est parti.
+  </div>
+
+  <h3>🐧 Linux / WSL</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">bash</span></div>
+    <pre>sudo apt update && sudo apt install gcc g++ build-essential</pre>
+  </div>
+
+  <h3>🪟 Windows</h3>
+  <p>Installe <strong>MinGW</strong> ou active <strong>WSL2</strong> (recommandé). Avec VS Code, installe l'extension <code>C/C++</code>.</p>
+
+  <h3>🍎 macOS</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">bash</span></div>
+    <pre>xcode-select --install</pre>
+  </div>
+
+  <h3>✅ Vérifier l'installation</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">bash</span></div>
+    <pre>gcc --version
+g++ --version</pre>
+  </div>
+  <div class="callout success">
+    <span class="callout-icon">✅</span>
+    <p>Si tu vois un numéro de version (ex: <code>gcc (Ubuntu 12.2.0)</code>), t'es bon. On peut commencer.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 1 ═══════════════════════════════ -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>Les bases : variables, types, opérateurs</h2>
+  </div>
+  <div class="chapter-intro">
+    C et C++ partagent la même syntaxe de base. On commence par ce que les deux langages ont en commun avant de voir leurs différences.
+  </div>
+
+  <h3>🏗️ Structure minimale d'un programme</h3>
+  <p>En C et C++, chaque programme doit avoir une fonction <code>main()</code>. C'est le point d'entrée, le premier endroit où le compilateur commence à lire.</p>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+    <pre><span class="c">// Fichier : hello.c</span>
+<span class="inc">#include &lt;stdio.h&gt;</span>   <span class="c">// bibliothèque pour printf</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"Bonjour IT-Akademy !\n"</span>);
+    <span class="k">return</span> <span class="n">0</span>;   <span class="c">// 0 = tout s'est bien passé</span>
+<span class="p">}</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C++</span></div>
+    <pre><span class="c">// Fichier : hello.cpp</span>
+<span class="inc">#include &lt;iostream&gt;</span>  <span class="c">// bibliothèque pour cout</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="k">std</span>::cout <span class="op">&lt;&lt;</span> <span class="s">"Bonjour IT-Akademy !"</span> <span class="op">&lt;&lt;</span> <span class="k">std</span>::endl;
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <p><strong>main() vs Java :</strong> Comme en Java, <code>main()</code> est le point de départ. Différence : en C/C++, <strong>toutes les classes/fichiers</strong> partagent un seul <code>main()</code>. En Java, chaque classe peut avoir le sien.</p>
+  </div>
+
+  <h3>📦 Variables et types courants</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Type</th><th>Taille</th><th>Exemple</th><th>Ce que ça stocke</th></tr>
+      <tr><td><code>int</code></td><td>4 octets</td><td><code>int age = 21;</code></td><td><strong>Entiers</strong></td></tr>
+      <tr><td><code>float</code></td><td>4 octets</td><td><code>float prix = 9.99;</code></td><td><strong>Décimaux (précision faible)</strong></td></tr>
+      <tr><td><code>double</code></td><td>8 octets</td><td><code>double pi = 3.14159;</code></td><td><strong>Décimaux (précision haute)</strong></td></tr>
+      <tr><td><code>char</code></td><td>1 octet</td><td><code>char lettre = 'A';</code></td><td><strong>Un seul caractère</strong></td></tr>
+      <tr><td><code>bool</code></td><td>1 octet</td><td><code>bool actif = true;</code></td><td><strong>Vrai / Faux (C++ seulement)</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C/C++</span></div>
+    <pre><span class="t">int</span> age <span class="op">=</span> <span class="n">19</span>;
+<span class="t">float</span> moyenne <span class="op">=</span> <span class="n">14.5</span>;
+<span class="t">char</span> initiale <span class="op">=</span> <span class="s">'T'</span>;
+
+<span class="c">// Afficher en C</span>
+<span class="f">printf</span>(<span class="s">"Age: %d, Moyenne: %.1f\n"</span>, age, moyenne);
+
+<span class="c">// Afficher en C++</span>
+<span class="k">std</span>::cout <span class="op">&lt;&lt;</span> <span class="s">"Age: "</span> <span class="op">&lt;&lt;</span> age <span class="op">&lt;&lt;</span> <span class="k">std</span>::endl;</pre>
+  </div>
+
+  <h3>➕ Opérateurs</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Catégorie</th><th>Opérateurs</th><th>Exemple</th></tr>
+      <tr><td><strong>Arithmétique</strong></td><td><code>+ - * / %</code></td><td><code>10 % 3 = 1</code></td></tr>
+      <tr><td><strong>Comparaison</strong></td><td><code>== != &lt; &gt; &lt;= &gt;=</code></td><td><code>age >= 18</code></td></tr>
+      <tr><td><strong>Logique</strong></td><td><code>&amp;&amp; || !</code></td><td><code>a > 0 &amp;&amp; b > 0</code></td></tr>
+      <tr><td><strong>Incrémentation</strong></td><td><code>++ --</code></td><td><code>i++ (i = i + 1)</code></td></tr>
+    </table>
+  </div>
+
+  <!-- EXERCICE 1 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 01</span>
+      <span class="exercise-emoji">🎂</span>
+      <span class="exercise-title">Calculateur d'âge de hacker</span>
+    </div>
+    <div class="exercise-body">
+      <p>Crée un programme qui stocke l'année de naissance d'un hacker dans une variable, calcule son âge en 2025, puis affiche un message.</p>
+      <ul>
+        <li>Déclare une variable <code>annee_naissance</code></li>
+        <li>Calcule <code>age = 2025 - annee_naissance</code></li>
+        <li>Affiche : <code>"Kevin Mitnick aurait eu X ans en 2025"</code></li>
+      </ul>
+      <div class="callout warn"><span class="callout-icon">💡</span><p>Kevin Mitnick est né en <strong>1963</strong>. Le célèbre hacker des années 90.</p></div>
+
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">int</span> annee_naissance <span class="op">=</span> <span class="n">1963</span>;
+    <span class="t">int</span> age <span class="op">=</span> <span class="n">2025</span> <span class="op">-</span> annee_naissance;
+
+    <span class="f">printf</span>(<span class="s">"Kevin Mitnick aurait eu %d ans en 2025\n"</span>, age);
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span>
+<span class="c">// Output: Kevin Mitnick aurait eu 62 ans en 2025</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCICE 2 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 02</span>
+      <span class="exercise-emoji">💰</span>
+      <span class="exercise-title">Calculateur de Bitcoin</span>
+    </div>
+    <div class="exercise-body">
+      <p>Satoshi Nakamoto possède (selon la légende) environ 1 million de bitcoins. Calcule et affiche sa fortune si 1 BTC vaut 95 000$.</p>
+      <ul>
+        <li>Utilise un <code>double</code> pour éviter les dépassements</li>
+        <li>Affiche la fortune avec <code>%.0f</code> (sans décimales)</li>
+      </ul>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">double</span> btc <span class="op">=</span> <span class="n">1000000</span>;
+    <span class="t">double</span> prix_btc <span class="op">=</span> <span class="n">95000</span>;
+    <span class="t">double</span> fortune <span class="op">=</span> btc <span class="op">*</span> prix_btc;
+
+    <span class="f">printf</span>(<span class="s">"Fortune de Satoshi : $%.0f\n"</span>, fortune);
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span>
+<span class="c">// Output: Fortune de Satoshi : $95000000000</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 2 ═══════════════════════════════ -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Contrôle de flux</h2>
+  </div>
+  <div class="chapter-intro">
+    if / else, for, while — même syntaxe qu'en Java ou JavaScript. Si tu connais déjà un langage, tu vas voler ici.
+  </div>
+
+  <h3>🔀 Conditions</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C/C++</span></div>
+    <pre><span class="t">int</span> score <span class="op">=</span> <span class="n">85</span>;
+
+<span class="k">if</span> (score <span class="op">>=</span> <span class="n">90</span>) <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"Expert hacker\n"</span>);
+<span class="p">}</span> <span class="k">else if</span> (score <span class="op">>=</span> <span class="n">70</span>) <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"Junior dev\n"</span>);
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"Encore en formation\n"</span>);
+<span class="p">}</span></pre>
+  </div>
+
+  <h3>🔁 Boucles</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C/C++</span></div>
+    <pre><span class="c">// for : quand on sait combien de fois</span>
+<span class="k">for</span> (<span class="t">int</span> i <span class="op">=</span> <span class="n">0</span>; i <span class="op">&lt;</span> <span class="n">5</span>; i<span class="op">++</span>) <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"Tour %d\n"</span>, i);
+<span class="p">}</span>
+
+<span class="c">// while : tant qu'une condition est vraie</span>
+<span class="t">int</span> tentatives <span class="op">=</span> <span class="n">0</span>;
+<span class="k">while</span> (tentatives <span class="op">&lt;</span> <span class="n">3</span>) <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"Tentative %d\n"</span>, tentatives);
+    tentatives<span class="op">++</span>;
+<span class="p">}</span>
+
+<span class="c">// do-while : s'exécute au moins une fois</span>
+<span class="k">do</span> <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"Connexion en cours...\n"</span>);
+<span class="p">}</span> <span class="k">while</span> (<span class="n">0</span>); <span class="c">// une seule fois ici</span></pre>
+  </div>
+
+  <!-- EXERCICE 3 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 03</span>
+      <span class="exercise-emoji">🔐</span>
+      <span class="exercise-title">Simulateur de bruteforce</span>
+    </div>
+    <div class="exercise-body">
+      <p>Utilise une boucle <code>for</code> pour simuler un bruteforce qui essaie les mots de passe de 0000 à 0009. Affiche chaque tentative. Si i == 7, affiche <code>"✅ MOT DE PASSE TROUVÉ : 0007"</code> et stoppe avec <code>break</code>.</p>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="k">for</span> (<span class="t">int</span> i <span class="op">=</span> <span class="n">0</span>; i <span class="op">&lt;</span> <span class="n">10</span>; i<span class="op">++</span>) <span class="p">{</span>
+        <span class="f">printf</span>(<span class="s">"Tentative : %04d\n"</span>, i);  <span class="c">// %04d = 4 chiffres avec zéros</span>
+
+        <span class="k">if</span> (i <span class="op">==</span> <span class="n">7</span>) <span class="p">{</span>
+            <span class="f">printf</span>(<span class="s">"MOT DE PASSE TROUVE : %04d\n"</span>, i);
+            <span class="k">break</span>;  <span class="c">// on arrête la boucle</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCICE 4 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 04</span>
+      <span class="exercise-emoji">📊</span>
+      <span class="exercise-title">Table des ports célèbres</span>
+    </div>
+    <div class="exercise-body">
+      <p>Affiche la table de multiplication de 8 (de 8x1 à 8x12) avec une boucle. Chaque ligne : <code>8 x 3 = 24</code>. Oui c'est les ports TCP qu'on retient comme ça 😄</p>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="k">for</span> (<span class="t">int</span> i <span class="op">=</span> <span class="n">1</span>; i <span class="op">&lt;=</span> <span class="n">12</span>; i<span class="op">++</span>) <span class="p">{</span>
+        <span class="f">printf</span>(<span class="s">"8 x %2d = %3d\n"</span>, i, <span class="n">8</span> <span class="op">*</span> i);
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 3 ═══════════════════════════════ -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Fonctions</h2>
+  </div>
+  <div class="chapter-intro">
+    Une fonction = un bloc de code réutilisable avec un nom. Même concept qu'en Java, mais sans classes obligatoires en C.
+  </div>
+
+  <h3>🔧 Syntaxe de base</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C/C++</span></div>
+    <pre><span class="c">// Déclaration : type_retour nom(paramètres)</span>
+<span class="t">int</span> <span class="f">addition</span>(<span class="t">int</span> a, <span class="t">int</span> b) <span class="p">{</span>
+    <span class="k">return</span> a <span class="op">+</span> b;
+<span class="p">}</span>
+
+<span class="c">// void = ne retourne rien</span>
+<span class="t">void</span> <span class="f">afficherBienvenue</span>(<span class="t">char</span> <span class="op">*</span>nom) <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"Bienvenue %s !\n"</span>, nom);
+<span class="p">}</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">int</span> resultat <span class="op">=</span> <span class="f">addition</span>(<span class="n">10</span>, <span class="n">5</span>);
+    <span class="f">printf</span>(<span class="s">"%d\n"</span>, resultat);  <span class="c">// 15</span>
+    <span class="f">afficherBienvenue</span>(<span class="s">"Tom"</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+  </div>
+
+  <h3>🔀 Surcharge en C++ (pas en C !)</h3>
+  <p>En C++, on peut avoir plusieurs fonctions avec le même nom mais des paramètres différents.</p>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C++ uniquement</span></div>
+    <pre><span class="c">// Même nom, paramètres différents = surcharge</span>
+<span class="t">int</span> <span class="f">max</span>(<span class="t">int</span> a, <span class="t">int</span> b) <span class="p">{</span>
+    <span class="k">return</span> (a <span class="op">></span> b) <span class="op">?</span> a : b;
+<span class="p">}</span>
+
+<span class="t">double</span> <span class="f">max</span>(<span class="t">double</span> a, <span class="t">double</span> b) <span class="p">{</span>
+    <span class="k">return</span> (a <span class="op">></span> b) <span class="op">?</span> a : b;
+<span class="p">}</span>
+
+<span class="c">// C++ choisit automatiquement la bonne version</span>
+<span class="f">max</span>(<span class="n">3</span>, <span class="n">5</span>);        <span class="c">// appelle la version int</span>
+<span class="f">max</span>(<span class="n">3.2</span>, <span class="n">5.1</span>);    <span class="c">// appelle la version double</span></pre>
+  </div>
+
+  <!-- EXERCICE 5 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 05</span>
+      <span class="exercise-emoji">🛡️</span>
+      <span class="exercise-title">Vérificateur de force de mot de passe</span>
+    </div>
+    <div class="exercise-body">
+      <p>Crée une fonction <code>forceMotDePasse(int longueur)</code> qui retourne :</p>
+      <ul>
+        <li><code>"Faible"</code> si longueur &lt; 8</li>
+        <li><code>"Moyen"</code> si longueur entre 8 et 12</li>
+        <li><code>"Fort"</code> si longueur &gt; 12</li>
+      </ul>
+      <p>Appelle la fonction dans <code>main()</code> avec les valeurs 5, 10, et 16.</p>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="t">char</span><span class="op">*</span> <span class="f">forceMotDePasse</span>(<span class="t">int</span> longueur) <span class="p">{</span>
+    <span class="k">if</span> (longueur <span class="op">&lt;</span> <span class="n">8</span>)          <span class="k">return</span> <span class="s">"Faible"</span>;
+    <span class="k">else if</span> (longueur <span class="op">&lt;=</span> <span class="n">12</span>) <span class="k">return</span> <span class="s">"Moyen"</span>;
+    <span class="k">else</span>                       <span class="k">return</span> <span class="s">"Fort"</span>;
+<span class="p">}</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="f">printf</span>(<span class="s">"5 chars : %s\n"</span>, <span class="f">forceMotDePasse</span>(<span class="n">5</span>));
+    <span class="f">printf</span>(<span class="s">"10 chars : %s\n"</span>, <span class="f">forceMotDePasse</span>(<span class="n">10</span>));
+    <span class="f">printf</span>(<span class="s">"16 chars : %s\n"</span>, <span class="f">forceMotDePasse</span>(<span class="n">16</span>));
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 4 ═══════════════════════════════ -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>La mémoire — LE sujet clé en C</h2>
+  </div>
+  <div class="chapter-intro">
+    C'est ici que C devient différent de TOUS les autres langages. Tu gères la RAM toi-même. C'est puissant, dangereux, et c'est pour ça que les OS, virus et logiciels critiques sont écrits en C.
+  </div>
+
+  <h3>🧠 Stack vs Heap — la distinction fondamentale</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th></th><th>Stack (Pile) 📌</th><th>Heap (Tas) 📦</th></tr>
+      <tr><td><strong>Gestion</strong></td><td>Automatique</td><td>Manuelle (malloc / free)</td></tr>
+      <tr><td><strong>Vitesse</strong></td><td>Ultra rapide</td><td>Plus lent</td></tr>
+      <tr><td><strong>Taille</strong></td><td>Limitée (~8 Mo)</td><td>Grande (RAM dispo)</td></tr>
+      <tr><td><strong>Durée de vie</strong></td><td>Fin de la fonction</td><td>Jusqu'au free()</td></tr>
+      <tr><td><strong>Danger</strong></td><td>Stack overflow</td><td>Fuite mémoire / UAF</td></tr>
+    </table>
+  </div>
+
+  <h3>📐 Représentation en mémoire</h3>
+  <div class="memory-diagram">
+    <div class="mem-zone zone-stack">▲ STACK (bas → haut)</div>
+    <div class="mem-row mem-header">
+      <div class="mem-addr">ADRESSE</div>
+      <div class="mem-val">VALEUR</div>
+      <div class="mem-label">VARIABLE</div>
+    </div>
+    <div class="mem-row">
+      <div class="mem-addr">0x7ffe1234</div>
+      <div class="mem-val">42</div>
+      <div class="mem-label" style="color:#22c55e">int a = 42; ← stack</div>
+    </div>
+    <div class="mem-row">
+      <div class="mem-addr">0x7ffe1230</div>
+      <div class="mem-val">0x...</div>
+      <div class="mem-label" style="color:#60a5fa">int *p ← pointeur (stack)</div>
+    </div>
+    <div style="height:12px; background: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(100,116,139,0.1) 4px, rgba(100,116,139,0.1) 8px); margin: 4px 0;"></div>
+    <div class="mem-zone zone-heap">▼ HEAP (alloué avec malloc)</div>
+    <div class="mem-row">
+      <div class="mem-addr">0x55ab7890</div>
+      <div class="mem-val">99</div>
+      <div class="mem-label" style="color:#a78bfa">*p = 99 ← valeur heap</div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C — Stack vs Heap</span></div>
+    <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+<span class="inc">#include &lt;stdlib.h&gt;</span>  <span class="c">// pour malloc et free</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+
+    <span class="c">// ═══ STACK (automatique) ═══</span>
+    <span class="t">int</span> a <span class="op">=</span> <span class="n">42</span>;          <span class="c">// créé et détruit automatiquement</span>
+
+    <span class="c">// ═══ HEAP (manuel) ═══</span>
+    <span class="t">int</span> <span class="op">*</span>p <span class="op">=</span> <span class="f">malloc</span>(<span class="k">sizeof</span>(<span class="t">int</span>));  <span class="c">// réserve 4 octets</span>
+
+    <span class="k">if</span> (p <span class="op">==</span> <span class="n">NULL</span>) <span class="p">{</span>          <span class="c">// TOUJOURS vérifier</span>
+        <span class="f">printf</span>(<span class="s">"Erreur mémoire\n"</span>);
+        <span class="k">return</span> <span class="n">1</span>;
+    <span class="p">}</span>
+
+    <span class="op">*</span>p <span class="op">=</span> <span class="n">99</span>;                 <span class="c">// écrire dans la mémoire allouée</span>
+    <span class="f">printf</span>(<span class="s">"Valeur : %d\n"</span>, <span class="op">*</span>p);
+
+    <span class="f">free</span>(p);                 <span class="c">// OBLIGATOIRE sinon fuite mémoire</span>
+    p <span class="op">=</span> <span class="n">NULL</span>;               <span class="c">// bonne pratique : mettre à NULL après free</span>
+
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+  </div>
+
+  <h3>☠️ Les 4 erreurs classiques</h3>
+  <div class="callout danger">
+    <span class="callout-icon">💣</span>
+    <div>
+      <p><strong>1. Buffer Overflow</strong> — écrire en dehors d'un tableau → faille exploitable</p>
+      <p><code>char buf[5]; strcpy(buf, "trop_long");</code> → <strong>BOOM</strong></p>
+    </div>
+  </div>
+  <div class="callout danger">
+    <span class="callout-icon">🔁</span>
+    <div>
+      <p><strong>2. Double free</strong> — libérer deux fois la même mémoire → crash</p>
+      <p><code>free(p); free(p);</code> → comportement indéfini</p>
+    </div>
+  </div>
+  <div class="callout danger">
+    <span class="callout-icon">👻</span>
+    <div>
+      <p><strong>3. Use After Free</strong> — utiliser la mémoire après free() → données corrompues ou exploitation</p>
+      <p><code>free(p); *p = 10;</code> → dangereux</p>
+    </div>
+  </div>
+  <div class="callout warn">
+    <span class="callout-icon">💧</span>
+    <div>
+      <p><strong>4. Memory Leak</strong> — oublier free() → la mémoire ne se libère jamais</p>
+      <p><code>malloc(1000); // sans free</code> → ton programme grossit indéfiniment</p>
+    </div>
+  </div>
+
+  <!-- EXERCICE 6 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 06</span>
+      <span class="exercise-emoji">🧱</span>
+      <span class="exercise-title">Tableau dynamique de scores CTF</span>
+    </div>
+    <div class="exercise-body">
+      <p>Crée un tableau de 5 entiers dans le heap pour stocker des scores de CTF. Remplis-le avec des valeurs, affiche-les, puis libère la mémoire.</p>
+      <ul>
+        <li>Utilise <code>malloc(5 * sizeof(int))</code></li>
+        <li>Remplis avec : 100, 250, 500, 750, 1000</li>
+        <li>Affiche chaque score avec son index</li>
+        <li>Libère et met à NULL</li>
+      </ul>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+<span class="inc">#include &lt;stdlib.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">int</span> <span class="op">*</span>scores <span class="op">=</span> <span class="f">malloc</span>(<span class="n">5</span> <span class="op">*</span> <span class="k">sizeof</span>(<span class="t">int</span>));
+
+    <span class="k">if</span> (scores <span class="op">==</span> <span class="n">NULL</span>) <span class="p">{</span>
+        <span class="f">printf</span>(<span class="s">"Erreur malloc\n"</span>);
+        <span class="k">return</span> <span class="n">1</span>;
+    <span class="p">}</span>
+
+    scores[<span class="n">0</span>] <span class="op">=</span> <span class="n">100</span>;
+    scores[<span class="n">1</span>] <span class="op">=</span> <span class="n">250</span>;
+    scores[<span class="n">2</span>] <span class="op">=</span> <span class="n">500</span>;
+    scores[<span class="n">3</span>] <span class="op">=</span> <span class="n">750</span>;
+    scores[<span class="n">4</span>] <span class="op">=</span> <span class="n">1000</span>;
+
+    <span class="k">for</span> (<span class="t">int</span> i <span class="op">=</span> <span class="n">0</span>; i <span class="op">&lt;</span> <span class="n">5</span>; i<span class="op">++</span>) <span class="p">{</span>
+        <span class="f">printf</span>(<span class="s">"Joueur %d : %d pts\n"</span>, i <span class="op">+</span> <span class="n">1</span>, scores[i]);
+    <span class="p">}</span>
+
+    <span class="f">free</span>(scores);
+    scores <span class="op">=</span> <span class="n">NULL</span>;
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 5 ═══════════════════════════════ -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Les pointeurs — le GPS de la mémoire</h2>
+  </div>
+  <div class="chapter-intro">
+    Les pointeurs sont LA chose qui fait peur en C. En réalité c'est simple : un pointeur est une variable qui stocke une adresse mémoire. Rien de plus.
+  </div>
+
+  <h3>🧭 L'analogie GPS</h3>
+  <div class="callout info">
+    <span class="callout-icon">🗺️</span>
+    <p><strong>p</strong> = l'adresse GPS 📍 (ex: 0x7ffe1234) &nbsp;|&nbsp; <strong>*p</strong> = ce qu'il y a à cette adresse 🏠</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C — Pointeurs décryptés</span></div>
+    <pre><span class="t">int</span> a <span class="op">=</span> <span class="n">42</span>;
+<span class="t">int</span> <span class="op">*</span>p;   <span class="c">// p est un pointeur vers un int (contient une adresse)</span>
+
+p <span class="op">=</span> <span class="op">&amp;</span>a;   <span class="c">// &amp;a = "l'adresse de a" → p pointe vers a</span>
+
+<span class="f">printf</span>(<span class="s">"Valeur de a : %d\n"</span>, a);     <span class="c">// 42</span>
+<span class="f">printf</span>(<span class="s">"Adresse de a : %p\n"</span>, p);    <span class="c">// 0x7ffe...</span>
+<span class="f">printf</span>(<span class="s">"Valeur via p : %d\n"</span>, <span class="op">*</span>p);   <span class="c">// 42 (déréférencement)</span>
+
+<span class="op">*</span>p <span class="op">=</span> <span class="n">100</span>;  <span class="c">// modifie a à travers le pointeur</span>
+<span class="f">printf</span>(<span class="s">"a vaut maintenant : %d\n"</span>, a); <span class="c">// 100 !</span></pre>
+  </div>
+
+  <h3>📋 Récap des symboles</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Symbole</th><th>Signification</th><th>Exemple</th></tr>
+      <tr><td><code>*</code> (dans déclaration)</td><td>Ce type est un pointeur</td><td><code>int *p;</code></td></tr>
+      <tr><td><code>&amp;</code></td><td>L'adresse mémoire de</td><td><code>p = &amp;a;</code></td></tr>
+      <tr><td><code>*</code> (après déclaration)</td><td>Aller à l'adresse = déréférencer</td><td><code>*p = 5;</code></td></tr>
+    </table>
+  </div>
+
+  <h3>🔗 Tableaux et pointeurs</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+    <pre><span class="t">int</span> arr[<span class="n">3</span>] <span class="op">=</span> <span class="p">{</span><span class="n">10</span>, <span class="n">20</span>, <span class="n">30</span><span class="p">}</span>;
+<span class="t">int</span> <span class="op">*</span>p <span class="op">=</span> arr;  <span class="c">// arr = adresse du 1er élément</span>
+
+<span class="f">printf</span>(<span class="s">"%d\n"</span>, <span class="op">*</span>p);       <span class="c">// 10 (1er élément)</span>
+<span class="f">printf</span>(<span class="s">"%d\n"</span>, <span class="op">*</span>(p<span class="op">+</span><span class="n">1</span>));   <span class="c">// 20 (2e élément)</span>
+<span class="f">printf</span>(<span class="s">"%d\n"</span>, <span class="op">*</span>(p<span class="op">+</span><span class="n">2</span>));   <span class="c">// 30 (3e élément)</span></pre>
+  </div>
+
+  <!-- EXERCICE 7 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 07</span>
+      <span class="exercise-emoji">🔄</span>
+      <span class="exercise-title">Swap de variables sans variable temporaire... ou presque</span>
+    </div>
+    <div class="exercise-body">
+      <p>Crée une fonction <code>swap(int *a, int *b)</code> qui échange les valeurs de deux variables en utilisant des pointeurs.</p>
+      <ul>
+        <li>La fonction doit modifier les variables originales (pas des copies)</li>
+        <li>Test : <code>a = 3, b = 7</code> → après swap : <code>a = 7, b = 3</code></li>
+      </ul>
+      <div class="callout info"><span class="callout-icon">💡</span><p>C'est exactement comment les algorithmes de tri modifient les tableaux en place.</p></div>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="t">void</span> <span class="f">swap</span>(<span class="t">int</span> <span class="op">*</span>a, <span class="t">int</span> <span class="op">*</span>b) <span class="p">{</span>
+    <span class="t">int</span> temp <span class="op">=</span> <span class="op">*</span>a;  <span class="c">// sauvegarde a</span>
+    <span class="op">*</span>a <span class="op">=</span> <span class="op">*</span>b;        <span class="c">// a prend la valeur de b</span>
+    <span class="op">*</span>b <span class="op">=</span> temp;     <span class="c">// b prend la valeur sauvegardée</span>
+<span class="p">}</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">int</span> a <span class="op">=</span> <span class="n">3</span>, b <span class="op">=</span> <span class="n">7</span>;
+    <span class="f">printf</span>(<span class="s">"Avant : a=%d b=%d\n"</span>, a, b);
+    <span class="f">swap</span>(<span class="op">&amp;</span>a, <span class="op">&amp;</span>b);  <span class="c">// on passe les adresses</span>
+    <span class="f">printf</span>(<span class="s">"Après : a=%d b=%d\n"</span>, a, b);
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 6 ═══════════════════════════════ -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>C++ — Les objets et la STL</h2>
+  </div>
+  <div class="chapter-intro">
+    C++ = C + la programmation orientée objet. Si tu connais Java, tu vas retrouver des concepts familiers. La grosse différence : pas de garbage collector, tu gères toujours la mémoire.
+  </div>
+
+  <h3>🏗️ Classes et objets</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C++</span></div>
+    <pre><span class="inc">#include &lt;iostream&gt;</span>
+<span class="inc">#include &lt;string&gt;</span>
+<span class="k">using namespace</span> std;
+
+<span class="k">class</span> <span class="t">Hacker</span> <span class="p">{</span>
+<span class="k">public</span>:                      <span class="c">// accessible de l'extérieur</span>
+    <span class="t">string</span> pseudo;
+    <span class="t">int</span> niveau;
+
+    <span class="c">// Constructeur (comme en Java)</span>
+    <span class="f">Hacker</span>(<span class="t">string</span> p, <span class="t">int</span> n) <span class="p">{</span>
+        pseudo <span class="op">=</span> p;
+        niveau <span class="op">=</span> n;
+    <span class="p">}</span>
+
+    <span class="t">void</span> <span class="f">afficher</span>() <span class="p">{</span>
+        cout <span class="op">&lt;&lt;</span> <span class="s">"["</span> <span class="op">&lt;&lt;</span> pseudo <span class="op">&lt;&lt;</span> <span class="s">"] Niveau : "</span> <span class="op">&lt;&lt;</span> niveau <span class="op">&lt;&lt;</span> endl;
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">Hacker</span> h1(<span class="s">"L33t_Tom"</span>, <span class="n">99</span>);
+    h1.<span class="f">afficher</span>();  <span class="c">// [L33t_Tom] Niveau : 99</span>
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+  </div>
+
+  <h3>📚 std::vector — tableau dynamique</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C++</span></div>
+    <pre><span class="inc">#include &lt;vector&gt;</span>
+<span class="inc">#include &lt;iostream&gt;</span>
+<span class="k">using namespace</span> std;
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">vector</span>&lt;<span class="t">string</span>&gt; outils;
+
+    outils.<span class="f">push_back</span>(<span class="s">"nmap"</span>);
+    outils.<span class="f">push_back</span>(<span class="s">"burpsuite"</span>);
+    outils.<span class="f">push_back</span>(<span class="s">"metasploit"</span>);
+
+    <span class="k">for</span> (<span class="t">string</span> outil : outils) <span class="p">{</span>  <span class="c">// for-each C++</span>
+        cout <span class="op">&lt;&lt;</span> <span class="s">"Outil : "</span> <span class="op">&lt;&lt;</span> outil <span class="op">&lt;&lt;</span> endl;
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+  </div>
+
+  <h3>📊 C vs C++ en un coup d'œil</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Fonctionnalité</th><th class="diff-c">C</th><th class="diff-cpp">C++</th></tr>
+      <tr><td><strong>Classes / Objets</strong></td><td>❌</td><td>✅</td></tr>
+      <tr><td><strong>Surcharge de fonctions</strong></td><td>❌</td><td>✅</td></tr>
+      <tr><td><strong>std::string</strong></td><td>❌ (char*)</td><td>✅</td></tr>
+      <tr><td><strong>std::vector</strong></td><td>❌</td><td>✅</td></tr>
+      <tr><td><strong>Héritage / Polymorphisme</strong></td><td>❌</td><td>✅</td></tr>
+      <tr><td><strong>Gestion mémoire manuelle</strong></td><td>✅</td><td>✅</td></tr>
+      <tr><td><strong>Pointeurs</strong></td><td>✅</td><td>✅</td></tr>
+      <tr><td><strong>printf</strong></td><td>✅</td><td>✅ (compatible)</td></tr>
+    </table>
+  </div>
+
+  <!-- EXERCICE 8 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 08</span>
+      <span class="exercise-emoji">🕵️</span>
+      <span class="exercise-title">Classe Agent Secret</span>
+    </div>
+    <div class="exercise-body">
+      <p>Crée une classe <code>Agent</code> en C++ avec :</p>
+      <ul>
+        <li>Attributs : <code>nom</code> (string), <code>niveau</code> (int), <code>actif</code> (bool)</li>
+        <li>Un constructeur qui prend ces 3 valeurs</li>
+        <li>Une méthode <code>rapport()</code> qui affiche les infos de l'agent</li>
+      </ul>
+      <p>Crée deux agents dans main() et appelle rapport() sur chacun.</p>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C++</span></div>
+          <pre><span class="inc">#include &lt;iostream&gt;</span>
+<span class="inc">#include &lt;string&gt;</span>
+<span class="k">using namespace</span> std;
+
+<span class="k">class</span> <span class="t">Agent</span> <span class="p">{</span>
+<span class="k">public</span>:
+    <span class="t">string</span> nom;
+    <span class="t">int</span> niveau;
+    <span class="t">bool</span> actif;
+
+    <span class="f">Agent</span>(<span class="t">string</span> n, <span class="t">int</span> niv, <span class="t">bool</span> a) <span class="p">{</span>
+        nom <span class="op">=</span> n; niveau <span class="op">=</span> niv; actif <span class="op">=</span> a;
+    <span class="p">}</span>
+
+    <span class="t">void</span> <span class="f">rapport</span>() <span class="p">{</span>
+        cout <span class="op">&lt;&lt;</span> <span class="s">"Agent : "</span> <span class="op">&lt;&lt;</span> nom
+             <span class="op">&lt;&lt;</span> <span class="s">" | Niveau : "</span> <span class="op">&lt;&lt;</span> niveau
+             <span class="op">&lt;&lt;</span> <span class="s">" | Statut : "</span> <span class="op">&lt;&lt;</span> (actif <span class="op">?</span> <span class="s">"ACTIF"</span> : <span class="s">"INACTIF"</span>)
+             <span class="op">&lt;&lt;</span> endl;
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">Agent</span> a1(<span class="s">"Ghost"</span>, <span class="n">10</span>, <span class="k">true</span>);
+    <span class="t">Agent</span> a2(<span class="s">"Shadow"</span>, <span class="n">7</span>, <span class="k">false</span>);
+
+    a1.<span class="f">rapport</span>();
+    a2.<span class="f">rapport</span>();
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 7 ═══════════════════════════════ -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>Compilation</h2>
+  </div>
+  <div class="chapter-intro">
+    Contrairement à Java (JVM) ou Python (interprété), C et C++ compilent directement en binaire natif. Résultat : un exécutable super rapide, sans rien d'autre nécessaire.
+  </div>
+
+  <h3>⚙️ Les commandes essentielles</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">bash</span></div>
+    <pre><span class="c"># Compiler un fichier C</span>
+gcc prog.c -o prog
+
+<span class="c"># Compiler un fichier C++</span>
+g++ prog.cpp -o prog
+
+<span class="c"># Lancer le programme</span>
+./prog           <span class="c"># Linux / Mac</span>
+.\prog.exe       <span class="c"># Windows</span>
+
+<span class="c"># Avec avertissements (recommandé)</span>
+gcc -Wall -Wextra prog.c -o prog
+
+<span class="c"># Avec infos de débogage (pour gdb)</span>
+gcc -g prog.c -o prog</pre>
+  </div>
+
+  <h3>🔄 Ce qui se passe en coulisses</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Étape</th><th>Ce que ça fait</th><th>Fichier produit</th></tr>
+      <tr><td>1. Préprocesseur</td><td>Gère les #include, #define</td><td>.i</td></tr>
+      <tr><td>2. Compilation</td><td>Traduit en assembleur</td><td>.s</td></tr>
+      <tr><td>3. Assemblage</td><td>Traduit en code objet</td><td>.o</td></tr>
+      <tr><td>4. Édition de liens</td><td>Assemble les .o + bibliothèques</td><td>binaire final</td></tr>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">💡</span>
+    <p>Sur Windows, le résultat est un <code>.exe</code>. Sur Linux/Mac, c'est un fichier exécutable sans extension. Dans les deux cas, aucune installation de runtime nécessaire pour l'exécuter !</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 8 ═══════════════════════════════ -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2>Les 40 fonctions à connaître</h2>
+  </div>
+  <div class="chapter-intro">
+    La bibliothèque standard de C/C++ regorge d'outils. Voici les 40 plus utiles, avec une définition humaine pour chacune.
+  </div>
+
+  <h3>📺 I/O — Entrées / Sorties</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Fonction</th><th>Header</th><th>Rôle vulgarisé</th></tr>
+      <tr><td><code>printf()</code></td><td><code>stdio.h</code></td><td>Affiche du texte dans le terminal</td></tr>
+      <tr><td><code>scanf()</code></td><td><code>stdio.h</code></td><td>Lit une valeur entrée par l'utilisateur</td></tr>
+      <tr><td><code>fgets()</code></td><td><code>stdio.h</code></td><td>Lit une ligne de texte (plus sûr que scanf)</td></tr>
+      <tr><td><code>puts()</code></td><td><code>stdio.h</code></td><td>Affiche une chaîne + retour à la ligne</td></tr>
+      <tr><td><code>getchar()</code></td><td><code>stdio.h</code></td><td>Lit un seul caractère clavier</td></tr>
+    </table>
+  </div>
+
+  <h3>📁 Fichiers</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Fonction</th><th>Header</th><th>Rôle vulgarisé</th></tr>
+      <tr><td><code>fopen()</code></td><td><code>stdio.h</code></td><td>Ouvre un fichier (lecture / écriture)</td></tr>
+      <tr><td><code>fclose()</code></td><td><code>stdio.h</code></td><td>Ferme un fichier ouvert</td></tr>
+      <tr><td><code>fread()</code></td><td><code>stdio.h</code></td><td>Lit des données brutes depuis un fichier</td></tr>
+      <tr><td><code>fwrite()</code></td><td><code>stdio.h</code></td><td>Écrit des données brutes dans un fichier</td></tr>
+      <tr><td><code>fprintf()</code></td><td><code>stdio.h</code></td><td>Écrit du texte formaté dans un fichier</td></tr>
+      <tr><td><code>fscanf()</code></td><td><code>stdio.h</code></td><td>Lit du texte formaté depuis un fichier</td></tr>
+    </table>
+  </div>
+
+  <h3>🧠 Mémoire</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Fonction</th><th>Header</th><th>Rôle vulgarisé</th></tr>
+      <tr><td><code>malloc()</code></td><td><code>stdlib.h</code></td><td>Réserve N octets dans le heap</td></tr>
+      <tr><td><code>calloc()</code></td><td><code>stdlib.h</code></td><td>Réserve ET initialise à zéro</td></tr>
+      <tr><td><code>realloc()</code></td><td><code>stdlib.h</code></td><td>Redimensionne un bloc mémoire existant</td></tr>
+      <tr><td><code>free()</code></td><td><code>stdlib.h</code></td><td>Libère la mémoire allouée avec malloc</td></tr>
+      <tr><td><code>memcpy()</code></td><td><code>string.h</code></td><td>Copie N octets d'une zone vers une autre</td></tr>
+      <tr><td><code>memmove()</code></td><td><code>string.h</code></td><td>Copie même si les zones se chevauchent</td></tr>
+      <tr><td><code>memset()</code></td><td><code>string.h</code></td><td>Remplit une zone mémoire avec une valeur</td></tr>
+    </table>
+  </div>
+
+  <h3>📝 Chaînes de caractères</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Fonction</th><th>Header</th><th>Rôle vulgarisé</th></tr>
+      <tr><td><code>strlen()</code></td><td><code>string.h</code></td><td>Retourne la longueur d'une chaîne</td></tr>
+      <tr><td><code>strcpy()</code></td><td><code>string.h</code></td><td>Copie une chaîne (⚠️ pas de limite)</td></tr>
+      <tr><td><code>strncpy()</code></td><td><code>string.h</code></td><td>Copie avec limite de taille (plus sûr)</td></tr>
+      <tr><td><code>strcmp()</code></td><td><code>string.h</code></td><td>Compare deux chaînes (0 = identiques)</td></tr>
+      <tr><td><code>strncmp()</code></td><td><code>string.h</code></td><td>Compare les N premiers caractères</td></tr>
+      <tr><td><code>strcat()</code></td><td><code>string.h</code></td><td>Concatène deux chaînes</td></tr>
+      <tr><td><code>strstr()</code></td><td><code>string.h</code></td><td>Cherche un sous-texte dans une chaîne</td></tr>
+    </table>
+  </div>
+
+  <h3>🛠️ Utilitaires</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Fonction</th><th>Header</th><th>Rôle vulgarisé</th></tr>
+      <tr><td><code>exit()</code></td><td><code>stdlib.h</code></td><td>Arrête le programme immédiatement</td></tr>
+      <tr><td><code>system()</code></td><td><code>stdlib.h</code></td><td>Exécute une commande système (shell)</td></tr>
+      <tr><td><code>rand()</code></td><td><code>stdlib.h</code></td><td>Génère un nombre pseudo-aléatoire</td></tr>
+      <tr><td><code>srand()</code></td><td><code>stdlib.h</code></td><td>Initialise le générateur aléatoire</td></tr>
+      <tr><td><code>atoi()</code></td><td><code>stdlib.h</code></td><td>Convertit un texte en entier</td></tr>
+      <tr><td><code>atof()</code></td><td><code>stdlib.h</code></td><td>Convertit un texte en décimal</td></tr>
+    </table>
+  </div>
+
+  <h3>⏱️ Temps + 🔢 Math + 📦 C++</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Fonction</th><th>Header</th><th>Rôle vulgarisé</th></tr>
+      <tr><td><code>time()</code></td><td><code>time.h</code></td><td>Retourne le timestamp UNIX actuel</td></tr>
+      <tr><td><code>clock()</code></td><td><code>time.h</code></td><td>Mesure le temps CPU utilisé</td></tr>
+      <tr><td><code>sqrt()</code></td><td><code>math.h</code></td><td>Racine carrée</td></tr>
+      <tr><td><code>pow()</code></td><td><code>math.h</code></td><td>Puissance (pow(2,10) = 1024)</td></tr>
+      <tr><td><code>abs()</code></td><td><code>stdlib.h</code></td><td>Valeur absolue (enlève le signe -)</td></tr>
+      <tr><td><code>std::cout</code></td><td><code>iostream</code></td><td>C++ : affiche dans le terminal</td></tr>
+      <tr><td><code>std::cin</code></td><td><code>iostream</code></td><td>C++ : lit une entrée clavier</td></tr>
+      <tr><td><code>std::getline()</code></td><td><code>iostream</code></td><td>C++ : lit une ligne complète</td></tr>
+      <tr><td><code>push_back()</code></td><td><code>vector</code></td><td>C++ : ajoute un élément à un vector</td></tr>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <span class="callout-icon">⚠️</span>
+    <p><strong>Functions à éviter en prod :</strong> <code>gets()</code> (overflow garanti), <code>strcpy()</code> sans taille, <code>system()</code> avec des entrées utilisateur. Ce sont des failles classiques en cybersécurité !</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ SECTION 9 ═══════════════════════════════ -->
+<section class="section" id="s9">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2>Mini-OS, terminal et concepts avancés</h2>
+  </div>
+  <div class="chapter-intro">
+    Maintenant que tu maîtrises les bases, voilà comment tout ça se connecte aux vraies applications système — et pourquoi C est roi dans ce domaine.
+  </div>
+
+  <h3>🖥️ Mini terminal en C</h3>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C — Mini Shell</span></div>
+    <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+<span class="inc">#include &lt;stdlib.h&gt;</span>
+<span class="inc">#include &lt;string.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">char</span> commande[<span class="n">256</span>];
+
+    <span class="f">printf</span>(<span class="s">"=== IT-Akademy Shell v0.1 ===\n"</span>);
+
+    <span class="k">while</span> (<span class="n">1</span>) <span class="p">{</span>
+        <span class="f">printf</span>(<span class="s">"it-shell> "</span>);
+        <span class="f">fgets</span>(commande, <span class="k">sizeof</span>(commande), stdin);
+
+        <span class="c">// Supprimer le \n final</span>
+        commande[<span class="f">strcspn</span>(commande, <span class="s">"\n"</span>)] <span class="op">=</span> <span class="n">0</span>;
+
+        <span class="k">if</span> (<span class="f">strcmp</span>(commande, <span class="s">"exit"</span>) <span class="op">==</span> <span class="n">0</span>) <span class="p">{</span>
+            <span class="f">printf</span>(<span class="s">"Bye!\n"</span>);
+            <span class="k">break</span>;
+        <span class="p">}</span>
+
+        <span class="f">system</span>(commande);  <span class="c">// exécute la commande OS</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+  </div>
+
+  <h3>⚙️ Kernel minimaliste (concept OS)</h3>
+  <p>Un vrai kernel démarre sans aucune bibliothèque. Il écrit directement dans la mémoire vidéo du CPU.</p>
+  <div class="code-block">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C — Kernel baremetal</span></div>
+    <pre><span class="c">// ATTENTION : ce code tourne sans OS, directement sur CPU</span>
+<span class="c">// Compile avec : gcc -ffreestanding -o kernel kernel.c</span>
+
+<span class="t">void</span> <span class="f">kernel_main</span>() <span class="p">{</span>
+    <span class="c">// Mémoire vidéo VGA mode texte : adresse fixe 0xB8000</span>
+    <span class="t">char</span> <span class="op">*</span>video <span class="op">=</span> (<span class="t">char</span><span class="op">*</span>) <span class="n">0xB8000</span>;
+
+    <span class="c">// Chaque caractère = 2 octets : char + couleur</span>
+    video[<span class="n">0</span>] <span class="op">=</span> <span class="s">'I'</span>; video[<span class="n">1</span>] <span class="op">=</span> <span class="n">0x0F</span>;  <span class="c">// blanc sur noir</span>
+    video[<span class="n">2</span>] <span class="op">=</span> <span class="s">'T'</span>; video[<span class="n">3</span>] <span class="op">=</span> <span class="n">0x0F</span>;
+    video[<span class="n">4</span>] <span class="op">=</span> <span class="s">'-'</span>; video[<span class="n">5</span>] <span class="op">=</span> <span class="n">0x0F</span>;
+    video[<span class="n">6</span>] <span class="op">=</span> <span class="s">'A'</span>; video[<span class="n">7</span>] <span class="op">=</span> <span class="n">0x0F</span>;
+
+    <span class="k">while</span>(<span class="n">1</span>); <span class="c">// boucle infinie (l'OS ne se "termine" pas)</span>
+<span class="p">}</span></pre>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">🧠</span>
+    <p>Voilà pourquoi Linux, Windows NT, et macOS sont écrits en C : c'est le seul langage qui peut parler directement au matériel, sans intermédiaire. C = le langage de la machine.</p>
+  </div>
+
+  <!-- EXERCICE 9 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 09</span>
+      <span class="exercise-emoji">🗂️</span>
+      <span class="exercise-title">Logger de commandes</span>
+    </div>
+    <div class="exercise-body">
+      <p>Améliore le mini shell : au lieu d'exécuter les commandes, <strong>écris-les dans un fichier</strong> <code>log.txt</code> avec l'heure approximative (utilise un compteur). Affiche "Commande enregistrée" après chaque saisie.</p>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+<span class="inc">#include &lt;string.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">char</span> commande[<span class="n">256</span>];
+    <span class="t">int</span> compteur <span class="op">=</span> <span class="n">0</span>;
+
+    <span class="t">FILE</span> <span class="op">*</span>log <span class="op">=</span> <span class="f">fopen</span>(<span class="s">"log.txt"</span>, <span class="s">"w"</span>);
+    <span class="k">if</span> (!log) <span class="p">{</span> <span class="f">printf</span>(<span class="s">"Erreur log\n"</span>); <span class="k">return</span> <span class="n">1</span>; <span class="p">}</span>
+
+    <span class="f">printf</span>(<span class="s">"=== Logger Shell ===\n"</span>);
+
+    <span class="k">while</span> (<span class="n">1</span>) <span class="p">{</span>
+        <span class="f">printf</span>(<span class="s">"logger> "</span>);
+        <span class="f">fgets</span>(commande, <span class="k">sizeof</span>(commande), stdin);
+        commande[<span class="f">strcspn</span>(commande, <span class="s">"\n"</span>)] <span class="op">=</span> <span class="n">0</span>;
+
+        <span class="k">if</span> (<span class="f">strcmp</span>(commande, <span class="s">"exit"</span>) <span class="op">==</span> <span class="n">0</span>) <span class="k">break</span>;
+
+        <span class="f">fprintf</span>(log, <span class="s">"[#%d] %s\n"</span>, compteur, commande);
+        <span class="f">printf</span>(<span class="s">"Commande enregistree (#%d)\n"</span>, compteur);
+        compteur<span class="op">++</span>;
+    <span class="p">}</span>
+
+    <span class="f">fclose</span>(log);
+    <span class="f">printf</span>(<span class="s">"%d commandes enregistrees dans log.txt\n"</span>, compteur);
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCICE 10 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 10</span>
+      <span class="exercise-emoji">🎲</span>
+      <span class="exercise-title">Générateur de mot de passe aléatoire</span>
+    </div>
+    <div class="exercise-body">
+      <p>Génère un mot de passe aléatoire de 12 caractères composé de lettres minuscules (a-z). Utilise <code>rand()</code> et <code>srand(time(NULL))</code>.</p>
+      <ul>
+        <li>Astuce : <code>'a' + rand() % 26</code> génère une lettre aléatoire</li>
+      </ul>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+<span class="inc">#include &lt;stdlib.h&gt;</span>
+<span class="inc">#include &lt;time.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="f">srand</span>(<span class="f">time</span>(<span class="n">NULL</span>));  <span class="c">// graine basée sur l'heure</span>
+
+    <span class="t">char</span> password[<span class="n">13</span>];  <span class="c">// 12 chars + \0</span>
+
+    <span class="k">for</span> (<span class="t">int</span> i <span class="op">=</span> <span class="n">0</span>; i <span class="op">&lt;</span> <span class="n">12</span>; i<span class="op">++</span>) <span class="p">{</span>
+        password[i] <span class="op">=</span> <span class="s">'a'</span> <span class="op">+</span> <span class="f">rand</span>() <span class="op">%</span> <span class="n">26</span>;
+    <span class="p">}</span>
+    password[<span class="n">12</span>] <span class="op">=</span> <span class="s">'\0'</span>;  <span class="c">// fin de chaîne obligatoire</span>
+
+    <span class="f">printf</span>(<span class="s">"Mot de passe : %s\n"</span>, password);
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCICE 11 -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 11</span>
+      <span class="exercise-emoji">🔢</span>
+      <span class="exercise-title">XOR Cipher basique</span>
+    </div>
+    <div class="exercise-body">
+      <p>Le chiffrement XOR est l'un des plus simples — et il est réversible ! Chiffre puis déchiffre un texte avec une clé entière.</p>
+      <ul>
+        <li>Pour chiffrer : <code>texte[i] ^= cle</code> (opérateur XOR)</li>
+        <li>Pour déchiffrer : même opération avec la même clé</li>
+        <li>Test avec <code>"hello"</code> et clé = 42</li>
+      </ul>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+<span class="inc">#include &lt;string.h&gt;</span>
+
+<span class="t">void</span> <span class="f">xorCipher</span>(<span class="t">char</span> <span class="op">*</span>texte, <span class="t">int</span> cle) <span class="p">{</span>
+    <span class="k">for</span> (<span class="t">int</span> i <span class="op">=</span> <span class="n">0</span>; i <span class="op">&lt;</span> <span class="f">strlen</span>(texte); i<span class="op">++</span>) <span class="p">{</span>
+        texte[i] <span class="op">^=</span> cle;  <span class="c">// XOR avec la clé</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">char</span> message[] <span class="op">=</span> <span class="s">"hello"</span>;
+    <span class="t">int</span> cle <span class="op">=</span> <span class="n">42</span>;
+
+    <span class="f">printf</span>(<span class="s">"Original : %s\n"</span>, message);
+
+    <span class="f">xorCipher</span>(message, cle);
+    <span class="f">printf</span>(<span class="s">"Chiffré  : %s\n"</span>, message);  <span class="c">// illisible</span>
+
+    <span class="f">xorCipher</span>(message, cle);  <span class="c">// même opération = déchiffrement</span>
+    <span class="f">printf</span>(<span class="s">"Déchiffré: %s\n"</span>, message);  <span class="c">// hello à nouveau</span>
+
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCICE 12 — BONUS -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">EX 12 ⭐</span>
+      <span class="exercise-emoji">🏆</span>
+      <span class="exercise-title">BONUS — Programme qui se copie lui-même</span>
+    </div>
+    <div class="exercise-body">
+      <p>Concept de base des virus : un programme qui lit son propre code source et le copie ailleurs. Inoffensif, purement éducatif.</p>
+      <div class="callout warn"><span class="callout-icon">⚠️</span><p>Ce programme utilise <code>__FILE__</code>, une macro C qui contient le chemin du fichier source courant. Ne marche qu'à la compilation, pas sur le binaire final.</p></div>
+      <span class="solution-toggle" onclick="toggleSolution(this)">🔓 Voir la solution</span>
+      <div class="solution-content">
+        <div class="solution-label">✅ Solution</div>
+        <div class="code-block">
+          <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><span class="code-lang">C</span></div>
+          <pre><span class="inc">#include &lt;stdio.h&gt;</span>
+
+<span class="t">int</span> <span class="f">main</span>() <span class="p">{</span>
+    <span class="t">FILE</span> <span class="op">*</span>source <span class="op">=</span> <span class="f">fopen</span>(<span class="n">__FILE__</span>, <span class="s">"r"</span>);  <span class="c">// lit CE fichier</span>
+    <span class="t">FILE</span> <span class="op">*</span>copie <span class="op">=</span> <span class="f">fopen</span>(<span class="s">"copie.c"</span>, <span class="s">"w"</span>);
+
+    <span class="k">if</span> (!source <span class="op">||</span> !copie) <span class="p">{</span>
+        <span class="f">printf</span>(<span class="s">"Erreur d'ouverture\n"</span>);
+        <span class="k">return</span> <span class="n">1</span>;
+    <span class="p">}</span>
+
+    <span class="t">char</span> c;
+    <span class="k">while</span> ((c <span class="op">=</span> <span class="f">fgetc</span>(source)) <span class="op">!=</span> <span class="n">EOF</span>) <span class="p">{</span>
+        <span class="f">fputc</span>(c, copie);
+    <span class="p">}</span>
+
+    <span class="f">fclose</span>(source);
+    <span class="f">fclose</span>(copie);
+
+    <span class="f">printf</span>(<span class="s">"Code source copié dans copie.c\n"</span>);
+    <span class="f">printf</span>(<span class="s">"(Principe de base de la réplication virale)\n"</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+<span class="p">}</span></pre>
+        </div>
+        <div class="callout info" style="margin-top:0.8rem">
+          <span class="callout-icon">💡</span>
+          <p>Un vrai virus va plus loin : il cible des exécutables, modifie leur code binaire, et se lance sans que l'utilisateur le sache. Mais le principe de "lire et copier" reste le même.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RÉCAP FINAL -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">FIN</span>
+    <h2>Récapitulatif & Prochaines étapes</h2>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Ce que tu maîtrises maintenant</th><th>Pour aller plus loin</th></tr>
+      <tr><td>✅ Structure d'un programme C/C++</td><td>Structures (struct)</td></tr>
+      <tr><td>✅ Variables et types</td><td>Unions et Enums</td></tr>
+      <tr><td>✅ Conditions et boucles</td><td>Récursivité</td></tr>
+      <tr><td>✅ Fonctions</td><td>Pointeurs de fonctions</td></tr>
+      <tr><td>✅ Stack vs Heap</td><td>fork() et exec() sous Linux</td></tr>
+      <tr><td>✅ malloc / free / pointeurs</td><td>Listes chaînées, arbres</td></tr>
+      <tr><td>✅ Classes C++</td><td>Héritage, polymorphisme</td></tr>
+      <tr><td>✅ Compilation gcc/g++</td><td>Makefile, CMake</td></tr>
+    </table>
+  </div>
+
+  <div class="callout success">
+    <span class="callout-icon">🚀</span>
+    <div>
+      <p><strong>Ressources recommandées :</strong></p>
+      <p>📖 <strong>The C Programming Language</strong> — Kernighan & Ritchie (la bible)<br>
+      🌐 <strong>cppreference.com</strong> — documentation officielle C/C++<br>
+      🔧 <strong>Compiler Explorer (godbolt.org)</strong> — voir l'assembleur généré<br>
+      🛡️ <strong>pwn.college</strong> — CTF pour pratiquer les exploits mémoire</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Cours C / C++ · <strong>IT-Akademy</strong><br>
+  Rédigé avec passion pour des devs qui comprennent vraiment ce qu'ils font.
+</footer>
+
+<script>
+function toggleSolution(btn) {
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+  btn.textContent = content.classList.contains('open') 
+    ? '🔒 Masquer la solution' 
+    : '🔓 Voir la solution';
+}
+</script>
+
+</body>
+</html>
