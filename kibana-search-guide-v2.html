@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kibana — Guide de recherche pas-à-pas</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #f7f8fc;
+  --surface: #ffffff;
+  --sf2:     #f0f2f9;
+  --border:  #e2e5f0;
+  --border2: #c8cde0;
+  --ink:     #1a1d2e;
+  --ink2:    #4a4f6a;
+  --muted:   #8890b0;
+  --muted2:  #b8bdd0;
+
+  --kibana:  #006bb4;
+  --kib2:    #0082d6;
+  --elastic: #f04e98;
+
+  --kql:   #0284c7;
+  --lucene:#16a34a;
+  --dsl:   #d97706;
+  --sql:   #7c3aed;
+  --eql:   #db2777;
+  --esql:  #0d9488;
+
+  --ok:    #15803d;
+  --warn:  #b45309;
+  --info:  #1d4ed8;
+
+  --sb-w: 250px;
+  --top-h: 56px;
+  --step-done: #15803d;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ══ TOPBAR ══ */
+.topbar{
+  position:sticky;top:0;z-index:300;height:var(--top-h);
+  background:var(--surface);border-bottom:2px solid var(--kibana);
+  display:flex;align-items:center;padding:0 1.5rem;gap:1rem;
+  box-shadow:0 2px 12px rgba(0,107,180,.08);
+}
+.logo{display:flex;align-items:center;gap:.5rem}
+.logo-icon{width:30px;height:30px;background:var(--kibana);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-family:'Fira Code',monospace;font-weight:500;flex-shrink:0}
+.logo-text{font-size:.9rem;font-weight:800;color:var(--ink)}
+.logo-text span{color:var(--kibana)}
+.topbar-nav{display:flex;gap:.25rem;margin-left:auto}
+.tnav{font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:.35rem .85rem;cursor:pointer;border-radius:20px;transition:all .15s;white-space:nowrap;background:none;border:none;font-family:'Syne',sans-serif}
+.tnav:hover{color:var(--ink2);background:var(--sf2)}
+.tnav.active{color:var(--kibana);background:rgba(0,107,180,.08);border:1px solid rgba(0,107,180,.2)}
+.hamburger{display:none;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.3rem;padding:.2rem}
+
+/* ══ LAYOUT ══ */
+.layout{display:grid;grid-template-columns:var(--sb-w) 1fr;min-height:calc(100vh - var(--top-h));align-items:start}
+
+/* ══ SIDEBAR ══ */
+.sidebar{
+  position:sticky;top:var(--top-h);height:calc(100vh - var(--top-h));overflow-y:auto;
+  background:var(--surface);border-right:1px solid var(--border);
+  padding:1.5rem 0 2rem;transition:transform .25s ease;
+}
+.sb-section{margin-bottom:.25rem}
+.sb-lbl{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);padding:.8rem 1.1rem .25rem}
+.sblink{
+  display:flex;align-items:center;gap:.6rem;padding:.42rem 1.1rem;
+  font-size:.78rem;font-weight:600;color:var(--muted);
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;
+  border-left:3px solid transparent;transition:all .12s;font-family:'Syne',sans-serif;
+}
+.sblink:hover{color:var(--ink2);border-left-color:var(--border2);background:var(--sf2)}
+.sblink.active{color:var(--kibana);border-left-color:var(--kibana);background:rgba(0,107,180,.06)}
+.sblink .ico{font-size:.9rem;flex-shrink:0;width:20px;text-align:center}
+.sblink .badge-sb{font-family:'Fira Code',monospace;font-size:.58rem;padding:.1rem .4rem;border-radius:3px;margin-left:auto;font-weight:500}
+.sb-divider{height:1px;background:var(--border);margin:.75rem 1.1rem}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:250}
+.sb-overlay.show{display:block}
+
+/* ══ MAIN ══ */
+.main{padding:2.5rem 2.5rem 5rem;min-width:0}
+.section{display:none}.section.active{display:block}
+
+/* ══ HERO ══ */
+.page-hero{
+  background:linear-gradient(135deg,#eef6ff 0%,#f0f7ff 50%,#f5f0ff 100%);
+  border:1px solid var(--border);border-radius:12px;
+  padding:2rem 2rem 1.75rem;margin-bottom:2rem;
+  position:relative;overflow:hidden;
+}
+.page-hero::after{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:180px;height:180px;background:radial-gradient(circle,rgba(0,107,180,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.4rem;
+  font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:.22rem .65rem;border-radius:20px;margin-bottom:.75rem;
+}
+.ht-kql  {color:var(--kql); background:rgba(2,132,199,.1); border:1px solid rgba(2,132,199,.25)}
+.ht-lucene{color:var(--lucene);background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.25)}
+.ht-dsl  {color:var(--dsl); background:rgba(217,119,6,.1); border:1px solid rgba(217,119,6,.25)}
+.ht-sql  {color:var(--sql); background:rgba(124,58,237,.1); border:1px solid rgba(124,58,237,.25)}
+.ht-eql  {color:var(--eql); background:rgba(219,39,119,.1); border:1px solid rgba(219,39,119,.25)}
+.ht-esql {color:var(--esql);background:rgba(13,148,136,.1); border:1px solid rgba(13,148,136,.25)}
+.ht-intro{color:var(--kibana);background:rgba(0,107,180,.08);border:1px solid rgba(0,107,180,.2)}
+
+.hero-title{font-size:clamp(1.6rem,3.5vw,2.1rem);font-weight:800;line-height:1.1;margin-bottom:.5rem;color:var(--ink)}
+.hero-sub{font-size:.88rem;color:var(--ink2);line-height:1.75;max-width:580px;font-weight:400}
+
+/* ══ HEADINGS ══ */
+h2{font-size:1.1rem;font-weight:800;color:var(--ink);margin:2.25rem 0 .6rem;display:flex;align-items:center;gap:.65rem}
+.h2-n{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:.72rem;font-weight:600;flex-shrink:0;background:var(--kibana);color:#fff}
+h3{font-size:.85rem;font-weight:700;color:var(--ink2);margin:1.5rem 0 .4rem;text-transform:uppercase;letter-spacing:.07em}
+p{font-size:.87rem;color:var(--ink2);line-height:1.8;margin-bottom:.85rem;font-weight:400}
+hr.sep{border:none;border-top:1px solid var(--border);margin:2rem 0}
+code{font-family:'Fira Code',monospace;font-size:.82em;background:rgba(0,107,180,.07);color:var(--kibana);padding:.1em .38em;border-radius:4px;border:1px solid rgba(0,107,180,.15)}
+
+/* ══ STEP-BY-STEP UI GUIDE ══ */
+.walkthrough{
+  border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.25rem 0;
+}
+.wt-step{
+  display:grid;grid-template-columns:56px 1fr;
+  border-bottom:1px solid var(--border);
+  transition:background .15s;
+}
+.wt-step:last-child{border-bottom:none}
+.wt-step:hover{background:rgba(0,107,180,.02)}
+
+.wt-num{
+  background:var(--sf2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:.9rem .5rem .5rem;gap:.3rem;
+}
+.wt-circle{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--kibana);color:#fff;
+  font-family:'Fira Code',monospace;font-size:.72rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.wt-line{width:2px;flex:1;background:var(--border);min-height:10px;margin-top:4px}
+.wt-step:last-child .wt-line{display:none}
+
+.wt-body{padding:.9rem 1.1rem .9rem}
+.wt-body h4{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+.wt-body p{margin-bottom:.4rem;font-size:.84rem}
+
+/* ══ KIBANA UI MOCK (inline annotated) ══ */
+.ui-mock{
+  background:#1b1f2e;border-radius:8px;overflow:hidden;
+  margin:1rem 0;box-shadow:0 4px 20px rgba(0,0,0,.12),0 1px 4px rgba(0,0,0,.08);
+  border:1px solid #2a2d42;
+}
+.um-bar{
+  background:#0d0f1a;padding:.45rem .9rem;
+  display:flex;align-items:center;gap:.65rem;border-bottom:1px solid #2a2d42;
+}
+.um-dots{display:flex;gap:.3rem}
+.umdot{width:9px;height:9px;border-radius:50%}
+.umdot.r{background:#ff5f57}.umdot.y{background:#febc2e}.umdot.g{background:#28c840}
+.um-url{flex:1;background:#141626;border:1px solid #2a2d42;border-radius:3px;padding:.16rem .65rem;font-family:'Fira Code',monospace;font-size:.67rem;color:#8b949e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.um-url .hp{color:#79c0ff}
+
+.um-layout{display:grid;grid-template-columns:52px 1fr}
+.um-sidenav{background:#141626;border-right:1px solid #2a2d42;padding:.5rem 0}
+.um-nav-icon{
+  width:52px;height:42px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:.2rem;color:#636b85;cursor:default;
+  font-size:.9rem;transition:color .1s;
+}
+.um-nav-icon.active{color:#4fc3f7;background:rgba(79,195,247,.08)}
+.um-nav-icon.hl{color:#ffb74d;background:rgba(255,183,77,.06)}
+.um-nav-label{font-size:.48rem;font-family:'Fira Code',monospace;text-align:center;line-height:1}
+
+.um-content{padding:1rem}
+.um-topbar{display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem;flex-wrap:wrap}
+.um-title{font-size:.88rem;font-weight:600;color:#e6edf3;font-family:'Fira Code',monospace}
+.um-btn{font-size:.65rem;padding:.25rem .75rem;border-radius:4px;font-family:'Fira Code',monospace;font-weight:500;white-space:nowrap;cursor:default}
+.um-btn.pri{background:#1f6feb;color:#fff}.um-btn.sec{background:#21262d;color:#8b949e;border:1px solid #30363d}
+.um-btn.hl{background:rgba(255,183,77,.15);color:#ffb74d;border:1px solid rgba(255,183,77,.3)}
+
+.um-search{
+  display:flex;align-items:center;background:#0d0f1a;border:2px solid #4fc3f7;
+  border-radius:5px;padding:.35rem .7rem;gap:.5rem;margin-bottom:.75rem;
+}
+.um-search-icon{color:#4fc3f7;font-size:.9rem}
+.um-search-text{font-family:'Fira Code',monospace;font-size:.74rem;color:#e6edf3;flex:1}
+.um-search-badge{font-family:'Fira Code',monospace;font-size:.6rem;background:rgba(79,195,247,.15);color:#4fc3f7;padding:.1rem .45rem;border-radius:3px;border:1px solid rgba(79,195,247,.3)}
+
+.um-index-picker{
+  display:flex;align-items:center;gap:.5rem;
+  background:#141626;border:1px solid #2a2d42;border-radius:4px;
+  padding:.3rem .65rem;font-family:'Fira Code',monospace;font-size:.7rem;
+  color:#79c0ff;margin-bottom:.75rem;width:fit-content;
+}
+.um-index-picker .arrow{color:#636b85;font-size:.7rem}
+
+.um-field-list{background:#0d0f1a;border:1px solid #2a2d42;border-radius:4px;padding:.5rem 0;min-height:80px}
+.um-field{display:flex;align-items:center;gap:.5rem;padding:.28rem .7rem;font-family:'Fira Code',monospace;font-size:.7rem;color:#8b949e;cursor:default}
+.um-field:hover{background:rgba(79,195,247,.04);color:#e6edf3}
+.um-field .ft{font-size:.55rem;padding:.05rem .3rem;border-radius:2px;margin-right:.1rem}
+.ft-k{background:rgba(79,195,247,.1);color:#4fc3f7;border:1px solid rgba(79,195,247,.2)}
+.ft-t{background:rgba(162,212,137,.1);color:#a2d489;border:1px solid rgba(162,212,137,.2)}
+.ft-i{background:rgba(255,183,77,.1);color:#ffb74d;border:1px solid rgba(255,183,77,.2)}
+.ft-d{background:rgba(206,147,216,.1);color:#ce93d8;border:1px solid rgba(206,147,216,.2)}
+.um-field.hl{color:#ffb74d;background:rgba(255,183,77,.05)}
+
+.um-results{background:#141626;border:1px solid #2a2d42;border-radius:4px;overflow:hidden}
+.um-result-header{background:#0d0f1a;padding:.3rem .7rem;font-family:'Fira Code',monospace;font-size:.62rem;color:#636b85;border-bottom:1px solid #2a2d42;display:flex;justify-content:space-between}
+.um-result-row{padding:.4rem .7rem;border-bottom:1px solid #1e2235;font-family:'Fira Code',monospace;font-size:.7rem;display:flex;gap:.75rem;align-items:flex-start}
+.um-result-row:last-child{border-bottom:none}
+.urr-ts{color:#636b85;white-space:nowrap;flex-shrink:0;font-size:.65rem}
+.urr-badge{font-size:.62rem;padding:.08rem .35rem;border-radius:2px;white-space:nowrap;flex-shrink:0}
+.urr-badge.r2{background:rgba(255,183,77,.15);color:#ffb74d}
+.urr-badge.r5{background:rgba(240,98,146,.15);color:#f48fb1}
+.urr-badge.r2ok{background:rgba(162,212,137,.15);color:#a2d489}
+.urr-msg{color:#8b949e;font-size:.67rem;line-height:1.4;word-break:break-all}
+.urr-hl{background:rgba(255,230,0,.2);color:#ffd700;border-radius:2px;padding:0 2px}
+
+.um-timepicker{
+  display:flex;align-items:center;gap:.4rem;background:#141626;border:1px solid #2a2d42;
+  border-radius:4px;padding:.25rem .6rem;font-family:'Fira Code',monospace;font-size:.67rem;
+  color:#8b949e;width:fit-content;margin-bottom:.75rem;
+}
+.um-timepicker .tp-hl{color:#79c0ff}
+
+/* ══ ANNOTATIONS ══ */
+.annotation{
+  display:inline-flex;align-items:center;gap:.35rem;
+  background:rgba(255,183,77,.1);border:1px solid rgba(255,183,77,.3);
+  color:#b45309;font-size:.75rem;font-weight:600;
+  padding:.3rem .7rem;border-radius:5px;margin:.3rem 0;
+}
+.annotation .n{
+  background:#d97706;color:#fff;width:18px;height:18px;border-radius:50%;
+  font-family:'Fira Code',monospace;font-size:.6rem;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+/* ══ CALLOUTS ══ */
+.box{border-radius:7px;padding:.85rem 1rem;margin:.9rem 0;font-size:.84rem;display:flex;gap:.7rem;align-items:flex-start}
+.box-i{font-size:1rem;flex-shrink:0;margin-top:.1rem}
+.box-b p{margin:0;color:inherit;font-size:.83rem}
+.box-b strong{font-weight:700;display:block;margin-bottom:.15rem}
+.box.info  {background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.box.tip   {background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d}
+.box.warn  {background:#fffbeb;border:1px solid #fde68a;color:#78350f}
+.box.danger{background:#fff1f2;border:1px solid #fecdd3;color:#881337}
+
+/* ══ CODE BLOCKS ══ */
+.cw{margin:.9rem 0}
+.ctop{
+  background:var(--sf2);border:1px solid var(--border);border-bottom:none;
+  border-radius:6px 6px 0 0;padding:.4rem 1rem;
+  display:flex;align-items:center;justify-content:space-between;
+  font-family:'Fira Code',monospace;font-size:.62rem;color:var(--muted);
+}
+.clang{font-size:.58rem;padding:.1rem .45rem;border-radius:3px;font-family:'Fira Code',monospace;font-weight:500}
+.cl-kql  {background:rgba(2,132,199,.1);  color:var(--kql); border:1px solid rgba(2,132,199,.25)}
+.cl-lucene{background:rgba(22,163,74,.1); color:var(--lucene);border:1px solid rgba(22,163,74,.25)}
+.cl-dsl  {background:rgba(217,119,6,.1);  color:var(--dsl); border:1px solid rgba(217,119,6,.25)}
+.cl-sql  {background:rgba(124,58,237,.1); color:var(--sql); border:1px solid rgba(124,58,237,.25)}
+.cl-eql  {background:rgba(219,39,119,.1); color:var(--eql); border:1px solid rgba(219,39,119,.25)}
+.cl-esql {background:rgba(13,148,136,.1); color:var(--esql);border:1px solid rgba(13,148,136,.25)}
+.copy-b{background:none;border:1px solid var(--border);color:var(--muted2);font-family:'Fira Code',monospace;font-size:.58rem;padding:.1rem .4rem;border-radius:3px;cursor:pointer;transition:all .15s}
+.copy-b:hover{color:var(--ink);border-color:var(--border2)}
+.copy-b.ok{color:var(--ok);border-color:var(--ok)}
+pre{background:#1a1d2e;border:1px solid var(--border);border-radius:0 0 6px 6px;padding:1rem 1.15rem;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.78rem;line-height:1.8;color:#c8cce0}
+pre.alone{border-radius:6px}
+.ck{color:#7ecad4}.cs{color:#a8cc8c}.cn{color:#f0a070}.co{color:#e06c75}.cc{color:#4a5a72;font-style:italic}.cp{color:#ce93d8}.ct{color:#4db6ac}.cf{color:#ffb74d}
+
+/* ══ KPATH ══ */
+.kpath{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;font-family:'Fira Code',monospace;font-size:.72rem;background:var(--sf2);border:1px solid var(--border);padding:.4rem .9rem;border-radius:5px;margin:.85rem 0}
+.kpath .seg{color:var(--ink2);font-weight:600}.kpath .cur{color:var(--kibana);font-weight:700}.kpath .arr{color:var(--muted2)}
+
+/* ══ TABLES ══ */
+.tbl-wrap{overflow-x:auto;margin:.9rem 0}
+table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+th{background:var(--sf2);padding:.5rem .85rem;text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:.5rem .85rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,107,180,.02)}
+
+/* ══ BADGES ══ */
+.badge{display:inline-block;font-family:'Fira Code',monospace;font-size:.62rem;font-weight:500;padding:.12rem .5rem;border-radius:4px}
+.b-kql  {background:rgba(2,132,199,.1);  color:var(--kql);  border:1px solid rgba(2,132,199,.25)}
+.b-lucene{background:rgba(22,163,74,.1); color:var(--lucene);border:1px solid rgba(22,163,74,.25)}
+.b-dsl  {background:rgba(217,119,6,.1);  color:var(--dsl);  border:1px solid rgba(217,119,6,.25)}
+.b-sql  {background:rgba(124,58,237,.1); color:var(--sql);  border:1px solid rgba(124,58,237,.25)}
+.b-eql  {background:rgba(219,39,119,.1); color:var(--eql);  border:1px solid rgba(219,39,119,.25)}
+.b-esql {background:rgba(13,148,136,.1); color:var(--esql); border:1px solid rgba(13,148,136,.25)}
+.b-ok   {background:#f0fdf4;color:var(--ok); border:1px solid #bbf7d0}
+.b-warn {background:#fffbeb;color:var(--warn);border:1px solid #fde68a}
+
+/* ══ QUICK REF (cheatsheet cards) ══ */
+.qref-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.qref-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.qref-head{padding:.5rem .9rem;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.qref-rows{padding:.2rem 0}
+.qref-row{display:flex;align-items:baseline;gap:.5rem;padding:.28rem .9rem;border-bottom:1px solid rgba(226,229,240,.5)}
+.qref-row:last-child{border-bottom:none}
+.qrk{font-family:'Fira Code',monospace;font-size:.73rem;min-width:120px;flex-shrink:0;font-weight:500}
+.qrv{font-size:.73rem;color:var(--ink2);line-height:1.4}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:920px){
+  .topbar-nav{display:none}.hamburger{display:block}
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:var(--top-h);left:0;width:var(--sb-w);height:calc(100vh - var(--top-h));z-index:260;transform:translateX(-100%);box-shadow:6px 0 24px rgba(0,0,0,.12)}
+  .sidebar.open{transform:translateX(0)}
+  .main{padding:1.5rem 1.1rem 4rem}
+  .qref-grid{grid-template-columns:1fr}
+  .um-layout{grid-template-columns:1fr}.um-sidenav{display:none}
+}
+@media(max-width:550px){
+  .hero-title{font-size:1.5rem}
+  pre{font-size:.72rem}
+  .wt-step{grid-template-columns:44px 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-icon">K</div>
+    <div class="logo-text">Kibana <span>Search</span></div>
+  </div>
+  <nav class="topbar-nav">
+    <button class="tnav active" data-page="start">🚀 Démarrer</button>
+    <button class="tnav" data-page="kql">KQL</button>
+    <button class="tnav" data-page="lucene">Lucene</button>
+    <button class="tnav" data-page="dsl">Query DSL</button>
+    <button class="tnav" data-page="sql">SQL</button>
+    <button class="tnav" data-page="eql">EQL</button>
+    <button class="tnav" data-page="esql">ES|QL</button>
+  </nav>
+  <button class="hamburger" id="ham">☰</button>
+</header>
+
+<div class="sb-overlay" id="overlay"></div>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sb-section">
+    <div class="sb-lbl">Premiers pas</div>
+    <button class="sblink active" data-page="start" data-anchor=""><span class="ico">🚀</span>C'est quoi Discover ?</button>
+    <button class="sblink" data-page="start" data-anchor="dataview"><span class="ico">📂</span>Créer un Data View</button>
+    <button class="sblink" data-page="start" data-anchor="premiere"><span class="ico">🔍</span>Première recherche</button>
+    <button class="sblink" data-page="start" data-anchor="filtres"><span class="ico">🔧</span>Ajouter des filtres</button>
+    <button class="sblink" data-page="start" data-anchor="colonnes"><span class="ico">📋</span>Gérer les colonnes</button>
+    <button class="sblink" data-page="start" data-anchor="temps"><span class="ico">⏱️</span>Fenêtre temporelle</button>
+  </div>
+  <div class="sb-divider"></div>
+  <div class="sb-section">
+    <div class="sb-lbl">Langages</div>
+    <button class="sblink" data-page="kql" data-anchor=""><span class="ico">🔵</span>KQL<span class="badge-sb b-kql">Découvrir</span></button>
+    <button class="sblink" data-page="lucene" data-anchor=""><span class="ico">🟢</span>Lucene<span class="badge-sb b-lucene">Regex</span></button>
+    <button class="sblink" data-page="dsl" data-anchor=""><span class="ico">🟠</span>Query DSL<span class="badge-sb b-dsl">JSON</span></button>
+    <button class="sblink" data-page="sql" data-anchor=""><span class="ico">🟣</span>SQL<span class="badge-sb b-sql">Console</span></button>
+    <button class="sblink" data-page="eql" data-anchor=""><span class="ico">🩷</span>EQL<span class="badge-sb b-eql">SIEM</span></button>
+    <button class="sblink" data-page="esql" data-anchor=""><span class="ico">🩵</span>ES|QL<span class="badge-sb b-esql">Pipe</span></button>
+  </div>
+  <div class="sb-divider"></div>
+  <div class="sb-section">
+    <div class="sb-lbl">Référence</div>
+    <button class="sblink" data-page="start" data-anchor="cheatsheet"><span class="ico">📖</span>Cheatsheet rapide</button>
+  </div>
+</aside>
+
+<main class="main" id="main">
+
+<!-- ════════════════════════════════════════════════
+     PAGE : DÉMARRER
+════════════════════════════════════════════════ -->
+<div class="section active" id="sec-start">
+
+  <div class="page-hero">
+    <div class="hero-tag ht-intro">🚀 Guide pas-à-pas</div>
+    <h1 class="hero-title">Faire des recherches<br>dans Kibana</h1>
+    <p class="hero-sub">Tout ce qu'il faut savoir pour chercher, filtrer et explorer vos données dans Kibana — de la toute première recherche jusqu'aux langages avancés comme ES|QL.</p>
+  </div>
+
+  <!-- ─── C'est quoi Discover ─── -->
+  <h2><span class="h2-n">1</span> C'est quoi Discover ?</h2>
+  <p><strong>Discover</strong> est l'interface principale de Kibana pour <strong>explorer et rechercher vos données</strong>. C'est votre point d'entrée : vous choisissez un index (Data View), vous cherchez, vous filtrez, et vous visualisez les résultats sous forme de tableau et d'histogramme temporel.</p>
+
+  <div class="kpath">
+    <span class="seg">☰ Menu gauche</span><span class="arr">›</span>
+    <span class="seg">Analytics</span><span class="arr">›</span>
+    <span class="cur">Discover</span>
+  </div>
+
+  <!-- MOCK Discover overview -->
+  <div class="ui-mock">
+    <div class="um-bar">
+      <div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div>
+      <div class="um-url">localhost:5601/app/<span class="hp">discover</span></div>
+    </div>
+    <div class="um-layout">
+      <div class="um-sidenav">
+        <div class="um-nav-icon"><span>🏠</span><span class="um-nav-label">Home</span></div>
+        <div class="um-nav-icon active"><span>🔍</span><span class="um-nav-label">Discover</span></div>
+        <div class="um-nav-icon"><span>📊</span><span class="um-nav-label">Dashboards</span></div>
+        <div class="um-nav-icon"><span>📈</span><span class="um-nav-label">Visualize</span></div>
+        <div class="um-nav-icon"><span>⚙️</span><span class="um-nav-label">Mgmt</span></div>
+      </div>
+      <div class="um-content">
+        <div class="um-index-picker">
+          <span>📂</span> <span>nginx-*</span> <span class="arrow">▼</span>
+        </div>
+        <div class="um-timepicker">
+          <span>🕐</span>
+          <span class="tp-hl">Last 24 hours</span>
+          <span style="color:#4fc3f7">▼</span>
+          <span style="margin-left:.5rem;color:#4fc3f7">▶ Refresh</span>
+        </div>
+        <div class="um-search">
+          <span class="um-search-icon">🔍</span>
+          <span class="um-search-text">Cherchez dans vos données…</span>
+          <span class="um-search-badge">KQL</span>
+        </div>
+        <div style="display:grid;grid-template-columns:160px 1fr;gap:.75rem">
+          <div>
+            <div style="font-family:'Fira Code',monospace;font-size:.62rem;color:#636b85;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.06em">Champs disponibles</div>
+            <div class="um-field-list">
+              <div class="um-field"><span class="ft ft-d">date</span> @timestamp</div>
+              <div class="um-field"><span class="ft ft-k">kw</span> source.ip</div>
+              <div class="um-field hl"><span class="ft ft-i">int</span> status ◀ clic</div>
+              <div class="um-field"><span class="ft ft-t">txt</span> message</div>
+              <div class="um-field"><span class="ft ft-k">kw</span> url.path</div>
+            </div>
+          </div>
+          <div>
+            <div class="um-result-header"><span>1,284 résultats</span><span>tri: @timestamp ↓</span></div>
+            <div class="um-results">
+              <div class="um-result-row"><span class="urr-ts">14:22:03</span><span class="urr-badge r5">500</span><span class="urr-msg">185.220.101.47 — POST /api/upload — Internal Server Error</span></div>
+              <div class="um-result-row"><span class="urr-ts">14:22:01</span><span class="urr-badge r2">404</span><span class="urr-msg">10.0.0.5 — GET /wp-login.php — Not Found</span></div>
+              <div class="um-result-row"><span class="urr-ts">14:21:58</span><span class="urr-badge r2ok">200</span><span class="urr-msg">192.168.1.10 — GET /api/v1/users — OK</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="dataview">
+
+  <!-- ─── Data View ─── -->
+  <h2><span class="h2-n">2</span> Créer un Data View (obligatoire)</h2>
+  <p>Avant de pouvoir chercher quoi que ce soit, vous devez créer un <strong>Data View</strong> (anciennement appelé "Index Pattern"). C'est ce qui dit à Kibana <em>quels index Elasticsearch afficher</em>.</p>
+
+  <div class="box warn">
+    <div class="box-i">⚠️</div>
+    <div class="box-b"><strong>Sans Data View, pas de Discover</strong><p>Si vous ouvrez Discover pour la première fois et que vous voyez "No data view", c'est normal — vous devez en créer un d'abord.</p></div>
+  </div>
+
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Aller dans Stack Management</h4>
+        <p>Cliquez sur le <strong>☰ menu hamburger</strong> en haut à gauche → descendez jusqu'à <strong>Management</strong> → cliquez sur <strong>Stack Management</strong>.</p>
+        <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Stack Management</span></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Ouvrir "Data Views"</h4>
+        <p>Dans Stack Management, cherchez la section <strong>Kibana</strong> → cliquez sur <strong>Data Views</strong>.</p>
+        <div class="kpath"><span class="seg">Stack Management</span><span class="arr">›</span><span class="seg">Kibana</span><span class="arr">›</span><span class="cur">Data Views</span></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Cliquer sur "Create data view"</h4>
+        <p>Cliquez sur le bouton bleu <strong>"Create data view"</strong> en haut à droite.</p>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">4</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Renseigner le pattern d'index</h4>
+        <p>Dans le champ <strong>"Index pattern"</strong>, tapez le pattern qui correspond à vos index. Kibana affiche en temps réel les index qui correspondent.</p>
+        <div class="ui-mock" style="max-width:520px">
+          <div class="um-bar"><div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div><div class="um-url">Stack Management › <span class="hp">Create data view</span></div></div>
+          <div class="um-content">
+            <div class="um-topbar"><div class="um-title">Create data view</div></div>
+            <div class="um-field" style="background:#0d0f1a;border:1px solid #2a2d42;border-radius:4px;margin-bottom:.5rem;padding:.5rem .7rem">
+              <div style="width:100%">
+                <div style="font-family:'Fira Code',monospace;font-size:.6rem;color:#636b85;margin-bottom:.2rem;text-transform:uppercase">Index pattern *</div>
+                <div style="font-family:'Fira Code',monospace;font-size:.78rem;color:#4fc3f7">nginx-*</div>
+                <div style="font-size:.62rem;color:#3fb950;font-family:'Fira Code',monospace;margin-top:.2rem">✓ 3 index(es) found: nginx-2024.01.14, nginx-2024.01.15, nginx-2024.01.16</div>
+              </div>
+            </div>
+            <div class="um-field" style="background:#0d0f1a;border:1px solid #2a2d42;border-radius:4px;margin-bottom:.75rem;padding:.5rem .7rem">
+              <div style="width:100%">
+                <div style="font-family:'Fira Code',monospace;font-size:.6rem;color:#636b85;margin-bottom:.2rem;text-transform:uppercase">Timestamp field</div>
+                <div style="font-family:'Fira Code',monospace;font-size:.78rem;color:#79c0ff">@timestamp ▼</div>
+              </div>
+            </div>
+            <div class="um-btn pri" style="display:inline-block">Save data view to Kibana</div>
+          </div>
+        </div>
+        <div class="box tip" style="margin-top:.75rem">
+          <div class="box-i">💡</div>
+          <div class="box-b"><strong>Exemples de patterns d'index</strong><p><code>nginx-*</code> → tous les index commençant par nginx<br><code>logs-*</code> → tous les index de logs<br><code>*</code> → tous les index (déconseillé en prod)</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">5</div></div>
+      <div class="wt-body">
+        <h4>Sélectionner le champ timestamp</h4>
+        <p>Dans le menu déroulant <strong>"Timestamp field"</strong>, sélectionnez <code>@timestamp</code> (c'est le champ de date standard Elasticsearch). Cliquez ensuite sur <strong>"Save data view to Kibana"</strong>.</p>
+        <p>✅ Vous pouvez maintenant aller dans <strong>Discover</strong> et voir vos données !</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="premiere">
+
+  <!-- ─── Première recherche ─── -->
+  <h2><span class="h2-n">3</span> Faire une première recherche</h2>
+  <p>Maintenant que vous avez un Data View, voici comment effectuer votre première recherche dans Discover.</p>
+
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Ouvrir Discover</h4>
+        <p>Cliquez sur <strong>☰ menu</strong> → <strong>Analytics</strong> → <strong>Discover</strong>. Vous arrivez sur l'interface principale.</p>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Vérifier le Data View sélectionné</h4>
+        <p>En haut à gauche, juste sous la barre de recherche, vous voyez le nom du Data View actif (ex: <code>nginx-*</code>). Cliquez dessus pour le changer si besoin.</p>
+        <div class="ui-mock" style="max-width:380px">
+          <div class="um-bar"><div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div><div class="um-url">Discover</div></div>
+          <div class="um-content" style="padding:.75rem">
+            <div style="font-family:'Fira Code',monospace;font-size:.62rem;color:#636b85;margin-bottom:.3rem">DATA VIEW actif :</div>
+            <div class="um-index-picker" style="width:100%;justify-content:space-between">
+              <span>📂</span><span style="color:#79c0ff">nginx-*</span><span class="arrow">▼ Changer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Taper dans la barre de recherche KQL</h4>
+        <p>Cliquez dans la grande barre de recherche en haut → tapez votre première requête KQL. Kibana propose de l'<strong>autocomplétion</strong> : commencez à taper un nom de champ et il vous suggère.</p>
+        <div class="ui-mock" style="max-width:520px">
+          <div class="um-bar"><div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div><div class="um-url">Discover</div></div>
+          <div class="um-content" style="padding:.75rem">
+            <div class="um-search">
+              <span class="um-search-icon">🔍</span>
+              <span class="um-search-text"><span style="color:#ffb74d">status</span> <span style="color:#79c0ff">:</span> <span style="color:#f0a070">404</span><span style="animation:blink 1s infinite">|</span></span>
+              <span class="um-search-badge">KQL</span>
+            </div>
+            <div style="background:#0d0f1a;border:1px solid #4fc3f7;border-radius:4px;padding:.4rem;font-family:'Fira Code',monospace;font-size:.68rem">
+              <div style="color:#636b85;font-size:.58rem;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.06em">Suggestions</div>
+              <div style="color:#e6edf3;padding:.15rem .4rem;background:rgba(79,195,247,.1);border-radius:2px">404</div>
+              <div style="color:#8b949e;padding:.15rem .4rem">401</div>
+              <div style="color:#8b949e;padding:.15rem .4rem">403</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">4</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Appuyer sur Entrée pour lancer</h4>
+        <p>Appuyez sur <kbd style="background:var(--sf2);border:1px solid var(--border);border-radius:3px;padding:.1rem .4rem;font-family:'Fira Code',monospace;font-size:.8rem">↵ Entrée</kbd> ou cliquez sur le bouton <strong>"Refresh"</strong>. Les résultats s'affichent en dessous avec l'histogramme temporel en haut.</p>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">5</div></div>
+      <div class="wt-body">
+        <h4>Lire les résultats</h4>
+        <p>Chaque ligne est un document Elasticsearch. Cliquez sur le <strong>▶ triangle</strong> à gauche d'une ligne pour <strong>développer</strong> et voir tous les champs du document.</p>
+        <div class="ui-mock">
+          <div class="um-bar"><div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div><div class="um-url">Discover — résultats</div></div>
+          <div class="um-content" style="padding:.75rem">
+            <div class="um-result-header"><span style="color:#3fb950">✓ 247 résultats pour status: 404</span><span>dernières 24h</span></div>
+            <div class="um-results">
+              <div class="um-result-row">
+                <span style="color:#4fc3f7;cursor:default">▶</span>
+                <span class="urr-ts">14:22:01</span>
+                <span class="urr-badge r2">404</span>
+                <span class="urr-msg">10.0.0.5 GET /wp-login.php — Not Found</span>
+              </div>
+              <div style="background:#141626;border-bottom:1px solid #2a2d42;padding:.5rem .75rem;font-family:'Fira Code',monospace;font-size:.68rem">
+                <div style="display:grid;grid-template-columns:140px 1fr;gap:.25rem;color:#8b949e">
+                  <span style="color:#79c0ff">@timestamp</span><span style="color:#e6edf3">2024-01-15T14:22:01.000Z</span>
+                  <span style="color:#79c0ff">source.ip</span><span style="color:#e6edf3">10.0.0.5</span>
+                  <span style="color:#79c0ff">status</span><span style="color:#ffb74d">404</span>
+                  <span style="color:#79c0ff">url.path</span><span style="color:#e6edf3">/wp-login.php</span>
+                  <span style="color:#79c0ff">http.request.method</span><span style="color:#e6edf3">GET</span>
+                </div>
+              </div>
+              <div class="um-result-row">
+                <span style="color:#636b85;cursor:default">▶</span>
+                <span class="urr-ts">14:21:48</span>
+                <span class="urr-badge r2">404</span>
+                <span class="urr-msg">185.220.101.47 GET /admin/config.php</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="filtres">
+
+  <!-- ─── Filtres ─── -->
+  <h2><span class="h2-n">4</span> Ajouter des filtres visuels</h2>
+  <p>En plus de la barre KQL, Kibana propose des <strong>filtres cliquables</strong> que vous pouvez créer depuis l'interface sans taper de requête.</p>
+
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Méthode 1 — Clic sur une valeur dans les résultats</h4>
+        <p>Développez un document (clic sur <strong>▶</strong>). Survolez n'importe quelle valeur → deux icônes apparaissent :</p>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin:.5rem 0">
+          <span class="annotation"><span class="n">+</span> Filtrer pour cette valeur</span>
+          <span class="annotation"><span class="n">−</span> Exclure cette valeur</span>
+        </div>
+        <p>Cliquez sur <strong>+</strong> pour ajouter un filtre qui inclut cette valeur, ou sur <strong>−</strong> pour l'exclure.</p>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Méthode 2 — Bouton "+ Add filter"</h4>
+        <p>Sous la barre de recherche, cliquez sur <strong>"+ Add filter"</strong> pour créer un filtre manuellement via une interface formulaire.</p>
+        <div class="ui-mock" style="max-width:480px">
+          <div class="um-bar"><div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div><div class="um-url">Add filter</div></div>
+          <div class="um-content" style="padding:.85rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.65rem">
+              <div>
+                <div style="font-family:'Fira Code',monospace;font-size:.58rem;color:#636b85;margin-bottom:.2rem;text-transform:uppercase">Field</div>
+                <div style="background:#141626;border:1px solid #4fc3f7;border-radius:3px;padding:.3rem .6rem;font-family:'Fira Code',monospace;font-size:.72rem;color:#79c0ff">status ▼</div>
+              </div>
+              <div>
+                <div style="font-family:'Fira Code',monospace;font-size:.58rem;color:#636b85;margin-bottom:.2rem;text-transform:uppercase">Operator</div>
+                <div style="background:#141626;border:1px solid #2a2d42;border-radius:3px;padding:.3rem .6rem;font-family:'Fira Code',monospace;font-size:.72rem;color:#8b949e">is ▼</div>
+              </div>
+              <div>
+                <div style="font-family:'Fira Code',monospace;font-size:.58rem;color:#636b85;margin-bottom:.2rem;text-transform:uppercase">Value</div>
+                <div style="background:#141626;border:1px solid #2a2d42;border-radius:3px;padding:.3rem .6rem;font-family:'Fira Code',monospace;font-size:.72rem;color:#f0a070">404</div>
+              </div>
+            </div>
+            <div class="um-btn pri" style="display:inline-block">Add filter</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body">
+        <h4>Gérer les filtres actifs</h4>
+        <p>Les filtres apparaissent sous la barre de recherche sous forme de <strong>badges colorés</strong>. Cliquez sur un badge pour l'<strong>activer/désactiver</strong> (œil), <strong>l'inverser</strong> (NON), ou le <strong>supprimer</strong> (×).</p>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;padding:.75rem;background:var(--sf2);border:1px solid var(--border);border-radius:6px;margin-top:.5rem">
+          <div style="background:rgba(2,132,199,.1);border:1px solid rgba(2,132,199,.3);color:var(--kql);font-family:'Fira Code',monospace;font-size:.72rem;padding:.2rem .6rem;border-radius:4px;display:flex;align-items:center;gap:.35rem">
+            <span>status: 404</span><span style="opacity:.6;cursor:pointer">×</span>
+          </div>
+          <div style="background:rgba(219,39,119,.1);border:1px solid rgba(219,39,119,.3);color:var(--eql);font-family:'Fira Code',monospace;font-size:.72rem;padding:.2rem .6rem;border-radius:4px;display:flex;align-items:center;gap:.35rem">
+            <span>NOT source.ip: 10.0.0.*</span><span style="opacity:.6;cursor:pointer">×</span>
+          </div>
+          <div style="background:var(--surface);border:1px dashed var(--border);color:var(--kibana);font-size:.72rem;padding:.2rem .65rem;border-radius:4px;cursor:pointer">+ Add filter</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="colonnes">
+
+  <!-- ─── Colonnes ─── -->
+  <h2><span class="h2-n">5</span> Gérer les colonnes affichées</h2>
+  <p>Par défaut Discover affiche le champ <code>_source</code> (tout le document). Vous pouvez choisir <strong>quels champs afficher en colonnes</strong>.</p>
+
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Via la liste de champs (panneau gauche)</h4>
+        <p>Dans le panneau gauche de Discover, vous avez la liste de tous les champs. Survolez un champ → cliquez sur le bouton <strong>"+ Add"</strong> qui apparaît. Le champ s'ajoute comme colonne dans le tableau de résultats.</p>
+        <div class="ui-mock" style="max-width:280px">
+          <div class="um-bar"><div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div><div class="um-url">Champs disponibles</div></div>
+          <div class="um-content" style="padding:.6rem">
+            <div class="um-field-list">
+              <div class="um-field" style="justify-content:space-between;color:#e6edf3;background:rgba(79,195,247,.06)">
+                <span><span class="ft ft-i">int</span> status</span>
+                <span style="font-family:'Fira Code',monospace;font-size:.62rem;color:#4fc3f7;cursor:pointer">+ Add</span>
+              </div>
+              <div class="um-field" style="justify-content:space-between">
+                <span><span class="ft ft-k">kw</span> source.ip</span>
+                <span style="font-family:'Fira Code',monospace;font-size:.62rem;color:#636b85;cursor:pointer">+ Add</span>
+              </div>
+              <div class="um-field" style="justify-content:space-between">
+                <span><span class="ft ft-t">txt</span> message</span>
+                <span style="font-family:'Fira Code',monospace;font-size:.62rem;color:#636b85;cursor:pointer">+ Add</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div></div>
+      <div class="wt-body">
+        <h4>Réordonner et supprimer des colonnes</h4>
+        <p>Dans les en-têtes du tableau, vous pouvez <strong>glisser-déposer</strong> les colonnes pour les réordonner. Cliquez sur le <strong>× à droite du nom de colonne</strong> pour la supprimer.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="temps">
+
+  <!-- ─── Fenêtre temporelle ─── -->
+  <h2><span class="h2-n">6</span> Changer la fenêtre temporelle</h2>
+  <p>Kibana affiche toujours les données dans une <strong>plage de temps</strong>. Par défaut : "Last 15 minutes". Le sélecteur de temps est en <strong>haut à droite</strong>.</p>
+
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Cliquer sur le sélecteur de temps</h4>
+        <p>En haut à droite, cliquez sur le bouton avec l'horloge <strong>🕐 "Last 15 minutes"</strong> (ou la plage actuelle). Un panneau s'ouvre avec des options rapides.</p>
+        <div class="ui-mock" style="max-width:420px">
+          <div class="um-bar"><div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div><div class="um-url">Sélecteur de temps</div></div>
+          <div class="um-content" style="padding:.75rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+              <div style="font-family:'Fira Code',monospace;font-size:.62rem">
+                <div style="color:#636b85;margin-bottom:.3rem;text-transform:uppercase;font-size:.56rem;letter-spacing:.07em">Raccourcis communs</div>
+                <div style="color:#4fc3f7;padding:.18rem .4rem;border-radius:2px;cursor:default">Last 15 minutes</div>
+                <div style="color:#8b949e;padding:.18rem .4rem;cursor:default">Last 1 hour</div>
+                <div style="color:#8b949e;padding:.18rem .4rem;cursor:default">Last 24 hours</div>
+                <div style="color:#8b949e;padding:.18rem .4rem;cursor:default">Last 7 days</div>
+                <div style="color:#8b949e;padding:.18rem .4rem;cursor:default">Last 30 days</div>
+                <div style="color:#8b949e;padding:.18rem .4rem;cursor:default">Today</div>
+                <div style="color:#8b949e;padding:.18rem .4rem;cursor:default">This week</div>
+              </div>
+              <div style="font-family:'Fira Code',monospace;font-size:.62rem">
+                <div style="color:#636b85;margin-bottom:.3rem;text-transform:uppercase;font-size:.56rem;letter-spacing:.07em">Date absolue</div>
+                <div style="color:#636b85;font-size:.58rem;margin-bottom:.2rem">Start</div>
+                <div style="background:#0d0f1a;border:1px solid #2a2d42;border-radius:3px;padding:.28rem .5rem;color:#79c0ff;margin-bottom:.4rem;font-size:.68rem">2024-01-15 00:00:00</div>
+                <div style="color:#636b85;font-size:.58rem;margin-bottom:.2rem">End</div>
+                <div style="background:#0d0f1a;border:1px solid #2a2d42;border-radius:3px;padding:.28rem .5rem;color:#79c0ff;font-size:.68rem">2024-01-15 23:59:59</div>
+              </div>
+            </div>
+            <div class="um-btn pri" style="display:inline-block">Apply</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div></div>
+      <div class="wt-body">
+        <h4>Zoomer sur l'histogramme</h4>
+        <p>En haut des résultats, Kibana affiche un <strong>histogramme temporel</strong>. Vous pouvez <strong>cliquer-glisser</strong> sur une zone de l'histogramme pour zoomer sur une période précise. Un clic sur <strong>"Zoom out"</strong> revient en arrière.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="cheatsheet">
+
+  <!-- ─── Cheatsheet ─── -->
+  <h2><span class="h2-n">7</span> Cheatsheet KQL rapide</h2>
+  <p>Les requêtes KQL les plus utiles au quotidien dans Discover :</p>
+  <div class="qref-grid">
+    <div class="qref-card">
+      <div class="qref-head" style="background:rgba(2,132,199,.06);color:var(--kql)">Filtrer par valeur</div>
+      <div class="qref-rows">
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">status: 404</span><span class="qrv">Exactement 404</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">status: (404 OR 500)</span><span class="qrv">404 ou 500</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">NOT status: 200</span><span class="qrv">Tout sauf 200</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">source.ip: "10.0.0.1"</span><span class="qrv">IP exacte</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">source.ip: 10.0.0.*</span><span class="qrv">Sous-réseau 10.0.0.x</span></div>
+      </div>
+    </div>
+    <div class="qref-card">
+      <div class="qref-head" style="background:rgba(2,132,199,.06);color:var(--kql)">Plages & dates</div>
+      <div class="qref-rows">
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">status >= 400</span><span class="qrv">Codes 4xx et 5xx</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">bytes > 10000</span><span class="qrv">Grosses réponses</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">@timestamp > "now-1h"</span><span class="qrv">Dernière heure</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">error.message: *</span><span class="qrv">Champ existant</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">NOT user.name: *</span><span class="qrv">Champ absent</span></div>
+      </div>
+    </div>
+    <div class="qref-card">
+      <div class="qref-head" style="background:rgba(2,132,199,.06);color:var(--kql)">Texte & wildcards</div>
+      <div class="qref-rows">
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">message: "login failed"</span><span class="qrv">Phrase exacte</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">url.path: *admin*</span><span class="qrv">Contient "admin"</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">host.name: web-*</span><span class="qrv">Commence par "web-"</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">tags: "_grokparsefailure"</span><span class="qrv">Tag précis</span></div>
+      </div>
+    </div>
+    <div class="qref-card">
+      <div class="qref-head" style="background:rgba(2,132,199,.06);color:var(--kql)">Combinaisons</div>
+      <div class="qref-rows">
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">A AND B</span><span class="qrv">Les deux conditions</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">A OR B</span><span class="qrv">Au moins une</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">(A OR B) AND C</span><span class="qrv">Grouper avec parenthèses</span></div>
+        <div class="qref-row"><span class="qrk" style="color:var(--kql)">NOT A AND B</span><span class="qrv">Exclure A, garder B</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /sec-start -->
+
+<!-- ════════════════════════════════════════════════
+     PAGE : KQL
+════════════════════════════════════════════════ -->
+<div class="section" id="sec-kql">
+  <div class="page-hero">
+    <div class="hero-tag ht-kql">🔵 KQL — Kibana Query Language</div>
+    <h1 class="hero-title">KQL — Le langage<br>par défaut de Kibana</h1>
+    <p class="hero-sub">KQL est le langage de recherche activé par défaut dans la barre de recherche de Discover. Simple, avec autocomplétion, idéal pour la majorité des recherches quotidiennes.</p>
+  </div>
+  <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Analytics › Discover</span><span class="arr">›</span><span class="cur">Barre de recherche — "KQL" activé par défaut</span></div>
+  <h2><span class="h2-n" style="background:var(--kql)">1</span> Activer KQL</h2>
+  <p>Dans la barre de recherche de Discover, vérifiez que le badge <span class="badge b-kql">KQL</span> est visible à droite. Si vous voyez <span class="badge b-lucene">Lucene</span> à la place, cliquez dessus et sélectionnez <strong>KQL</strong>.</p>
+  <h2><span class="h2-n" style="background:var(--kql)">2</span> Syntaxe complète</h2>
+  <div class="cw"><div class="ctop"><span>KQL — Référence complète</span><span class="clang cl-kql">KQL</span></div>
+<pre><span class="cc"># ─── VALEURS EXACTES ──────────────────────────────────</span>
+<span class="ck">status</span>: <span class="cn">404</span>                        <span class="cc"># nombre</span>
+<span class="ck">method</span>: <span class="cs">"GET"</span>                      <span class="cc"># texte exact</span>
+<span class="ck">tls.established</span>: <span class="co">true</span>             <span class="cc"># booléen</span>
+
+<span class="cc"># ─── PLUSIEURS VALEURS (= IN) ────────────────────────</span>
+<span class="ck">status</span>: (<span class="cn">400</span> <span class="co">OR</span> <span class="cn">401</span> <span class="co">OR</span> <span class="cn">403</span> <span class="co">OR</span> <span class="cn">404</span>)
+<span class="ck">event.category</span>: (<span class="cs">"network"</span> <span class="co">OR</span> <span class="cs">"process"</span>)
+
+<span class="cc"># ─── WILDCARDS ───────────────────────────────────────</span>
+<span class="ck">url.path</span>: <span class="cs">*admin*</span>                 <span class="cc"># contient admin</span>
+<span class="ck">host.name</span>: <span class="cs">web-*</span>                  <span class="cc"># commence par web-</span>
+<span class="ck">source.ip</span>: <span class="cs">192.168.*</span>              <span class="cc"># sous-réseau</span>
+
+<span class="cc"># ─── PLAGES NUMÉRIQUES ──────────────────────────────</span>
+<span class="ck">status</span> >= <span class="cn">400</span>
+<span class="ck">status</span> >= <span class="cn">400</span> <span class="co">AND</span> <span class="ck">status</span> < <span class="cn">500</span>
+<span class="ck">http.response.bytes</span> > <span class="cn">1000000</span>
+
+<span class="cc"># ─── DATES ───────────────────────────────────────────</span>
+<span class="ck">@timestamp</span> > <span class="cs">"now-1h"</span>
+<span class="ck">@timestamp</span> > <span class="cs">"now-24h"</span> <span class="co">AND</span> <span class="ck">@timestamp</span> < <span class="cs">"now"</span>
+<span class="ck">@timestamp</span> >= <span class="cs">"2024-01-15T14:00:00"</span>
+
+<span class="cc"># ─── CHAMP EXISTANT / ABSENT ─────────────────────────</span>
+<span class="ck">error.message</span>: *                   <span class="cc"># champ présent</span>
+<span class="co">NOT</span> <span class="ck">user.name</span>: *                   <span class="cc"># champ absent/null</span>
+
+<span class="cc"># ─── OPÉRATEURS LOGIQUES ─────────────────────────────</span>
+<span class="ck">status</span>: <span class="cn">404</span> <span class="co">AND</span> <span class="ck">method</span>: <span class="cs">"POST"</span>
+<span class="ck">status</span>: <span class="cn">404</span> <span class="co">OR</span>  <span class="ck">status</span>: <span class="cn">500</span>
+<span class="co">NOT</span> <span class="ck">tags</span>: <span class="cs">"_grokparsefailure"</span>
+(<span class="ck">status</span>: <span class="cn">401</span> <span class="co">OR</span> <span class="ck">status</span>: <span class="cn">403</span>) <span class="co">AND NOT</span> <span class="ck">source.ip</span>: <span class="cs">"10.*"</span>
+
+<span class="cc"># ─── TEXTE LIBRE (full-text) ─────────────────────────</span>
+<span class="ck">message</span>: <span class="cs">"authentication failure"</span>   <span class="cc"># phrase exacte</span>
+<span class="ck">message</span>: <span class="cs">nginx error</span>               <span class="cc"># les deux mots</span></pre></div>
+
+  <div class="box tip">
+    <div class="box-i">⌨️</div>
+    <div class="box-b"><strong>Autocomplétion</strong><p>Commencez à taper un nom de champ → Kibana propose les champs disponibles. Tapez <code>:</code> → il propose les valeurs les plus fréquentes. Utilisez les flèches ↑↓ pour naviguer.</p></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PAGE : LUCENE
+════════════════════════════════════════════════ -->
+<div class="section" id="sec-lucene">
+  <div class="page-hero">
+    <div class="hero-tag ht-lucene">🟢 Lucene Query Syntax</div>
+    <h1 class="hero-title">Lucene — Regex,<br>fuzzy et boosting</h1>
+    <p class="hero-sub">Plus puissant que KQL : regex, fuzzy search, proximity. S'active via le toggle dans la barre de recherche Discover.</p>
+  </div>
+  <h2><span class="h2-n" style="background:var(--lucene)">1</span> Activer Lucene dans Kibana</h2>
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body"><h4>Cliquer sur le badge "KQL"</h4><p>Dans la barre de recherche de Discover, cliquez sur le badge <span class="badge b-kql">KQL</span> à droite de la barre.</p></div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div></div>
+      <div class="wt-body"><h4>Sélectionner "Lucene"</h4><p>Un menu apparaît avec <strong>KQL</strong> et <strong>Lucene</strong>. Cliquez sur <strong>Lucene</strong>. Le badge devient <span class="badge b-lucene">Lucene</span>.</p></div>
+    </div>
+  </div>
+  <h2><span class="h2-n" style="background:var(--lucene)">2</span> Syntaxe Lucene</h2>
+  <div class="cw"><div class="ctop"><span>Lucene — Référence</span><span class="clang cl-lucene">LUCENE</span></div>
+<pre><span class="cc"># ─── BASE ────────────────────────────────────────────</span>
+<span class="ck">status</span>:<span class="cn">404</span>
+<span class="ck">message</span>:<span class="cs">"connection refused"</span>
+
+<span class="cc"># ─── WILDCARDS ───────────────────────────────────────</span>
+<span class="ck">host</span>:<span class="cs">web-0?</span>          <span class="cc"># ? = 1 caractère</span>
+<span class="ck">url</span>:<span class="cs">*admin*</span>
+<span class="ck">host</span>:<span class="cs">prod-*</span>
+
+<span class="cc"># ─── REGEX (entre //) ────────────────────────────────</span>
+<span class="ck">url</span>:/<span class="cs">(sql|union|select)</span>/i
+<span class="ck">source.ip</span>:/<span class="cs">185\.220\.[0-9]+\.[0-9]+</span>/
+
+<span class="cc"># ─── FUZZY (correspondance approchée) ────────────────</span>
+<span class="ck">message</span>:<span class="cs">authetication</span>~    <span class="cc"># matche "authentication"</span>
+<span class="ck">message</span>:<span class="cs">nginx</span>~<span class="cn">2</span>           <span class="cc"># distance Levenshtein max 2</span>
+
+<span class="cc"># ─── PLAGES ──────────────────────────────────────────</span>
+<span class="ck">status</span>:[<span class="cn">400</span> <span class="co">TO</span> <span class="cn">499</span>]     <span class="cc"># inclusif</span>
+<span class="ck">status</span>:{<span class="cn">400</span> <span class="co">TO</span> <span class="cn">500</span>}     <span class="cc"># exclusif</span>
+<span class="ck">status</span>:[<span class="cn">400</span> <span class="co">TO</span> *]        <span class="cc"># ≥ 400</span>
+
+<span class="cc"># ─── BOOSTING ────────────────────────────────────────</span>
+<span class="ck">title</span>:<span class="cs">nginx</span>^<span class="cn">3</span> <span class="ck">message</span>:<span class="cs">nginx</span>  <span class="cc"># titre 3x plus important</span>
+
+<span class="cc"># ─── OPÉRATEURS ──────────────────────────────────────</span>
+<span class="ck">status</span>:<span class="cn">404</span> <span class="co">AND</span> <span class="ck">host</span>:<span class="cs">prod-*</span>
++<span class="ck">status</span>:<span class="cn">404</span> -<span class="ck">source</span>:<span class="cs">internal</span>  <span class="cc"># + = must, - = must not</span></pre></div>
+  <div class="box info">
+    <div class="box-i">ℹ️</div>
+    <div class="box-b"><strong>Quand choisir Lucene plutôt que KQL ?</strong><p>Utilisez Lucene quand vous avez besoin de <strong>regex</strong> (<code>/pattern/</code>), de <strong>fuzzy</strong> (<code>~</code>), ou de <strong>boosting</strong> (<code>^</code>). Pour tout le reste, KQL est plus lisible.</p></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PAGE : DSL
+════════════════════════════════════════════════ -->
+<div class="section" id="sec-dsl">
+  <div class="page-hero">
+    <div class="hero-tag ht-dsl">🟠 Query DSL</div>
+    <h1 class="hero-title">Query DSL — Contrôle<br>total via la Console</h1>
+    <p class="hero-sub">Le langage natif d'Elasticsearch en JSON. Utilisé dans la Dev Tools Console de Kibana pour des agrégations complexes, du scoring personnalisé, des nested queries.</p>
+  </div>
+  <h2><span class="h2-n" style="background:var(--dsl)">1</span> Accéder à la Console</h2>
+  <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Dev Tools → Console</span></div>
+  <p>Tapez vos requêtes dans le panneau gauche → appuyez sur le <strong>▶ bouton Play</strong> (ou <kbd style="background:var(--sf2);border:1px solid var(--border);border-radius:3px;padding:.1rem .4rem;font-family:'Fira Code',monospace;font-size:.8rem">Ctrl+Entrée</kbd>) → les résultats apparaissent à droite.</p>
+  <h2><span class="h2-n" style="background:var(--dsl)">2</span> Requêtes essentielles</h2>
+  <div class="cw"><div class="ctop"><span>Query DSL — Fondamentaux</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="cc">// ─── RECHERCHE SIMPLE ─────────────────────────────</span>
+<span class="co">GET</span> <span class="cs">/nginx-*/_search</span>
+{
+  <span class="ck">"size"</span>: <span class="cn">10</span>,
+  <span class="ck">"query"</span>: { <span class="ck">"term"</span>: { <span class="ck">"status"</span>: <span class="cn">404</span> } }
+}
+
+<span class="cc">// ─── BOOL QUERY (la plus utilisée) ────────────────</span>
+<span class="co">GET</span> <span class="cs">/logs-*/_search</span>
+{
+  <span class="ck">"query"</span>: {
+    <span class="ck">"bool"</span>: {
+      <span class="ck">"must"</span>:    [{ <span class="ck">"match"</span>: { <span class="ck">"message"</span>: <span class="cs">"Failed password"</span> } }],
+      <span class="ck">"filter"</span>:  [{ <span class="ck">"term"</span>: { <span class="ck">"destination.port"</span>: <span class="cn">22</span> } }],
+      <span class="ck">"must_not"</span>:[{ <span class="ck">"term"</span>: { <span class="ck">"source.ip"</span>: <span class="cs">"10.0.0.1"</span> } }]
+    }
+  }
+}
+
+<span class="cc">// ─── AGRÉGATIONS ──────────────────────────────────</span>
+<span class="co">GET</span> <span class="cs">/nginx-*/_search</span>
+{
+  <span class="ck">"size"</span>: <span class="cn">0</span>,
+  <span class="ck">"aggs"</span>: {
+    <span class="ck">"par_status"</span>: { <span class="ck">"terms"</span>: { <span class="ck">"field"</span>: <span class="cs">"status"</span> } },
+    <span class="ck">"par_heure"</span>: {
+      <span class="ck">"date_histogram"</span>: {
+        <span class="ck">"field"</span>: <span class="cs">"@timestamp"</span>,
+        <span class="ck">"calendar_interval"</span>: <span class="cs">"1h"</span>
+      }
+    }
+  }
+}</pre></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PAGE : SQL
+════════════════════════════════════════════════ -->
+<div class="section" id="sec-sql">
+  <div class="page-hero">
+    <div class="hero-tag ht-sql">🟣 SQL</div>
+    <h1 class="hero-title">SQL dans Kibana —<br>Dev Tools Console</h1>
+    <p class="hero-sub">Interrogez Elasticsearch avec du SQL standard. Idéal pour les exports, reporting, et si vous connaissez déjà SQL. Via <code>POST /_sql</code> dans la Console.</p>
+  </div>
+  <h2><span class="h2-n" style="background:var(--sql)">1</span> Comment utiliser SQL dans Kibana</h2>
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body"><h4>Ouvrir Dev Tools Console</h4><div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Dev Tools → Console</span></div></div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body"><h4>Taper la requête SQL</h4><p>Utilisez l'endpoint <code>POST /_sql</code> avec votre requête SQL dans le champ <code>"query"</code>. Les noms d'index vont entre guillemets doubles.</p></div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body"><h4>Choisir le format de retour</h4><p>Ajoutez <code>?format=txt</code> pour un tableau lisible, <code>?format=csv</code> pour un export.</p></div>
+    </div>
+  </div>
+  <div class="cw"><div class="ctop"><span>SQL — Exemples pratiques</span><span class="clang cl-sql">SQL</span></div>
+<pre><span class="cc">-- Recherche basique</span>
+<span class="co">POST</span> <span class="cs">/_sql?format=txt</span>
+{ <span class="ck">"query"</span>: <span class="cs">"SELECT source.ip, status, url.path FROM \"nginx-*\" WHERE status >= 400 ORDER BY @timestamp DESC LIMIT 20"</span> }
+
+<span class="cc">-- Compter par code HTTP</span>
+<span class="co">POST</span> <span class="cs">/_sql?format=txt</span>
+{ <span class="ck">"query"</span>: <span class="cs">"SELECT status, COUNT(*) AS total FROM \"nginx-*\" GROUP BY status ORDER BY total DESC"</span> }
+
+<span class="cc">-- Dernière heure avec LIKE</span>
+<span class="co">POST</span> <span class="cs">/_sql</span>
+{ <span class="ck">"query"</span>: <span class="cs">"SELECT * FROM \"logs-*\" WHERE @timestamp > NOW() - INTERVAL 1 HOUR AND url.path LIKE '%admin%'"</span> }
+
+<span class="cc">-- Top IPs attaquantes</span>
+<span class="co">POST</span> <span class="cs">/_sql?format=txt</span>
+{ <span class="ck">"query"</span>: <span class="cs">"SELECT source.ip, COUNT(*) AS hits FROM \"nginx-*\" WHERE status IN (401,403,404) GROUP BY source.ip HAVING COUNT(*) > 50 ORDER BY hits DESC LIMIT 10"</span> }</pre></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PAGE : EQL
+════════════════════════════════════════════════ -->
+<div class="section" id="sec-eql">
+  <div class="page-hero">
+    <div class="hero-tag ht-eql">🩷 EQL — Event Query Language</div>
+    <h1 class="hero-title">EQL — Détecter des<br>séquences d'attaque</h1>
+    <p class="hero-sub">EQL est le langage des règles SIEM dans Kibana Security. Il permet de corréler des événements dans le temps et de détecter des enchaînements suspects.</p>
+  </div>
+  <h2><span class="h2-n" style="background:var(--eql)">1</span> Où utiliser EQL dans Kibana</h2>
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body"><h4>Via Kibana Security → Timelines</h4><div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Security</span><span class="arr">›</span><span class="seg">Timelines</span><span class="arr">›</span><span class="cur">Onglet "Correlation"</span></div></div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div></div>
+      <div class="wt-body"><h4>Via Dev Tools Console (API)</h4><p>Utilisez <code>GET /index/_eql/search</code> directement dans la Console.</p></div>
+    </div>
+  </div>
+  <div class="cw"><div class="ctop"><span>EQL — Syntaxe et séquences</span><span class="clang cl-eql">EQL</span></div>
+<pre><span class="cc">// ─── BASE : catégorie where conditions ──────────────</span>
+<span class="co">process</span> <span class="co">where</span> <span class="ck">process.name</span> == <span class="cs">"cmd.exe"</span>
+<span class="co">network</span> <span class="co">where</span> <span class="ck">destination.port</span> == <span class="cn">22</span> <span class="co">and</span> <span class="ck">event.outcome</span> == <span class="cs">"failure"</span>
+
+<span class="cc">// ─── SÉQUENCE TEMPORELLE ─────────────────────────</span>
+<span class="cc">// Détecter brute force SSH puis connexion réussie</span>
+<span class="co">sequence</span> <span class="co">by</span> <span class="ck">source.ip</span> <span class="co">with</span> maxspan=<span class="cn">10m</span>
+  [<span class="co">authentication</span> <span class="co">where</span> <span class="ck">event.outcome</span> == <span class="cs">"failure"</span>] <span class="co">with</span> runs=<span class="cn">5</span>
+  [<span class="co">authentication</span> <span class="co">where</span> <span class="ck">event.outcome</span> == <span class="cs">"success"</span>]
+
+<span class="cc">// Détecter Word qui lance cmd.exe (macro malveillante)</span>
+<span class="co">sequence</span> <span class="co">by</span> <span class="ck">host.id</span> <span class="co">with</span> maxspan=<span class="cn">30s</span>
+  [<span class="co">process</span> <span class="co">where</span> <span class="ck">process.name</span> == <span class="cs">"winword.exe"</span>]
+  [<span class="co">process</span> <span class="co">where</span> <span class="ck">process.name</span> <span class="co">in</span> (<span class="cs">"cmd.exe"</span>, <span class="cs">"powershell.exe"</span>)]
+
+<span class="cc">// Via API</span>
+<span class="co">GET</span> <span class="cs">/logs-endpoint.*/_eql/search</span>
+{ <span class="ck">"query"</span>: <span class="cs">"process where process.name == 'cmd.exe'"</span>, <span class="ck">"size"</span>: <span class="cn">10</span> }</pre></div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     PAGE : ES|QL
+════════════════════════════════════════════════ -->
+<div class="section" id="sec-esql">
+  <div class="page-hero">
+    <div class="hero-tag ht-esql">🩵 ES|QL</div>
+    <h1 class="hero-title">ES|QL — Le nouveau<br>langage pipe de Kibana</h1>
+    <p class="hero-sub">Disponible depuis ES 8.11 directement dans Discover. Syntaxe pipe (comme Unix), transformations inline, GROK intégré. L'avenir des requêtes analytiques dans Kibana.</p>
+  </div>
+  <h2><span class="h2-n" style="background:var(--esql)">1</span> Activer ES|QL dans Discover</h2>
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Ouvrir Discover</h4>
+        <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Analytics</span><span class="arr">›</span><span class="cur">Discover</span></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Cliquer sur le sélecteur de langue</h4>
+        <p>En haut à gauche de Discover, cliquez sur le sélecteur de Data View. À côté, vous verrez le sélecteur de langue. Choisissez <strong>ES|QL</strong>.</p>
+        <div class="ui-mock" style="max-width:420px">
+          <div class="um-bar"><div class="um-dots"><div class="umdot r"></div><div class="umdot y"></div><div class="umdot g"></div></div><div class="um-url">Discover — <span class="hp">sélection du langage</span></div></div>
+          <div class="um-content" style="padding:.75rem">
+            <div style="display:flex;gap:.5rem;background:#0d0f1a;border:1px solid #2a2d42;border-radius:4px;padding:.3rem;width:fit-content;margin-bottom:.5rem">
+              <div style="padding:.2rem .6rem;background:#21262d;color:#8b949e;border-radius:3px;font-family:'Fira Code',monospace;font-size:.68rem;cursor:default">KQL</div>
+              <div style="padding:.2rem .6rem;background:#21262d;color:#8b949e;border-radius:3px;font-family:'Fira Code',monospace;font-size:.68rem;cursor:default">Lucene</div>
+              <div style="padding:.2rem .6rem;background:rgba(13,148,136,.2);color:#4db6ac;border:1px solid rgba(13,148,136,.3);border-radius:3px;font-family:'Fira Code',monospace;font-size:.68rem;cursor:default">ES|QL ✓</div>
+            </div>
+            <div style="background:#0d0f1a;border:2px solid #4db6ac;border-radius:5px;padding:.4rem .75rem;font-family:'Fira Code',monospace;font-size:.74rem;color:#e6edf3">
+              FROM nginx-* | WHERE status >= 400 | LIMIT 50
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body">
+        <h4>Écrire la requête et lancer</h4>
+        <p>La barre de recherche change de style. Tapez votre requête ES|QL → appuyez sur <kbd style="background:var(--sf2);border:1px solid var(--border);border-radius:3px;padding:.1rem .4rem;font-family:'Fira Code',monospace;font-size:.8rem">↵ Entrée</kbd>. Les résultats s'affichent en tableau.</p>
+      </div>
+    </div>
+  </div>
+  <h2><span class="h2-n" style="background:var(--esql)">2</span> Requêtes ES|QL dans Discover</h2>
+  <div class="cw"><div class="ctop"><span>ES|QL — Exemples Discover</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// ─── BASIQUE ─────────────────────────────────────</span>
+<span class="cp">FROM</span> nginx-*
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">status</span> >= <span class="cn">400</span>
+  <span class="cp">|</span> <span class="cp">KEEP</span> <span class="ck">@timestamp</span>, <span class="ck">source.ip</span>, <span class="ck">status</span>, <span class="ck">url.path</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> <span class="ck">@timestamp</span> <span class="co">DESC</span>
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">50</span>
+
+<span class="cc">// ─── STATS : top IPs avec erreurs ────────────────</span>
+<span class="cp">FROM</span> nginx-*
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">status</span> >= <span class="cn">400</span> <span class="co">AND</span> <span class="ck">@timestamp</span> >= <span class="cs">"now-24h"</span>
+  <span class="cp">|</span> <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> <span class="ck">source.ip</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> nb <span class="co">DESC</span>
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">10</span>
+
+<span class="cc">// ─── EVAL : classer les codes HTTP ───────────────</span>
+<span class="cp">FROM</span> nginx-*
+  <span class="cp">|</span> <span class="cp">EVAL</span> type = <span class="cf">CASE</span>(
+      <span class="ck">status</span> >= <span class="cn">500</span>, <span class="cs">"Erreur serveur"</span>,
+      <span class="ck">status</span> >= <span class="cn">400</span>, <span class="cs">"Erreur client"</span>,
+      <span class="cs">"OK"</span>
+    )
+  <span class="cp">|</span> <span class="cp">STATS</span> n = <span class="cf">COUNT</span>(*) <span class="co">BY</span> type
+  <span class="cp">|</span> <span class="cp">SORT</span> n <span class="co">DESC</span>
+
+<span class="cc">// ─── GROK inline sans pipeline Logstash ──────────</span>
+<span class="cp">FROM</span> logs-raw
+  <span class="cp">|</span> <span class="cp">GROK</span> <span class="ck">message</span> <span class="cs">"%{IP:src_ip} - %{WORD:method} %{NOTSPACE:uri}"</span>
+  <span class="cp">|</span> <span class="cp">WHERE</span> method == <span class="cs">"POST"</span>
+  <span class="cp">|</span> <span class="cp">KEEP</span> src_ip, method, uri
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">50</span></pre></div>
+  <div class="box tip">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>ES|QL dans la Console aussi</strong><p>En plus de Discover, vous pouvez utiliser ES|QL via <code>POST /_query</code> dans la Dev Tools Console : <code>{"query": "FROM nginx-* | WHERE status >= 400 | LIMIT 10"}</code></p></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const PAGES = {start:'sec-start',kql:'sec-kql',lucene:'sec-lucene',dsl:'sec-dsl',sql:'sec-sql',eql:'sec-eql',esql:'sec-esql'};
+
+function goTo(page, anchor) {
+  Object.entries(PAGES).forEach(([k,v]) => document.getElementById(v).classList.toggle('active', k === page));
+  document.querySelectorAll('.tnav').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.sblink').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === page && (b.dataset.anchor||'') === (anchor||''));
+  });
+  if (anchor) {
+    setTimeout(() => {
+      const el = document.getElementById(anchor);
+      if (el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 70, behavior:'smooth'});
+    }, 35);
+  } else {
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  closeSidebar();
+}
+
+document.querySelectorAll('[data-page]').forEach(b => {
+  b.addEventListener('click', () => goTo(b.dataset.page, b.dataset.anchor||''));
+});
+
+document.getElementById('ham').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+});
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+document.getElementById('overlay').addEventListener('click', closeSidebar);
+
+document.querySelectorAll('.copy-b').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const pre = btn.closest('.ctop')?.nextElementSibling;
+    if (pre) navigator.clipboard.writeText(pre.textContent).then(() => {
+      btn.textContent = '✓ copié'; btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'copier'; btn.classList.remove('ok'); }, 2000);
+    });
+  });
+});
+</script>
+</body>
+</html>

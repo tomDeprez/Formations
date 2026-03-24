@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kibana — Grok Debugger & Logstash Pipelines</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #f5f2ee;
+  --bg2:     #ede9e3;
+  --surface: #ffffff;
+  --sf2:     #f9f7f4;
+  --border:  #d8d2c8;
+  --border2: #c8c0b4;
+  --ink:     #1a1410;
+  --ink2:    #3d3530;
+  --muted:   #8c8078;
+  --muted2:  #b0a898;
+  --kibana:  #006bb4;
+  --elastic: #f04e98;
+  --ok:      #017d73;
+  --warn:    #d4a017;
+  --danger:  #b94e3f;
+  --code-bg: #1a1612;
+  --code-fg: #e8e0d4;
+  --sb-w:    258px;
+  --top-h:   52px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ═══════════════ TOPBAR ═══════════════ */
+.topbar{
+  position:sticky;top:0;z-index:300;
+  height:var(--top-h);background:var(--ink);
+  border-bottom:2px solid var(--kibana);
+  display:flex;align-items:center;padding:0 1.5rem;gap:.75rem;
+}
+.topbar-logo{
+  font-family:'Fira Code',monospace;font-size:.88rem;font-weight:600;
+  display:flex;align-items:center;gap:.35rem;white-space:nowrap;
+}
+.topbar-logo .e{color:var(--elastic)}.topbar-logo .k{color:var(--kibana)}.topbar-logo .sep{color:#444}
+.topbar-nav{display:flex;gap:.1rem;margin-left:auto}
+.tnav{
+  font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:#888;padding:.3rem .8rem;cursor:pointer;border-radius:3px;
+  transition:color .15s,background .15s;white-space:nowrap;
+  background:none;border:none;font-family:'Syne',sans-serif;
+}
+.tnav:hover{color:#fff;background:rgba(255,255,255,.08)}
+.tnav.active{color:var(--kibana);background:rgba(0,107,180,.18)}
+.hamburger{
+  display:none;background:none;border:none;color:#ccc;
+  cursor:pointer;font-size:1.3rem;padding:.2rem;margin-left:auto;
+}
+
+/* ═══════════════ LAYOUT ═══════════════ */
+.layout{display:grid;grid-template-columns:var(--sb-w) 1fr;min-height:calc(100vh - var(--top-h));align-items:start}
+
+/* ═══════════════ SIDEBAR ═══════════════ */
+.sidebar{
+  position:sticky;top:var(--top-h);
+  height:calc(100vh - var(--top-h));overflow-y:auto;
+  background:var(--surface);border-right:1px solid var(--border);
+  padding:1.25rem 0 2rem;transition:transform .25s ease;
+}
+.sb-head{padding:0 1.1rem 1rem;border-bottom:1px solid var(--border);margin-bottom:.75rem}
+.sb-head-lbl{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2)}
+.sb-group{margin-bottom:.1rem}
+.sb-group-lbl{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);padding:.8rem 1.1rem .25rem}
+.sblink{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.38rem 1.1rem;font-size:.78rem;font-weight:600;
+  color:var(--muted);cursor:pointer;border:none;background:none;
+  width:100%;text-align:left;border-left:2px solid transparent;
+  transition:color .12s,border-color .12s,background .12s;
+  font-family:'Syne',sans-serif;
+}
+.sblink:hover{color:var(--ink2);border-left-color:var(--border2)}
+.sblink.active{color:var(--kibana);border-left-color:var(--kibana);background:rgba(0,107,180,.05)}
+.sblink .ico{font-size:.85rem;flex-shrink:0}
+.sb-divider{height:1px;background:var(--border);margin:.6rem 1.1rem}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:250}
+.sb-overlay.show{display:block}
+
+/* ═══════════════ MAIN ═══════════════ */
+.main{padding:2.5rem 2.5rem 5rem;min-width:0}
+
+/* ═══════════════ SECTION ═══════════════ */
+.section{display:none}
+.section.active{display:block}
+
+/* ═══════════════ TYPOGRAPHY ═══════════════ */
+.page-hero{margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid var(--border)}
+.eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--kibana);margin-bottom:.5rem}
+.page-title{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;line-height:1.1;margin-bottom:.5rem}
+.page-sub{font-size:.9rem;color:var(--muted);font-weight:400;line-height:1.75;max-width:620px}
+h2{font-size:1.15rem;font-weight:800;color:var(--ink);margin:2.25rem 0 .6rem;display:flex;align-items:center;gap:.6rem}
+.spill{font-size:.6rem;background:var(--kibana);color:#fff;padding:.15rem .5rem;border-radius:100px;font-family:'Fira Code',monospace;font-weight:600}
+h3{font-size:.88rem;font-weight:700;color:var(--ink2);margin:1.6rem 0 .45rem;text-transform:uppercase;letter-spacing:.07em}
+p{font-size:.87rem;color:var(--ink2);line-height:1.8;margin-bottom:.85rem;font-weight:400}
+hr.sep{border:none;border-top:1px solid var(--border);margin:2.25rem 0}
+code{font-family:'Fira Code',monospace;font-size:.82em;background:rgba(0,107,180,.07);color:var(--kibana);padding:.1em .35em;border-radius:3px}
+
+/* ═══════════════ CODE BLOCKS ═══════════════ */
+.cw{margin:.9rem 0}
+.ctop{
+  background:#111;border:1px solid #2a2a2a;border-bottom:none;border-radius:5px 5px 0 0;
+  padding:.4rem 1rem;display:flex;align-items:center;justify-content:space-between;
+  font-family:'Fira Code',monospace;font-size:.62rem;color:#555;
+}
+.ctop .lang{background:#1e1e1e;color:#777;padding:.1rem .4rem;border-radius:2px}
+pre{
+  background:var(--code-bg);border:1px solid #2a2a2a;border-radius:0 0 5px 5px;
+  padding:1rem 1.15rem;overflow-x:auto;
+  font-family:'Fira Code',monospace;font-size:.78rem;line-height:1.75;color:var(--code-fg);
+}
+pre.alone{border-radius:5px}
+.k{color:#7ecad4}.s{color:#a8cc8c}.n{color:#f0a070}.kw{color:#e06c75}.cm{color:#4a5a62;font-style:italic}.o{color:#e5963a}.w{color:#fff;font-weight:500}
+
+/* ═══════════════ CALLOUTS ═══════════════ */
+.box{border-radius:5px;padding:.85rem 1rem;margin:.9rem 0;font-size:.83rem;display:flex;gap:.7rem;align-items:flex-start}
+.box-ico{font-size:.95rem;flex-shrink:0;margin-top:.1rem}
+.box-body p{margin:0;font-size:.83rem;color:inherit}
+.box-body strong{font-weight:700;display:block;margin-bottom:.1rem}
+.box.info{background:rgba(0,107,180,.07);border-left:3px solid var(--kibana);color:var(--ink2)}
+.box.tip{background:rgba(1,125,115,.07);border-left:3px solid var(--ok);color:#0a3d38}
+.box.warn{background:rgba(212,160,23,.08);border-left:3px solid var(--warn);color:#5a4010}
+.box.danger{background:rgba(185,78,63,.07);border-left:3px solid var(--danger);color:#5a1a14}
+
+/* ═══════════════ STEPS ═══════════════ */
+.steps{margin:1rem 0}
+.step{display:flex;gap:1rem;margin-bottom:1.4rem}
+.step-n{flex-shrink:0;width:28px;height:28px;background:var(--kibana);color:#fff;border-radius:50%;font-family:'Fira Code',monospace;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step-body h4{font-size:.87rem;font-weight:700;color:var(--ink);margin-bottom:.3rem}
+.step-body p{margin-bottom:.4rem}
+
+/* ═══════════════ TABLES ═══════════════ */
+.tbl-wrap{overflow-x:auto;margin:.9rem 0;border-radius:6px}
+table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--surface);border:1px solid var(--border);border-radius:6px}
+th{background:var(--bg2);padding:.5rem .85rem;text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:.5rem .85rem;border-bottom:1px solid rgba(216,210,200,.5);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,107,180,.025)}
+
+/* ═══════════════ BADGES ═══════════════ */
+.tag{display:inline-block;font-size:.6rem;font-weight:700;font-family:'Fira Code',monospace;padding:.12rem .45rem;border-radius:3px;letter-spacing:.03em}
+.tag-blue{background:rgba(0,107,180,.1);color:var(--kibana);border:1px solid rgba(0,107,180,.25)}
+.tag-green{background:rgba(1,125,115,.1);color:var(--ok);border:1px solid rgba(1,125,115,.25)}
+.tag-warn{background:rgba(212,160,23,.12);color:#8a6500;border:1px solid rgba(212,160,23,.3)}
+.tag-red{background:rgba(185,78,63,.1);color:var(--danger);border:1px solid rgba(185,78,63,.25)}
+
+/* ═══════════════ KIBANA PATH ═══════════════ */
+.kpath{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;font-family:'Fira Code',monospace;font-size:.72rem;background:var(--sf2);border:1px solid var(--border);padding:.4rem .85rem;border-radius:4px;margin:.85rem 0;color:var(--muted)}
+.kpath .seg{color:var(--ink2);font-weight:600}.kpath .cur{color:var(--kibana);font-weight:700}.kpath .arr{color:var(--border2)}
+
+/* ═══════════════ CARDS ═══════════════ */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin:.9rem 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem;transition:border-color .15s}
+.card:hover{border-color:var(--border2)}
+.card-ico{font-size:1.3rem;margin-bottom:.35rem}
+.card-title{font-size:.85rem;font-weight:700;margin-bottom:.2rem}
+.card-desc{font-size:.77rem;color:var(--muted);font-weight:400;line-height:1.55}
+
+/* ═══════════════ FLOW ═══════════════ */
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:1rem 0;background:var(--sf2);border:1px solid var(--border);border-radius:6px;padding:.9rem 1.1rem}
+.fnode{display:flex;flex-direction:column;align-items:center;gap:.2rem}
+.fbox{background:var(--surface);border:1.5px solid var(--border);border-radius:5px;padding:.4rem .7rem;font-size:.7rem;font-weight:700;font-family:'Fira Code',monospace;white-space:nowrap;text-align:center}
+.fbox.blue{border-color:var(--kibana);color:var(--kibana);background:rgba(0,107,180,.05)}
+.fbox.green{border-color:var(--ok);color:var(--ok);background:rgba(1,125,115,.05)}
+.fbox.orange{border-color:var(--warn);color:#8a6500;background:rgba(212,160,23,.05)}
+.fbox.pink{border-color:var(--elastic);color:var(--elastic);background:rgba(240,78,152,.05)}
+.flabel{font-size:.58rem;color:var(--muted);text-align:center}
+.farr{color:var(--muted2);font-size:1rem;padding:0 .1rem;margin-bottom:.9rem}
+
+/* ═══════════════ UI MOCKS ═══════════════ */
+.mock{background:#1b1f23;border-radius:8px;overflow:hidden;margin:1.25rem 0;box-shadow:0 4px 24px rgba(0,0,0,.15)}
+.mock-bar{background:#0d1117;padding:.5rem .9rem;display:flex;align-items:center;gap:.65rem;border-bottom:1px solid #30363d}
+.mock-dots{display:flex;gap:.3rem}
+.mdot{width:9px;height:9px;border-radius:50%}
+.mdot.r{background:#ff5f57}.mdot.y{background:#febc2e}.mdot.g{background:#28c840}
+.mock-url{flex:1;background:#161b22;border:1px solid #30363d;border-radius:3px;padding:.18rem .65rem;font-family:'Fira Code',monospace;font-size:.68rem;color:#8b949e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-url .p{color:#58a6ff}
+.mock-inner{display:grid;grid-template-columns:180px 1fr}
+.mock-nav{background:#161b22;border-right:1px solid #30363d;padding:.6rem 0}
+.mni{padding:.38rem .9rem;font-size:.7rem;color:#8b949e;font-family:'Fira Code',monospace;display:flex;align-items:center;gap:.4rem}
+.mni.active{color:#58a6ff;background:rgba(88,166,255,.08);border-left:2px solid #58a6ff}
+.mni.hi{color:#f0a070}
+.mock-content{padding:1.1rem}
+.mock-title{font-size:.85rem;font-weight:600;color:#e6edf3;font-family:'Fira Code',monospace;margin-bottom:.85rem}
+.mfield{margin-bottom:.7rem}
+.mfield-lbl{font-size:.6rem;color:#8b949e;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem}
+.mfarea{background:#0d1117;border:1px solid #30363d;border-radius:3px;padding:.5rem .75rem;font-family:'Fira Code',monospace;font-size:.72rem;color:#e6edf3;line-height:1.5;width:100%}
+.mbtn{font-size:.65rem;padding:.28rem .8rem;border-radius:3px;font-family:'Fira Code',monospace;font-weight:600;cursor:default;white-space:nowrap}
+.mbtn.pri{background:#1f6feb;color:#fff}.mbtn.sec{background:#21262d;color:#8b949e;border:1px solid #30363d}
+.mbtn-row{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.65rem}
+.mresult{background:#0d1117;border:1px solid #238636;border-radius:3px;padding:.65rem;font-family:'Fira Code',monospace;font-size:.7rem}
+.mrow{display:flex;gap:.75rem;padding:.18rem 0;border-bottom:1px solid #21262d}
+.mrow:last-child{border-bottom:none}
+.mrk{color:#79c0ff;min-width:115px;font-size:.7rem}.mrv{color:#a8cc8c}
+.mtabs{display:flex;border-bottom:1px solid #30363d;margin-bottom:.85rem}
+.mtab{padding:.35rem .9rem;font-size:.7rem;color:#8b949e;font-family:'Fira Code',monospace;border-bottom:2px solid transparent}
+.mtab.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.pipe-row{display:grid;grid-template-columns:1fr 60px 70px 90px;padding:.45rem .75rem;font-size:.74rem;font-family:'Fira Code',monospace;border-bottom:1px solid #21262d}
+.pipe-row.hd{background:#161b22;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:#8b949e;border-bottom:1px solid #30363d}
+.pipe-row:last-child{border-bottom:none}
+
+/* ═══════════════ STEP LIST (workflow) ═══════════════ */
+.step-list-flow{border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface);margin:1rem 0}
+.slf-row{display:flex;align-items:center;gap:1rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--border)}
+.slf-row:last-child{border-bottom:none}
+.slf-row p{margin:0;font-size:.83rem;color:var(--muted)}
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media(max-width:900px){
+  .topbar-nav{display:none}
+  .hamburger{display:block}
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:var(--top-h);left:0;width:var(--sb-w);height:calc(100vh - var(--top-h));z-index:260;transform:translateX(-100%);box-shadow:4px 0 20px rgba(0,0,0,.15)}
+  .sidebar.open{transform:translateX(0)}
+  .main{padding:1.5rem 1.1rem 4rem}
+  .grid2{grid-template-columns:1fr}
+  .mock-inner{grid-template-columns:1fr}
+  .mock-nav{display:none}
+}
+@media(max-width:500px){
+  .page-title{font-size:1.5rem}
+  pre{font-size:.72rem}
+  .pipe-row{grid-template-columns:1fr 80px}
+  .pipe-row>:nth-child(2),.pipe-row>:nth-child(3){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <span class="e">elastic</span><span class="sep">|</span><span class="k">kibana</span>
+  </div>
+  <nav class="topbar-nav">
+    <button class="tnav active"  data-page="intro">Intro</button>
+    <button class="tnav"         data-page="grok">Grok Debugger</button>
+    <button class="tnav"         data-page="pipelines">Pipelines</button>
+    <button class="tnav"         data-page="workflow">Workflow</button>
+  </nav>
+  <button class="hamburger" id="ham" aria-label="Menu">☰</button>
+</header>
+
+<div class="sb-overlay" id="overlay"></div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-head"><div class="sb-head-lbl">Kibana // Guide FR</div></div>
+
+  <div class="sb-group">
+    <div class="sb-group-lbl">Vue d'ensemble</div>
+    <button class="sblink active" data-page="intro" data-anchor=""><span class="ico">🏠</span>Introduction</button>
+    <button class="sblink" data-page="intro" data-anchor="archi"><span class="ico">🔀</span>Architecture ELK</button>
+    <button class="sblink" data-page="intro" data-anchor="prereqs"><span class="ico">📋</span>Prérequis</button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-lbl">Grok Debugger</div>
+    <button class="sblink" data-page="grok" data-anchor=""><span class="ico">🧭</span>Accéder au debugger</button>
+    <button class="sblink" data-page="grok" data-anchor="zones"><span class="ico">⚡</span>Interface &amp; zones</button>
+    <button class="sblink" data-page="grok" data-anchor="tester"><span class="ico">🧪</span>Tester pas-à-pas</button>
+    <button class="sblink" data-page="grok" data-anchor="custom"><span class="ico">🔧</span>Custom Patterns</button>
+    <button class="sblink" data-page="grok" data-anchor="erreurs"><span class="ico">🐛</span>Erreurs courantes</button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-lbl">Logstash Pipelines</div>
+    <button class="sblink" data-page="pipelines" data-anchor=""><span class="ico">🗺️</span>Activer xpack</button>
+    <button class="sblink" data-page="pipelines" data-anchor="acceder"><span class="ico">🖥️</span>Accéder au manager</button>
+    <button class="sblink" data-page="pipelines" data-anchor="creer"><span class="ico">➕</span>Créer un pipeline</button>
+    <button class="sblink" data-page="pipelines" data-anchor="monitoring"><span class="ico">📊</span>Monitoring</button>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-lbl">Workflow complet</div>
+    <button class="sblink" data-page="workflow" data-anchor=""><span class="ico">🔄</span>Cycle itératif</button>
+    <button class="sblink" data-page="workflow" data-anchor="failures"><span class="ico">🔎</span>Chercher les failures</button>
+    <button class="sblink" data-page="workflow" data-anchor="console"><span class="ico">💻</span>Dev Tools Console</button>
+    <button class="sblink" data-page="workflow" data-anchor="recap"><span class="ico">✅</span>Récapitulatif</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main" id="main">
+
+  <!-- ════ INTRO ════ -->
+  <div class="section active" id="sec-intro">
+    <div class="page-hero">
+      <div class="eyebrow">GUIDE KIBANA — GROK &amp; LOGSTASH</div>
+      <h1 class="page-title">Kibana comme<br>environnement de dev</h1>
+      <p class="page-sub">Kibana intègre deux outils essentiels : le <strong>Grok Debugger</strong> pour tester vos patterns en temps réel, et le <strong>Logstash Pipeline Manager</strong> pour déployer vos configs sans SSH.</p>
+    </div>
+
+    <h2>Pourquoi utiliser Kibana pour ça ?</h2>
+    <p>Avant Kibana, le cycle d'un pipeline Logstash était : modifier le <code>.conf</code>, redémarrer le service, lire les logs d'erreur… Kibana centralise tout dans une interface graphique.</p>
+    <div class="grid2">
+      <div class="card"><div class="card-ico">🔬</div><div class="card-title">Grok Debugger</div><div class="card-desc">Tester un pattern Grok sur une ligne de log brute sans pipeline actif. Affiche les champs extraits instantanément.</div></div>
+      <div class="card"><div class="card-ico">⚙️</div><div class="card-title">Pipeline Manager</div><div class="card-desc">Créer, modifier et déployer des pipelines Logstash depuis Kibana, stockés dans ES — déploiement à chaud sans restart.</div></div>
+      <div class="card"><div class="card-ico">📊</div><div class="card-title">Logstash Monitoring</div><div class="card-desc">Visualiser events/sec, erreurs et latence des pipelines actifs dans des dashboards intégrés.</div></div>
+      <div class="card"><div class="card-ico">🛠️</div><div class="card-title">Dev Tools Console</div><div class="card-desc">Écrire des requêtes Elasticsearch directement pour vérifier que vos documents sont bien parsés.</div></div>
+    </div>
+
+    <hr class="sep" id="archi">
+    <h2><span class="spill">archi</span> Architecture ELK</h2>
+    <div class="flow">
+      <div class="fnode"><div class="fbox orange">Sources</div><div class="flabel">syslog / nginx<br>beats / kafka</div></div>
+      <div class="farr">→</div>
+      <div class="fnode"><div class="fbox orange">Logstash</div><div class="flabel">input / filter<br>grok / output</div></div>
+      <div class="farr">→</div>
+      <div class="fnode"><div class="fbox blue">Elasticsearch</div><div class="flabel">stockage<br>indexation</div></div>
+      <div class="farr">↔</div>
+      <div class="fnode"><div class="fbox pink">Kibana</div><div class="flabel">UI / debug<br>pipelines</div></div>
+    </div>
+    <div class="box info">
+      <div class="box-ico">💡</div>
+      <div class="box-body"><strong>Kibana ↔ Elasticsearch, pas Logstash directement</strong><p>Le Grok Debugger est 100% client-side. Le Pipeline Manager stocke les configs dans l'index <code>.logstash</code> d'ES, que Logstash lit via X-Pack polling.</p></div>
+    </div>
+
+    <hr class="sep" id="prereqs">
+    <h2><span class="spill">setup</span> Prérequis</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Composant</th><th>Version min.</th><th>Requis pour</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>Elasticsearch</code></td><td>7.x+</td><td>Tout</td><td>Démarrer avant Kibana</td></tr>
+        <tr><td><code>Kibana</code></td><td>7.x+</td><td>Grok Debugger + Pipelines</td><td>Même version qu'ES obligatoire</td></tr>
+        <tr><td><code>Logstash</code></td><td>7.x+ X-Pack</td><td>Pipeline Manager uniquement</td><td><code>xpack.management.enabled: true</code></td></tr>
+        <tr><td><span class="tag tag-warn">Licence</span></td><td>Basic (gratuit)</td><td>Grok Debugger</td><td>Pipeline Manager → Gold/Enterprise ou trial</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ════ GROK ════ -->
+  <div class="section" id="sec-grok">
+    <div class="page-hero">
+      <div class="eyebrow">KIBANA — DEV TOOLS</div>
+      <h1 class="page-title">Grok Debugger</h1>
+      <p class="page-sub">Testez vos patterns Grok interactivement avant de les intégrer dans un pipeline. Aucun pipeline n'a besoin d'être actif.</p>
+    </div>
+
+    <h2 id="g-acces"><span class="spill">01</span> Accéder au Grok Debugger</h2>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Ouvrir le menu principal</h4><p>Cliquez sur le <strong>☰ hamburger</strong> en haut à gauche de Kibana pour ouvrir la navigation latérale.</p></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Aller dans Dev Tools</h4>
+        <div class="kpath"><span class="seg">☰ Menu</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Dev Tools</span></div>
+      </div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Sélectionner l'onglet "Grok Debugger"</h4><p>Dans Dev Tools vous verrez 4 onglets : <strong>Console</strong>, <strong>Search Profiler</strong>, <strong>Grok Debugger</strong>, <strong>Painless Lab</strong>.</p></div></div>
+    </div>
+    <div class="box tip">
+      <div class="box-ico">⌨️</div>
+      <div class="box-body"><strong>Raccourci URL direct</strong><p><code>http://localhost:5601/app/dev_tools#/grokdebugger</code></p></div>
+    </div>
+
+    <div class="mock">
+      <div class="mock-bar"><div class="mock-dots"><div class="mdot r"></div><div class="mdot y"></div><div class="mdot g"></div></div><div class="mock-url">localhost:5601/app/dev_tools<span class="p">#/grokdebugger</span></div></div>
+      <div class="mock-inner">
+        <div class="mock-nav"><div class="mni">⚡ Console</div><div class="mni">📊 Search Profiler</div><div class="mni active">🔬 Grok Debugger</div><div class="mni">🔤 Painless Lab</div></div>
+        <div class="mock-content">
+          <div class="mtabs"><div class="mtab active">Grok Debugger</div></div>
+          <div class="mfield"><div class="mfield-lbl">Grok Pattern</div><div class="mfarea" style="color:#f0a070">%{IP:src_ip} - %{USER:auth} \[%{HTTPDATE:timestamp}\] "%{WORD:method} %{NOTSPACE:uri}"</div></div>
+          <div class="mfield"><div class="mfield-lbl">Sample Data</div><div class="mfarea" style="color:#8b949e">185.220.101.47 - admin [15/Jan/2024:14:22:01 +0100] "GET /api/v1/users"</div></div>
+          <div class="mbtn-row"><div class="mbtn pri">▶ Simulate</div><div class="mbtn sec">Custom Patterns</div></div>
+          <div class="mresult">
+            <div class="mrow"><span class="mrk">src_ip</span><span class="mrv">185.220.101.47</span></div>
+            <div class="mrow"><span class="mrk">auth</span><span class="mrv">admin</span></div>
+            <div class="mrow"><span class="mrk">timestamp</span><span class="mrv">15/Jan/2024:14:22:01 +0100</span></div>
+            <div class="mrow"><span class="mrk">method</span><span class="mrv">GET</span></div>
+            <div class="mrow"><span class="mrk">uri</span><span class="mrv">/api/v1/users</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sep" id="zones">
+    <h2><span class="spill">02</span> Les zones de l'interface</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Zone</th><th>Rôle</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-blue">Grok Pattern</span></td><td>Saisie du pattern à tester</td><td>Supporte tous les patterns ECS v1 natifs</td></tr>
+        <tr><td><span class="tag tag-blue">Sample Data</span></td><td>La ligne de log brute</td><td>Une seule ligne à la fois</td></tr>
+        <tr><td><span class="tag tag-green">▶ Simulate</span></td><td>Lance le matching</td><td>Raccourci : <code>Ctrl+Enter</code></td></tr>
+        <tr><td><span class="tag tag-warn">Custom Patterns</span></td><td>Définir des patterns maison</td><td>Syntaxe : <code>NOM   regex</code></td></tr>
+        <tr><td><span class="tag tag-green">Structured Data</span></td><td>Champs extraits si match</td><td>Affichage JSON ou tableau</td></tr>
+        <tr><td><span class="tag tag-red">Error</span></td><td>Message si pas de match</td><td>Indique la position d'échec</td></tr>
+      </tbody>
+    </table></div>
+
+    <hr class="sep" id="tester">
+    <h2><span class="spill">03</span> Tester pas-à-pas</h2>
+    <h3>Exemple : log nginx avec SQLi</h3>
+    <div class="cw"><div class="ctop"><span>Sample Data — coller dans Kibana</span><span class="lang">LOG</span></div>
+<pre>185.220.101.47 - - [15/Jan/2024:14:22:03 +0100] "GET /api/v1/users?id=1 UNION SELECT username,password HTTP/1.1" 200 12048 "-" "sqlmap/1.7.8#stable"</pre></div>
+
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Commencer par l'IP seule</h4><p>Ne cherchez pas à tout capturer d'un coup. Commencez simple.</p>
+        <div class="cw"><div class="ctop"><span>Pattern v1</span><span class="lang">GROK</span></div><pre>%{IP:src_ip}</pre></div>
+        <p>→ Kibana renvoie <code>src_ip: "185.220.101.47"</code> ✓</p>
+      </div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Ajouter la date HTTP</h4>
+        <div class="cw"><div class="ctop"><span>Pattern v2</span><span class="lang">GROK</span></div><pre>%{IP:src_ip} - - \[%{HTTPDATE:timestamp}\]</pre></div>
+        <p>Les <code>\[</code> et <code>\]</code> échappent les crochets (caractères regex spéciaux).</p>
+      </div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Ajouter la requête HTTP</h4>
+        <div class="cw"><div class="ctop"><span>Pattern v3</span><span class="lang">GROK</span></div><pre>%{IP:src_ip} - (?:%{USER:auth}|-) \[%{HTTPDATE:timestamp}\] "%{WORD:method} %{NOTSPACE:uri} HTTP/%{NUMBER:http_ver}"</pre></div>
+        <p>Le groupe <code>(?:...|-)</code> rend le champ <code>auth</code> optionnel.</p>
+      </div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-body"><h4>Pattern final avec status + user-agent</h4>
+        <div class="cw"><div class="ctop"><span>Pattern final</span><span class="lang">GROK</span></div><pre>%{IP:src_ip} - (?:%{USER:auth}|-) \[%{HTTPDATE:timestamp}\] "(?:%{WORD:method} %{NOTSPACE:uri}(?:HTTP/%{NUMBER:http_ver})?|-)" %{NUMBER:status:int} (?:%{NUMBER:bytes:int}|-) %{QS:referrer} %{QS:useragent}</pre></div>
+        <p>Le <code>:int</code> après <code>status</code> et <code>bytes</code> convertit automatiquement en entier dans ES.</p>
+      </div></div>
+    </div>
+    <div class="box info"><div class="box-ico">💡</div><div class="box-body"><strong>Résultat attendu</strong><p>Kibana affiche <code>src_ip</code>, <code>timestamp</code>, <code>method</code>, <code>uri</code>, <code>status</code> (integer), <code>bytes</code>, <code>referrer</code>, <code>useragent</code>.</p></div></div>
+
+    <hr class="sep" id="custom">
+    <h2><span class="spill">04</span> Custom Patterns</h2>
+    <p>Le bouton <strong>"Custom Patterns"</strong> ouvre un panneau pour définir vos patterns pour la session en cours. Syntaxe identique aux fichiers <code>.grok</code> de Logstash.</p>
+    <div class="mock">
+      <div class="mock-bar"><div class="mock-dots"><div class="mdot r"></div><div class="mdot y"></div><div class="mdot g"></div></div><div class="mock-url">Grok Debugger — <span class="p">Custom Patterns panel</span></div></div>
+      <div class="mock-inner">
+        <div class="mock-nav"><div class="mni" style="font-size:.62rem;color:#555;padding:.7rem .9rem">— Custom Patterns —<br><span style="color:#444;font-size:.58rem">session uniquement</span></div></div>
+        <div class="mock-content">
+          <div class="mfield"><div class="mfield-lbl">Custom Patterns (NOM   regex, un par ligne)</div><div class="mfarea" style="min-height:80px;color:#a8cc8c">IPTABLES_ACTION     [A-Z][A-Z0-9_-]+
+MAC_PAIR            (?:[A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}
+CVE_ID              CVE-\d{4}-\d{4,7}
+SHA256              [0-9a-fA-F]{64}</div></div>
+          <div class="mfield"><div class="mfield-lbl">Grok Pattern</div><div class="mfarea" style="color:#f0a070">%{SYSLOGTIMESTAMP:ts} %{HOSTNAME:host} kernel: %{IPTABLES_ACTION:rule}: SRC=%{IP:src} DST=%{IP:dst}</div></div>
+          <div class="mbtn-row"><div class="mbtn pri">▶ Simulate</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="box warn"><div class="box-ico">⚠️</div><div class="box-body"><strong>Ne persistent pas</strong><p>Les custom patterns Kibana sont valables uniquement pour la session browser. En production, créez <code>/etc/logstash/patterns/custom.grok</code> et référencez-le avec <code>patterns_dir</code>.</p></div></div>
+
+    <hr class="sep" id="erreurs">
+    <h2><span class="spill">05</span> Erreurs courantes</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Erreur</th><th>Cause</th><th>Solution</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-red">Grok pattern does not match</span></td><td>Pattern ≠ ligne</td><td>Tester portion par portion, vérifier les espaces.</td></tr>
+        <tr><td><span class="tag tag-red">Unknown pattern: XYZ</span></td><td>Pattern non défini</td><td>Ajouter dans Custom Patterns ou corriger le nom.</td></tr>
+        <tr><td><span class="tag tag-warn">Field captured empty</span></td><td>Match mais chaîne vide</td><td>Vérifier <code>*</code> ou <code>?</code> trop permissif.</td></tr>
+        <tr><td><span class="tag tag-red">Regex timeout</span></td><td>Backtracking excessif</td><td>Éviter <code>GREEDYDATA</code> en début. Préférer <code>NOTSPACE</code>.</td></tr>
+        <tr><td>Résultat partiel</td><td>Match incomplet</td><td>Normal en test. En prod, ajouter <code>%{GREEDYDATA}</code> en fin.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Technique d'isolation</h3>
+    <div class="cw"><div class="ctop"><span>Déboguer par bisection</span><span class="lang">GROK</span></div>
+<pre><span class="cm"># 1. Tester uniquement le timestamp :</span>
+%{SYSLOGTIMESTAMP:ts}
+<span class="cm"># → OK ? Continuer vers la droite.</span>
+
+<span class="cm"># 2. Ajouter hostname :</span>
+%{SYSLOGTIMESTAMP:ts} %{HOSTNAME:host}
+<span class="cm"># → FAIL ? Séparateur tab au lieu d'espace ?</span>
+<span class="cm"># → Essayer : %{SYSLOGTIMESTAMP:ts}\s+%{HOSTNAME:host}</span>
+
+<span class="cm"># 3. Continuer jusqu'à trouver le point de blocage.</span></pre></div>
+  </div>
+
+  <!-- ════ PIPELINES ════ -->
+  <div class="section" id="sec-pipelines">
+    <div class="page-hero">
+      <div class="eyebrow">KIBANA — STACK MANAGEMENT</div>
+      <h1 class="page-title">Logstash Pipeline<br>Manager</h1>
+      <p class="page-sub">Créez et déployez des pipelines Logstash depuis Kibana sans accès SSH. Les configs sont stockées dans ES et récupérées par Logstash à chaud.</p>
+    </div>
+    <div class="box warn"><div class="box-ico">⚠️</div><div class="box-body"><strong>Licence requise</strong><p>Pipeline Manager → licence <strong>Gold/Enterprise</strong> ou trial 30 jours. Vérifiez : <code>Stack Management → License Management</code>.</p></div></div>
+
+    <h2 id="p-activer"><span class="spill">01</span> Activer xpack dans Logstash</h2>
+    <div class="cw"><div class="ctop"><span>/etc/logstash/logstash.yml</span><span class="lang">YAML</span></div>
+<pre><span class="cm"># Activer la gestion centralisée</span>
+<span class="k">xpack.management.enabled</span>: <span class="kw">true</span>
+<span class="k">xpack.management.elasticsearch.hosts</span>: [<span class="s">"https://localhost:9200"</span>]
+<span class="k">xpack.management.elasticsearch.username</span>: <span class="s">"logstash_system"</span>
+<span class="k">xpack.management.elasticsearch.password</span>: <span class="s">"votre_password"</span>
+
+<span class="cm"># Quels pipelines récupérer (liste ou glob)</span>
+<span class="k">xpack.management.pipeline.id</span>:
+  - <span class="s">"main"</span>
+  - <span class="s">"nginx-pipeline"</span>
+  - <span class="s">"security-*"</span>
+
+<span class="cm"># Fréquence de polling</span>
+<span class="k">xpack.management.logstash.poll_interval</span>: <span class="n">5s</span></pre></div>
+    <div class="cw"><div class="ctop"><span>Redémarrer et vérifier</span><span class="lang">BASH</span></div>
+<pre><span class="cm"># Redémarrer</span>
+sudo systemctl restart logstash
+
+<span class="cm"># Suivre les logs</span>
+sudo journalctl -u logstash -f
+<span class="cm"># Chercher : [INFO] xpack.management ... Pipeline retrieved from Elasticsearch</span></pre></div>
+    <div class="box tip"><div class="box-ico">🔐</div><div class="box-body"><strong>Bon à savoir</strong><p>Créez un utilisateur dédié <code>logstash_system</code> avec le rôle du même nom. Ne réutilisez pas <code>elastic</code> en production.</p></div></div>
+
+    <hr class="sep" id="acceder">
+    <h2><span class="spill">02</span> Accéder au Pipeline Manager</h2>
+    <div class="kpath"><span class="seg">☰ Menu</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="seg">Stack Management</span><span class="arr">›</span><span class="seg">Ingest</span><span class="arr">›</span><span class="cur">Logstash Pipelines</span></div>
+    <div class="mock">
+      <div class="mock-bar"><div class="mock-dots"><div class="mdot r"></div><div class="mdot y"></div><div class="mdot g"></div></div><div class="mock-url">localhost:5601/app/management/ingest/<span class="p">pipelines</span></div></div>
+      <div class="mock-inner">
+        <div class="mock-nav"><div class="mni">🏠 Overview</div><div class="mni">📥 Ingest Pipelines</div><div class="mni active">⚙️ Logstash Pipelines</div><div class="mni">🔬 Grok Debugger</div></div>
+        <div class="mock-content">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem"><div class="mock-title">Logstash Pipelines (3)</div><div class="mbtn pri">+ Create pipeline</div></div>
+          <div style="background:#0d1117;border:1px solid #30363d;border-radius:4px;overflow:hidden">
+            <div class="pipe-row hd"><span>Pipeline ID</span><span>Workers</span><span>Batch</span><span>Status</span></div>
+            <div class="pipe-row"><span style="color:#79c0ff">nginx-pipeline</span><span style="color:#e6edf3">2</span><span style="color:#e6edf3">125</span><span style="color:#3fb950">● active</span></div>
+            <div class="pipe-row"><span style="color:#79c0ff">security-sshd</span><span style="color:#e6edf3">1</span><span style="color:#e6edf3">125</span><span style="color:#3fb950">● active</span></div>
+            <div class="pipe-row"><span style="color:#79c0ff">iptables-drop</span><span style="color:#e6edf3">1</span><span style="color:#e6edf3">125</span><span style="color:#f0a070">● stopped</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sep" id="creer">
+    <h2><span class="spill">03</span> Créer un pipeline</h2>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Cliquer sur "Create pipeline"</h4><p>Un formulaire s'ouvre : Pipeline ID, Description, zone de code, paramètres de performance.</p></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Renseigner le Pipeline ID</h4><p>Doit correspondre exactement à <code>xpack.management.pipeline.id</code> dans <code>logstash.yml</code>.</p></div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Coller votre configuration Logstash</h4>
+        <div class="cw"><div class="ctop"><span>Exemple minimal</span><span class="lang">LOGSTASH</span></div>
+<pre><span class="kw">input</span> {
+  <span class="o">beats</span> { <span class="k">port</span> => <span class="n">5044</span> }
+}
+<span class="kw">filter</span> {
+  <span class="kw">if</span> [fields][log_type] == <span class="s">"nginx"</span> {
+    <span class="o">grok</span> {
+      <span class="k">match</span> => { <span class="s">"message"</span> => <span class="s">"%{COMBINEDAPACHELOG}"</span> }
+      <span class="k">tag_on_failure</span> => [<span class="s">"_grokparsefailure_nginx"</span>]
+    }
+    <span class="kw">if</span> [request] =~ <span class="s">/(?i)(union.select|or.1=1)/</span> {
+      <span class="o">mutate</span> { <span class="k">add_tag</span> => [<span class="s">"sqli"</span>] }
+    }
+  }
+  <span class="o">date</span> {
+    <span class="k">match</span> => [<span class="s">"timestamp"</span>, <span class="s">"dd/MMM/yyyy:HH:mm:ss Z"</span>]
+    <span class="k">target</span> => <span class="s">"@timestamp"</span>
+  }
+}
+<span class="kw">output</span> {
+  <span class="o">elasticsearch</span> {
+    <span class="k">hosts</span> => [<span class="s">"localhost:9200"</span>]
+    <span class="k">index</span> => <span class="s">"nginx-%{+YYYY.MM.dd}"</span>
+  }
+}</pre></div>
+      </div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-body"><h4>Paramètres de performance</h4>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Paramètre</th><th>Défaut</th><th>Quand le modifier</th></tr></thead>
+          <tbody>
+            <tr><td><code>Pipeline workers</code></td><td>nb CPUs</td><td>Augmenter si CPU &gt;70% et events/sec stagnent</td></tr>
+            <tr><td><code>Pipeline batch size</code></td><td>125</td><td>Augmenter (500+) pour gros volume</td></tr>
+            <tr><td><code>Batch delay</code></td><td>50ms</td><td>Baisser pour latence plus faible</td></tr>
+            <tr><td><code>Queue type</code></td><td>memory</td><td>Mettre <code>persisted</code> pour zéro perte</td></tr>
+          </tbody>
+        </table></div>
+      </div></div>
+      <div class="step"><div class="step-n">5</div><div class="step-body"><h4>Save and deploy — rechargement à chaud</h4><p>Kibana stocke la config dans <code>.logstash</code>. Logstash la détecte au prochain poll (5s) et recharge <strong>sans perte d'events</strong>.</p></div></div>
+    </div>
+
+    <div class="mock">
+      <div class="mock-bar"><div class="mock-dots"><div class="mdot r"></div><div class="mdot y"></div><div class="mdot g"></div></div><div class="mock-url">Logstash Pipelines › <span class="p">Create pipeline</span></div></div>
+      <div class="mock-inner">
+        <div class="mock-nav"><div class="mni hi">✏️ Create Pipeline</div></div>
+        <div class="mock-content">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.65rem">
+            <div class="mfield"><div class="mfield-lbl">Pipeline ID *</div><div class="mfarea" style="color:#79c0ff">nginx-pipeline</div></div>
+            <div class="mfield"><div class="mfield-lbl">Description</div><div class="mfarea" style="color:#8b949e">Nginx + SQLi detection</div></div>
+          </div>
+          <div class="mfield"><div class="mfield-lbl">Pipeline *</div><div class="mfarea" style="min-height:48px;color:#a8cc8c;font-size:.68rem">input { beats { port => 5044 } } filter { grok { ... } } output { elasticsearch { ... } }</div></div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem;margin-bottom:.65rem">
+            <div class="mfield"><div class="mfield-lbl">Workers</div><div class="mfarea">2</div></div>
+            <div class="mfield"><div class="mfield-lbl">Batch</div><div class="mfarea">125</div></div>
+            <div class="mfield"><div class="mfield-lbl">Delay</div><div class="mfarea">50</div></div>
+            <div class="mfield"><div class="mfield-lbl">Queue</div><div class="mfarea">memory</div></div>
+          </div>
+          <div class="mbtn-row"><div class="mbtn pri">💾 Save and deploy</div><div class="mbtn sec">Cancel</div></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sep" id="monitoring">
+    <h2><span class="spill">04</span> Monitoring des pipelines</h2>
+    <div class="kpath"><span class="seg">☰ Menu</span><span class="arr">›</span><span class="cur">Stack Monitoring → Logstash</span></div>
+    <div class="cw"><div class="ctop"><span>Activer monitoring — logstash.yml</span><span class="lang">YAML</span></div>
+<pre><span class="k">monitoring.enabled</span>: <span class="kw">true</span>
+<span class="k">monitoring.elasticsearch.hosts</span>: [<span class="s">"https://localhost:9200"</span>]
+<span class="k">monitoring.elasticsearch.username</span>: <span class="s">"logstash_system"</span>
+<span class="k">monitoring.elasticsearch.password</span>: <span class="s">"password"</span></pre></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Métrique</th><th>Ce qu'elle indique</th><th>Seuil d'alerte</th></tr></thead>
+      <tbody>
+        <tr><td><code>Events/sec (input)</code></td><td>Débit d'ingestion</td><td>Chute soudaine → problème source/réseau</td></tr>
+        <tr><td><code>Events/sec (output)</code></td><td>Débit vers ES</td><td>input &gt;&gt; output → goulot</td></tr>
+        <tr><td><code>Queue backpressure</code></td><td>Pression queue interne</td><td>&gt;0 en continu → augmenter workers</td></tr>
+        <tr><td><code>Pipeline duration</code></td><td>Temps traitement/event</td><td>&gt;100ms → Grok trop lent</td></tr>
+        <tr><td><code>_grokparsefailure</code></td><td>Events non parsés</td><td>Discover : <code>tags:_grokparsefailure</code></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- ════ WORKFLOW ════ -->
+  <div class="section" id="sec-workflow">
+    <div class="page-hero">
+      <div class="eyebrow">BEST PRACTICES</div>
+      <h1 class="page-title">Workflow dev<br>itératif avec Kibana</h1>
+      <p class="page-sub">La méthode la plus efficace : Grok Debugger en premier, Pipeline Manager ensuite, Discover pour valider.</p>
+    </div>
+
+    <h2 id="w-cycle"><span class="spill">cycle</span> Les 5 étapes</h2>
+    <div class="step-list-flow">
+      <div class="slf-row"><div class="fbox blue" style="min-width:135px;flex-shrink:0">1. Sample log</div><p>Copier une vraie ligne depuis <code>journalctl</code>, <code>tail -f</code> ou Kibana Discover.</p></div>
+      <div class="slf-row"><div class="fbox orange" style="min-width:135px;flex-shrink:0">2. Grok Debugger</div><p>Tester et affiner le pattern itérativement. Utiliser Custom Patterns si besoin.</p></div>
+      <div class="slf-row"><div class="fbox orange" style="min-width:135px;flex-shrink:0">3. Pipeline Kibana</div><p>Créer/modifier dans Stack Management → Logstash Pipelines. Déployé à chaud.</p></div>
+      <div class="slf-row"><div class="fbox green" style="min-width:135px;flex-shrink:0">4. Discover</div><p>Vérifier les events récents et s'assurer que les champs sont bien créés et typés.</p></div>
+      <div class="slf-row"><div class="fbox green" style="min-width:135px;flex-shrink:0">5. Monitoring</div><p>Stack Monitoring → Logstash pour valider le débit et détecter les <code>_grokparsefailure</code>.</p></div>
+    </div>
+
+    <hr class="sep" id="failures">
+    <h2><span class="spill">discover</span> Chercher les parse failures</h2>
+    <div class="kpath"><span class="seg">☰ Menu</span><span class="arr">›</span><span class="seg">Analytics</span><span class="arr">›</span><span class="cur">Discover</span></div>
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-body"><h4>Sélectionner le bon index pattern</h4><p>En haut à gauche de Discover, choisissez l'index pattern de votre pipeline (ex: <code>nginx-*</code> ou <code>logs-*</code>).</p></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-body"><h4>Filtrer avec KQL</h4>
+        <div class="cw"><div class="ctop"><span>KQL — barre de recherche Discover</span><span class="lang">KQL</span></div>
+<pre><span class="cm"># Tous les events avec parse failure</span>
+tags: "_grokparsefailure"
+
+<span class="cm"># Failure spécifique nginx</span>
+tags: "_grokparsefailure_nginx"
+
+<span class="cm"># Events sans src_ip (non parsé)</span>
+NOT _exists_: src_ip
+
+<span class="cm"># Failure + plage horaire</span>
+tags: "_grokparsefailure" AND @timestamp >= "2024-01-15T14:00:00"</pre></div>
+      </div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-body"><h4>Inspecter le champ "message" original</h4><p>Cliquer sur un event en failure → développer le champ <code>message</code> → copier la ligne brute → coller dans le Grok Debugger.</p></div></div>
+    </div>
+    <div class="box tip"><div class="box-ico">💡</div><div class="box-body"><strong>Conserver le champ message</strong><p>Ne supprimez <code>message</code> avec <code>mutate { remove_field }</code> qu'après avoir validé que votre pipeline parse 100% des events.</p></div></div>
+
+    <hr class="sep" id="console">
+    <h2><span class="spill">console</span> Dev Tools Console</h2>
+    <div class="kpath"><span class="seg">☰ Menu</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Dev Tools → Console</span></div>
+    <div class="cw"><div class="ctop"><span>Vérifier le parsing</span><span class="lang">ES API</span></div>
+<pre><span class="cm"># 1. Derniers documents parsés</span>
+<span class="kw">GET</span> <span class="o">nginx-*/_search</span>
+{
+  <span class="k">"size"</span>: <span class="n">5</span>,
+  <span class="k">"sort"</span>: [{ <span class="k">"@timestamp"</span>: { <span class="k">"order"</span>: <span class="s">"desc"</span> }}],
+  <span class="k">"_source"</span>: [<span class="s">"src_ip"</span>, <span class="s">"method"</span>, <span class="s">"uri"</span>, <span class="s">"status"</span>, <span class="s">"tags"</span>]
+}
+
+<span class="cm"># 2. Compter les failures</span>
+<span class="kw">GET</span> <span class="o">nginx-*/_count</span>
+{
+  <span class="k">"query"</span>: { <span class="k">"term"</span>: { <span class="k">"tags"</span>: <span class="s">"_grokparsefailure"</span> }}
+}
+
+<span class="cm"># 3. Vérifier le mapping</span>
+<span class="kw">GET</span> <span class="o">nginx-*/_mapping</span>
+
+<span class="cm"># 4. Répartition des codes HTTP</span>
+<span class="kw">GET</span> <span class="o">nginx-*/_search</span>
+{
+  <span class="k">"size"</span>: <span class="n">0</span>,
+  <span class="k">"aggs"</span>: { <span class="k">"codes"</span>: { <span class="k">"terms"</span>: { <span class="k">"field"</span>: <span class="s">"status"</span> }}}
+}
+
+<span class="cm"># 5. Vérifier le type de src_ip</span>
+<span class="kw">GET</span> <span class="o">nginx-*/_mapping/field/src_ip</span></pre></div>
+
+    <hr class="sep" id="recap">
+    <h2><span class="spill">recap</span> Récapitulatif complet</h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Tâche</th><th>Outil Kibana</th><th>Chemin</th></tr></thead>
+      <tbody>
+        <tr><td>Tester un pattern Grok</td><td><span class="tag tag-blue">Dev Tools → Grok Debugger</span></td><td><code>☰ › Management › Dev Tools › Grok Debugger</code></td></tr>
+        <tr><td>Créer / modifier un pipeline</td><td><span class="tag tag-blue">Stack Management → Logstash Pipelines</span></td><td><code>☰ › Stack Management › Ingest › Logstash Pipelines</code></td></tr>
+        <tr><td>Voir les données parsées</td><td><span class="tag tag-green">Discover</span></td><td><code>☰ › Analytics › Discover</code></td></tr>
+        <tr><td>Chercher les parse failures</td><td><span class="tag tag-green">Discover + KQL</span></td><td>Requête <code>tags:"_grokparsefailure"</code></td></tr>
+        <tr><td>Requêtes ES manuelles</td><td><span class="tag tag-blue">Dev Tools → Console</span></td><td><code>☰ › Management › Dev Tools › Console</code></td></tr>
+        <tr><td>Monitorer les pipelines</td><td><span class="tag tag-warn">Stack Monitoring</span></td><td><code>☰ › Management › Stack Monitoring</code></td></tr>
+        <tr><td>Vérifier le mapping</td><td><span class="tag tag-blue">Index Management</span></td><td>ou Console : <code>GET index/_mapping</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="box tip"><div class="box-ico">🏆</div><div class="box-body"><strong>Workflow pro en une phrase</strong><p>Grok Debugger → valider le pattern → Pipeline Manager → déployer → Discover (<code>tags:_grokparsefailure</code>) → corriger → recommencer. Cycle le plus court pour un pipeline fiable sans jamais toucher SSH.</p></div></div>
+  </div>
+
+</main>
+</div>
+
+<script>
+// Map page key → section element id
+const PAGES = { intro:'sec-intro', grok:'sec-grok', pipelines:'sec-pipelines', workflow:'sec-workflow' };
+
+// All anchor ids by page (maps data-anchor to actual element id in that section)
+// The actual ids in the HTML are: archi, prereqs (intro), zones, tester, custom, erreurs (grok),
+// acceder, creer, monitoring (pipelines), failures, console, recap (workflow)
+
+function goTo(page, anchor) {
+  // 1. Switch section
+  Object.entries(PAGES).forEach(([key, secId]) => {
+    document.getElementById(secId).classList.toggle('active', key === page);
+  });
+
+  // 2. Topbar buttons
+  document.querySelectorAll('.tnav').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.page === page);
+  });
+
+  // 3. Sidebar links — active = same page + same anchor
+  document.querySelectorAll('.sblink').forEach(btn => {
+    const samePage   = btn.dataset.page === page;
+    const sameAnchor = (btn.dataset.anchor || '') === (anchor || '');
+    btn.classList.toggle('active', samePage && sameAnchor);
+  });
+
+  // 4. Scroll
+  if (anchor) {
+    // give DOM time to show section first
+    setTimeout(() => {
+      const el = document.getElementById(anchor);
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 68;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }, 40);
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  closeSidebar();
+}
+
+// Wire up ALL buttons via data attributes
+document.querySelectorAll('[data-page]').forEach(btn => {
+  if (btn.tagName === 'BUTTON') {
+    btn.addEventListener('click', () => {
+      goTo(btn.dataset.page, btn.dataset.anchor || '');
+    });
+  }
+});
+
+// Mobile sidebar
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+document.getElementById('ham').addEventListener('click', toggleSidebar);
+document.getElementById('overlay').addEventListener('click', closeSidebar);
+</script>
+</body>
+</html>

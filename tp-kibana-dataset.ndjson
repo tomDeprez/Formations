@@ -1,0 +1,1042 @@
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:49:12.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 48465, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:09:34.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 14528, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:35:59.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 201, "http.response.body.bytes": 29639, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:31:55.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/static/app.js", "http.response.status_code": 200, "http.response.body.bytes": 14310, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:55:49.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/app.js", "http.response.status_code": 404, "http.response.body.bytes": 39765, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:20:47.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 19413, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:37:47.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 400, "http.response.body.bytes": 19165, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:47:07.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/api/health", "http.response.status_code": 201, "http.response.body.bytes": 24109, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:22:10.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/users", "http.response.status_code": 304, "http.response.body.bytes": 11415, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:38:12.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 42143, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:04:10.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 400, "http.response.body.bytes": 20873, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:26:13.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/orders", "http.response.status_code": 304, "http.response.body.bytes": 26128, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:10:35.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 400, "http.response.body.bytes": 35522, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:47:58.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/static/app.js", "http.response.status_code": 200, "http.response.body.bytes": 9265, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:29:31.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 304, "http.response.body.bytes": 44796, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:25:43.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/logout", "http.response.status_code": 404, "http.response.body.bytes": 34876, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:02:08.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "POST", "url.path": "/static/app.js", "http.response.status_code": 200, "http.response.body.bytes": 28692, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:07:47.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 404, "http.response.body.bytes": 41179, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:39:39.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "GET", "url.path": "/static/app.js", "http.response.status_code": 400, "http.response.body.bytes": 35548, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:00:18.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 23988, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:10:46.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users", "http.response.status_code": 400, "http.response.body.bytes": 4735, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:58:14.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 34781, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:51:05.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "POST", "url.path": "/static/style.css", "http.response.status_code": 404, "http.response.body.bytes": 42790, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:59:15.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 22356, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:21:17.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 41559, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:05:01.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/users", "http.response.status_code": 301, "http.response.body.bytes": 18450, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:25:06.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/v1/orders", "http.response.status_code": 400, "http.response.body.bytes": 26877, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:51:30.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "POST", "url.path": "/static/style.css", "http.response.status_code": 201, "http.response.body.bytes": 47980, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:07:44.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 400, "http.response.body.bytes": 7361, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:44:38.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 30518, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:57:35.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 304, "http.response.body.bytes": 35627, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:50:56.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/favicon.ico", "http.response.status_code": 201, "http.response.body.bytes": 26482, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:29:54.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/api/health", "http.response.status_code": 404, "http.response.body.bytes": 30019, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:51:01.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 4032, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:41:48.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "POST", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 31446, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:45:41.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 12378, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:24:58.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/api/v1/users", "http.response.status_code": 404, "http.response.body.bytes": 37534, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:16:10.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 304, "http.response.body.bytes": 37242, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:52:46.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 8777, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:52:31.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "POST", "url.path": "/api/v1/users", "http.response.status_code": 200, "http.response.body.bytes": 40908, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:54:36.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/products", "http.response.status_code": 404, "http.response.body.bytes": 4708, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:21:48.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/login", "http.response.status_code": 400, "http.response.body.bytes": 40286, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:48:52.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 200, "http.response.body.bytes": 7214, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:02:08.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 200, "http.response.body.bytes": 22671, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:15:27.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/api/health", "http.response.status_code": 404, "http.response.body.bytes": 3529, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:46:24.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 8773, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:23:03.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 5131, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:21:24.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 301, "http.response.body.bytes": 28366, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:22:50.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/app.js", "http.response.status_code": 200, "http.response.body.bytes": 16553, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:56:08.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 404, "http.response.body.bytes": 11803, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:13:32.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 46158, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:28:55.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 400, "http.response.body.bytes": 30366, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:46:40.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 18458, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:02:20.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 2008, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:58:58.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "POST", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 28679, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:37:52.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 404, "http.response.body.bytes": 12657, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:24:14.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 404, "http.response.body.bytes": 35487, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:32:54.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "POST", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 43731, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:40:19.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "POST", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 26964, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:39:45.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 201, "http.response.body.bytes": 25047, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:48:34.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/login", "http.response.status_code": 400, "http.response.body.bytes": 20114, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:54:47.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/favicon.ico", "http.response.status_code": 201, "http.response.body.bytes": 14205, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:18:25.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/health", "http.response.status_code": 301, "http.response.body.bytes": 41680, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:03:03.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/orders", "http.response.status_code": 400, "http.response.body.bytes": 9856, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:25:14.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/favicon.ico", "http.response.status_code": 201, "http.response.body.bytes": 41472, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:46:11.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 43195, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:03:01.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 400, "http.response.body.bytes": 45807, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:13:42.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "GET", "url.path": "/favicon.ico", "http.response.status_code": 200, "http.response.body.bytes": 30650, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:50:04.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/logout", "http.response.status_code": 400, "http.response.body.bytes": 33281, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:33:36.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "GET", "url.path": "/favicon.ico", "http.response.status_code": 201, "http.response.body.bytes": 49468, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:38:40.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 5277, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:36:02.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "POST", "url.path": "/static/app.js", "http.response.status_code": 404, "http.response.body.bytes": 5480, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:22:22.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 26912, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:56:20.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 400, "http.response.body.bytes": 25724, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:19:50.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/", "http.response.status_code": 404, "http.response.body.bytes": 19769, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:46:05.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 32027, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:32:22.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "GET", "url.path": "/favicon.ico", "http.response.status_code": 404, "http.response.body.bytes": 40980, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:14:43.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 30457, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:27:27.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "POST", "url.path": "/api/v1/orders", "http.response.status_code": 201, "http.response.body.bytes": 22318, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:31:57.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/favicon.ico", "http.response.status_code": 200, "http.response.body.bytes": 35551, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:11:07.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 404, "http.response.body.bytes": 13265, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:39:19.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "GET", "url.path": "/favicon.ico", "http.response.status_code": 400, "http.response.body.bytes": 37160, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:13:58.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "POST", "url.path": "/api/v1/products", "http.response.status_code": 304, "http.response.body.bytes": 49216, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:02:33.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/logout", "http.response.status_code": 200, "http.response.body.bytes": 20644, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:09:55.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/users", "http.response.status_code": 304, "http.response.body.bytes": 41306, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:55:39.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "GET", "url.path": "/logout", "http.response.status_code": 400, "http.response.body.bytes": 22954, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:53:57.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 304, "http.response.body.bytes": 1029, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:29:06.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/static/app.js", "http.response.status_code": 304, "http.response.body.bytes": 30329, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:23:33.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 400, "http.response.body.bytes": 35469, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:13:52.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "POST", "url.path": "/api/v1/orders", "http.response.status_code": 400, "http.response.body.bytes": 5879, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:06:11.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/static/app.js", "http.response.status_code": 200, "http.response.body.bytes": 21500, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:26:16.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "POST", "url.path": "/static/app.js", "http.response.status_code": 200, "http.response.body.bytes": 39269, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:30:52.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users", "http.response.status_code": 200, "http.response.body.bytes": 26835, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:03:12.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/favicon.ico", "http.response.status_code": 400, "http.response.body.bytes": 6298, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:01:01.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 200, "http.response.body.bytes": 36472, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:07:44.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "POST", "url.path": "/favicon.ico", "http.response.status_code": 200, "http.response.body.bytes": 16675, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:05:53.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/users", "http.response.status_code": 400, "http.response.body.bytes": 45430, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:44:36.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 404, "http.response.body.bytes": 34582, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:34:33.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 20009, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:26:40.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "POST", "url.path": "/", "http.response.status_code": 404, "http.response.body.bytes": 36464, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:20:52.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 301, "http.response.body.bytes": 30962, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:00:33.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/health", "http.response.status_code": 404, "http.response.body.bytes": 31508, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:28:59.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/api/v1/users", "http.response.status_code": 301, "http.response.body.bytes": 45187, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:22:51.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 27474, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:25:33.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/favicon.ico", "http.response.status_code": 404, "http.response.body.bytes": 19687, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:54:11.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 304, "http.response.body.bytes": 17543, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:44:20.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 375, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:06:02.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "POST", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 46531, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:23:55.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/health", "http.response.status_code": 400, "http.response.body.bytes": 41163, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:01:05.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 9964, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:31:27.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 400, "http.response.body.bytes": 39196, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:30:08.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/api/v1/users", "http.response.status_code": 201, "http.response.body.bytes": 20128, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:39:49.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/api/v1/users", "http.response.status_code": 304, "http.response.body.bytes": 28513, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:56:01.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/users", "http.response.status_code": 200, "http.response.body.bytes": 44390, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:20:38.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 201, "http.response.body.bytes": 42897, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:31:54.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/api/v1/users", "http.response.status_code": 201, "http.response.body.bytes": 26961, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:55:20.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "GET", "url.path": "/static/app.js", "http.response.status_code": 201, "http.response.body.bytes": 32671, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:01:51.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/v1/users", "http.response.status_code": 200, "http.response.body.bytes": 21386, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:01:54.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 34176, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:40:02.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 8786, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:59:16.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 404, "http.response.body.bytes": 40103, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:27:38.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 201, "http.response.body.bytes": 14925, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:12:00.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/health", "http.response.status_code": 301, "http.response.body.bytes": 18119, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:35:52.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/favicon.ico", "http.response.status_code": 301, "http.response.body.bytes": 25338, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:27:20.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/health", "http.response.status_code": 400, "http.response.body.bytes": 27393, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:10:11.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/health", "http.response.status_code": 400, "http.response.body.bytes": 38665, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:00:24.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/login", "http.response.status_code": 201, "http.response.body.bytes": 21986, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:56:37.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/static/app.js", "http.response.status_code": 404, "http.response.body.bytes": 45911, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:12:16.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 31196, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:23:08.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/favicon.ico", "http.response.status_code": 404, "http.response.body.bytes": 8473, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:22:19.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/v1/users", "http.response.status_code": 301, "http.response.body.bytes": 30145, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:34:33.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/users", "http.response.status_code": 201, "http.response.body.bytes": 17568, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:40:22.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/app.js", "http.response.status_code": 404, "http.response.body.bytes": 35171, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:52:56.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "GET", "url.path": "/logout", "http.response.status_code": 200, "http.response.body.bytes": 41563, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:36:56.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/api/v1/users", "http.response.status_code": 400, "http.response.body.bytes": 46330, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:02:18.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 3877, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:15:46.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 301, "http.response.body.bytes": 37288, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:12:49.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users", "http.response.status_code": 304, "http.response.body.bytes": 25270, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:13:04.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 201, "http.response.body.bytes": 16844, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:19:26.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/health", "http.response.status_code": 400, "http.response.body.bytes": 10553, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:01:14.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/api/health", "http.response.status_code": 201, "http.response.body.bytes": 19999, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:30:05.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 301, "http.response.body.bytes": 37870, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:21:53.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/api/health", "http.response.status_code": 200, "http.response.body.bytes": 45144, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:26:47.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "POST", "url.path": "/api/v1/orders", "http.response.status_code": 304, "http.response.body.bytes": 23289, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:47:40.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/users", "http.response.status_code": 404, "http.response.body.bytes": 42558, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:48:43.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/products", "http.response.status_code": 200, "http.response.body.bytes": 19540, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:48:13.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 400, "http.response.body.bytes": 24176, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:34:02.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "POST", "url.path": "/favicon.ico", "http.response.status_code": 404, "http.response.body.bytes": 19542, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:55:21.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/v1/users", "http.response.status_code": 200, "http.response.body.bytes": 14985, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:35:31.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "POST", "url.path": "/api/v1/users", "http.response.status_code": 400, "http.response.body.bytes": 1112, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:53:02.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "POST", "url.path": "/api/health", "http.response.status_code": 304, "http.response.body.bytes": 42047, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:59:10.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/", "http.response.status_code": 304, "http.response.body.bytes": 36992, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:33:11.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/health", "http.response.status_code": 304, "http.response.body.bytes": 7846, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:24:45.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/api/v1/users", "http.response.status_code": 200, "http.response.body.bytes": 35428, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:32:15.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/logout", "http.response.status_code": 400, "http.response.body.bytes": 10326, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:57:40.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/api/health", "http.response.status_code": 200, "http.response.body.bytes": 24483, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:02:08.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/users", "http.response.status_code": 404, "http.response.body.bytes": 24273, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:52:09.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "PUT", "url.path": "/api/health", "http.response.status_code": 200, "http.response.body.bytes": 8205, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:50:03.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 400, "http.response.body.bytes": 16162, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:09:47.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 14352, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:59:26.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/products", "http.response.status_code": 404, "http.response.body.bytes": 35603, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:16:05.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 200, "http.response.body.bytes": 15793, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:56:49.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "POST", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 27788, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:02:04.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/favicon.ico", "http.response.status_code": 400, "http.response.body.bytes": 33835, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:59:33.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 42361, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:33:13.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/api/v1/users", "http.response.status_code": 201, "http.response.body.bytes": 29269, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:44:07.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 200, "http.response.body.bytes": 41689, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:59:28.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/logout", "http.response.status_code": 301, "http.response.body.bytes": 29934, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:30:38.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 400, "http.response.body.bytes": 14291, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:06:36.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "POST", "url.path": "/favicon.ico", "http.response.status_code": 200, "http.response.body.bytes": 48015, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:50:41.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "POST", "url.path": "/static/app.js", "http.response.status_code": 404, "http.response.body.bytes": 45211, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:36:39.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 48617, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:23:20.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "POST", "url.path": "/api/v1/users", "http.response.status_code": 201, "http.response.body.bytes": 43803, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:54:05.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 200, "http.response.body.bytes": 6989, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:37:06.000Z", "source.ip": "10.0.0.11", "host.name": "web-01", "http.request.method": "DELETE", "url.path": "/api/v1/orders", "http.response.status_code": 404, "http.response.body.bytes": 23145, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:20:44.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 404, "http.response.body.bytes": 40945, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:08:37.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "POST", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 46252, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:05:35.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 301, "http.response.body.bytes": 26465, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:17:28.000Z", "source.ip": "192.168.1.101", "host.name": "web-01", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 200, "http.response.body.bytes": 27714, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:06:10.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "POST", "url.path": "/static/app.js", "http.response.status_code": 400, "http.response.body.bytes": 37397, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:46:23.000Z", "source.ip": "10.0.0.10", "host.name": "web-01", "http.request.method": "GET", "url.path": "/logout", "http.response.status_code": 200, "http.response.body.bytes": 5546, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:01:59.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/logout", "http.response.status_code": 201, "http.response.body.bytes": 18102, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T14:52:17.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "POST", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 44647, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:23:55.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 39477, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:04:11.000Z", "source.ip": "10.0.0.11", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 400, "http.response.body.bytes": 19169, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:05:31.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "PUT", "url.path": "/api/v1/products", "http.response.status_code": 200, "http.response.body.bytes": 35103, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:05:40.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 404, "http.response.body.bytes": 2972, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T08:10:14.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 201, "http.response.body.bytes": 26704, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:49:36.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 200, "http.response.body.bytes": 21484, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:17:37.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "POST", "url.path": "/api/v1/users", "http.response.status_code": 201, "http.response.body.bytes": 7137, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:57:56.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "GET", "url.path": "/static/style.css", "http.response.status_code": 404, "http.response.body.bytes": 49077, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:01:00.000Z", "source.ip": "10.0.0.12", "host.name": "web-01", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 304, "http.response.body.bytes": 34973, "user_agent.original": "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Firefox/121.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:45:53.000Z", "source.ip": "10.0.0.12", "host.name": "web-02", "http.request.method": "GET", "url.path": "/api/v1/orders", "http.response.status_code": 200, "http.response.body.bytes": 16975, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T09:34:45.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products", "http.response.status_code": 404, "http.response.body.bytes": 41353, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:13:22.000Z", "source.ip": "192.168.1.100", "host.name": "web-02", "http.request.method": "POST", "url.path": "/static/app.js", "http.response.status_code": 200, "http.response.body.bytes": 4675, "user_agent.original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:01:30.000Z", "source.ip": "192.168.1.101", "host.name": "web-02", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 200, "http.response.body.bytes": 33448, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:49:31.000Z", "source.ip": "10.0.0.20", "host.name": "web-02", "http.request.method": "GET", "url.path": "/", "http.response.status_code": 200, "http.response.body.bytes": 19013, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:52:04.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "DELETE", "url.path": "/logout", "http.response.status_code": 301, "http.response.body.bytes": 48625, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:05:36.000Z", "source.ip": "192.168.1.100", "host.name": "web-01", "http.request.method": "POST", "url.path": "/logout", "http.response.status_code": 201, "http.response.body.bytes": 10086, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T12:06:02.000Z", "source.ip": "10.0.0.10", "host.name": "web-02", "http.request.method": "GET", "url.path": "/login", "http.response.status_code": 304, "http.response.body.bytes": 2765, "user_agent.original": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0", "http.version": "1.1", "log.type": "nginx_access"}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:48:18.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/wp-login.php", "http.response.status_code": 200, "http.response.body.bytes": 324, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:35:41.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/wp-admin/", "http.response.status_code": 404, "http.response.body.bytes": 286, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:19:18.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/phpmyadmin/", "http.response.status_code": 200, "http.response.body.bytes": 309, "user_agent.original": "curl/7.88.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:23:05.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/admin/", "http.response.status_code": 404, "http.response.body.bytes": 423, "user_agent.original": "Go-http-client/1.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:22:50.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/manager/html", "http.response.status_code": 404, "http.response.body.bytes": 268, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:38:05.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/.env", "http.response.status_code": 200, "http.response.body.bytes": 245, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:49:24.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/.git/config", "http.response.status_code": 404, "http.response.body.bytes": 270, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:39:46.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/config.php", "http.response.status_code": 404, "http.response.body.bytes": 279, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:44:47.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/backup.zip", "http.response.status_code": 200, "http.response.body.bytes": 166, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:48:23.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/server-status", "http.response.status_code": 404, "http.response.body.bytes": 258, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:25:42.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/wp-login.php", "http.response.status_code": 403, "http.response.body.bytes": 165, "user_agent.original": "Go-http-client/1.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:47:58.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/wp-admin/", "http.response.status_code": 404, "http.response.body.bytes": 430, "user_agent.original": "Go-http-client/1.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:28:54.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/phpmyadmin/", "http.response.status_code": 403, "http.response.body.bytes": 109, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:21:05.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/admin/", "http.response.status_code": 404, "http.response.body.bytes": 209, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:52:18.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/manager/html", "http.response.status_code": 200, "http.response.body.bytes": 198, "user_agent.original": "python-requests/2.31.0", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:09:23.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/.env", "http.response.status_code": 404, "http.response.body.bytes": 139, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:57:38.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/.git/config", "http.response.status_code": 404, "http.response.body.bytes": 359, "user_agent.original": "curl/7.88.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:36:50.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/config.php", "http.response.status_code": 404, "http.response.body.bytes": 438, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:59:49.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/backup.zip", "http.response.status_code": 404, "http.response.body.bytes": 405, "user_agent.original": "masscan/1.3.2", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:10:31.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/server-status", "http.response.status_code": 404, "http.response.body.bytes": 192, "user_agent.original": "curl/7.88.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:47:17.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/wp-login.php", "http.response.status_code": 404, "http.response.body.bytes": 469, "user_agent.original": "masscan/1.3.2", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:02:58.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/wp-admin/", "http.response.status_code": 200, "http.response.body.bytes": 286, "user_agent.original": "Go-http-client/1.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:49:07.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/phpmyadmin/", "http.response.status_code": 404, "http.response.body.bytes": 327, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:19:27.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/admin/", "http.response.status_code": 200, "http.response.body.bytes": 219, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:16:19.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/manager/html", "http.response.status_code": 403, "http.response.body.bytes": 340, "user_agent.original": "curl/7.88.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:13:14.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/.env", "http.response.status_code": 403, "http.response.body.bytes": 447, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:30:04.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/.git/config", "http.response.status_code": 200, "http.response.body.bytes": 493, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:53:07.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/config.php", "http.response.status_code": 200, "http.response.body.bytes": 357, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:28:34.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/backup.zip", "http.response.status_code": 404, "http.response.body.bytes": 202, "user_agent.original": "curl/7.88.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:41:16.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/server-status", "http.response.status_code": 404, "http.response.body.bytes": 228, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:43:46.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/wp-login.php", "http.response.status_code": 200, "http.response.body.bytes": 290, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:07:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/wp-admin/", "http.response.status_code": 404, "http.response.body.bytes": 245, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:52:05.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/phpmyadmin/", "http.response.status_code": 404, "http.response.body.bytes": 239, "user_agent.original": "masscan/1.3.2", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:35:02.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/admin/", "http.response.status_code": 404, "http.response.body.bytes": 323, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:15:09.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/manager/html", "http.response.status_code": 200, "http.response.body.bytes": 278, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:28:19.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/.env", "http.response.status_code": 404, "http.response.body.bytes": 302, "user_agent.original": "nmap scripting engine", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:25:31.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/.git/config", "http.response.status_code": 404, "http.response.body.bytes": 297, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:25:35.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/config.php", "http.response.status_code": 404, "http.response.body.bytes": 114, "user_agent.original": "Nikto/2.1.6", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:06:45.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/backup.zip", "http.response.status_code": 403, "http.response.body.bytes": 174, "user_agent.original": "python-requests/2.31.0", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T10:02:36.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/server-status", "http.response.status_code": 403, "http.response.body.bytes": 341, "user_agent.original": "Go-http-client/1.1", "http.version": "1.1", "log.type": "nginx_access", "tags": ["scan_detected"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:30:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=1 OR 1%3D1--", "http.response.status_code": 200, "http.response.body.bytes": 13232, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:30:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=1 OR 1%3D1--", "http.response.status_code": 500, "http.response.body.bytes": 8485, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:31:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=1 OR 1%3D1--", "http.response.status_code": 200, "http.response.body.bytes": 10881, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:31:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=1 OR 1%3D1--", "http.response.status_code": 200, "http.response.body.bytes": 2098, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:32:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=1 OR 1%3D1--", "http.response.status_code": 200, "http.response.body.bytes": 4993, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:32:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=1 OR 1%3D1--", "http.response.status_code": 200, "http.response.body.bytes": 14480, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:33:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=1 OR 1%3D1--", "http.response.status_code": 200, "http.response.body.bytes": 9791, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:33:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=1 OR 1%3D1--", "http.response.status_code": 500, "http.response.body.bytes": 10775, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:35:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products?cat=1 UNION SELECT username,password,3--", "http.response.status_code": 500, "http.response.body.bytes": 7734, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:35:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products?cat=1 UNION SELECT username,password,3--", "http.response.status_code": 200, "http.response.body.bytes": 13516, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:36:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products?cat=1 UNION SELECT username,password,3--", "http.response.status_code": 200, "http.response.body.bytes": 4693, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:36:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products?cat=1 UNION SELECT username,password,3--", "http.response.status_code": 200, "http.response.body.bytes": 2796, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:37:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products?cat=1 UNION SELECT username,password,3--", "http.response.status_code": 200, "http.response.body.bytes": 4706, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:37:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products?cat=1 UNION SELECT username,password,3--", "http.response.status_code": 200, "http.response.body.bytes": 11268, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:38:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products?cat=1 UNION SELECT username,password,3--", "http.response.status_code": 500, "http.response.body.bytes": 8289, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:38:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/products?cat=1 UNION SELECT username,password,3--", "http.response.status_code": 200, "http.response.body.bytes": 2616, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:40:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders?id=1; DROP TABLE orders--", "http.response.status_code": 200, "http.response.body.bytes": 10576, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:40:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders?id=1; DROP TABLE orders--", "http.response.status_code": 500, "http.response.body.bytes": 1069, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:41:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders?id=1; DROP TABLE orders--", "http.response.status_code": 500, "http.response.body.bytes": 9243, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:41:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders?id=1; DROP TABLE orders--", "http.response.status_code": 500, "http.response.body.bytes": 4763, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:42:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders?id=1; DROP TABLE orders--", "http.response.status_code": 500, "http.response.body.bytes": 3152, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:42:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders?id=1; DROP TABLE orders--", "http.response.status_code": 200, "http.response.body.bytes": 7832, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:43:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders?id=1; DROP TABLE orders--", "http.response.status_code": 200, "http.response.body.bytes": 10873, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:43:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/orders?id=1; DROP TABLE orders--", "http.response.status_code": 200, "http.response.body.bytes": 4741, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:45:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=%27 OR %271%27%3D%271", "http.response.status_code": 500, "http.response.body.bytes": 7625, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:45:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=%27 OR %271%27%3D%271", "http.response.status_code": 200, "http.response.body.bytes": 11685, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:46:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=%27 OR %271%27%3D%271", "http.response.status_code": 500, "http.response.body.bytes": 2202, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:46:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=%27 OR %271%27%3D%271", "http.response.status_code": 500, "http.response.body.bytes": 6708, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:47:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=%27 OR %271%27%3D%271", "http.response.status_code": 200, "http.response.body.bytes": 9418, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:47:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=%27 OR %271%27%3D%271", "http.response.status_code": 500, "http.response.body.bytes": 9112, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:48:00.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=%27 OR %271%27%3D%271", "http.response.status_code": 500, "http.response.body.bytes": 9879, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T11:48:30.000Z", "source.ip": "185.220.101.47", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/v1/users?id=%27 OR %271%27%3D%271", "http.response.status_code": 200, "http.response.body.bytes": 7197, "user_agent.original": "sqlmap/1.7.8#stable", "http.version": "1.1", "log.type": "nginx_access", "tags": ["sqli_attempt"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:00:00.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/export?file=../../../etc/passwd", "http.response.status_code": 200, "http.response.body.bytes": 3425, "user_agent.original": "Mozilla/5.0 (compatible; internal)", "http.version": "1.1", "log.type": "nginx_access", "tags": ["path_traversal"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:02:00.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/download?path=../../etc/shadow", "http.response.status_code": 200, "http.response.body.bytes": 1678, "user_agent.original": "Mozilla/5.0 (compatible; internal)", "http.version": "1.1", "log.type": "nginx_access", "tags": ["path_traversal"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T13:04:00.000Z", "source.ip": "10.0.0.20", "host.name": "web-01", "http.request.method": "GET", "url.path": "/api/report?format=../../../proc/self/environ", "http.response.status_code": 200, "http.response.body.bytes": 4103, "user_agent.original": "Mozilla/5.0 (compatible; internal)", "http.version": "1.1", "log.type": "nginx_access", "tags": ["path_traversal"]}
+{"index": {"_index": "tp-nginx"}}
+{"@timestamp": "2024-01-15T15:00:00.000Z", "source.ip": "10.0.0.20", "host.name": "api-01", "http.request.method": "POST", "url.path": "/api/v1/upload", "http.response.status_code": 201, "http.response.body.bytes": 9850000, "user_agent.original": "python-requests/2.31.0", "http.version": "1.1", "log.type": "nginx_access", "tags": ["large_upload"]}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:00.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "pi", "source.ip": "185.220.101.47", "source.port": 43200, "destination.port": 22, "auth.method": "password", "message": "Failed password for pi from 185.220.101.47 port 43200 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:06.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43201, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43201 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:12.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43202, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43202 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:18.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.47", "source.port": 43203, "destination.port": 22, "auth.method": "password", "message": "Failed password for root from 185.220.101.47 port 43203 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:24.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43204, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43204 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:30.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.47", "source.port": 43205, "destination.port": 22, "auth.method": "password", "message": "Failed password for root from 185.220.101.47 port 43205 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:36.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43206, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43206 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:42.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.47", "source.port": 43207, "destination.port": 22, "auth.method": "password", "message": "Failed password for admin from 185.220.101.47 port 43207 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:48.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.47", "source.port": 43208, "destination.port": 22, "auth.method": "password", "message": "Failed password for root from 185.220.101.47 port 43208 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:00:54.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "test", "source.ip": "185.220.101.47", "source.port": 43209, "destination.port": 22, "auth.method": "password", "message": "Failed password for test from 185.220.101.47 port 43209 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:00.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43210, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43210 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:06.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.47", "source.port": 43211, "destination.port": 22, "auth.method": "password", "message": "Failed password for admin from 185.220.101.47 port 43211 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:12.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.47", "source.port": 43212, "destination.port": 22, "auth.method": "password", "message": "Failed password for root from 185.220.101.47 port 43212 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:18.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43213, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43213 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:24.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "test", "source.ip": "185.220.101.47", "source.port": 43214, "destination.port": 22, "auth.method": "password", "message": "Failed password for test from 185.220.101.47 port 43214 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:30.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43215, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43215 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:36.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.47", "source.port": 43216, "destination.port": 22, "auth.method": "password", "message": "Failed password for admin from 185.220.101.47 port 43216 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:42.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "pi", "source.ip": "185.220.101.47", "source.port": 43217, "destination.port": 22, "auth.method": "password", "message": "Failed password for pi from 185.220.101.47 port 43217 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:48.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "pi", "source.ip": "185.220.101.47", "source.port": 43218, "destination.port": 22, "auth.method": "password", "message": "Failed password for pi from 185.220.101.47 port 43218 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:54.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.47", "source.port": 43219, "destination.port": 22, "auth.method": "password", "message": "Failed password for admin from 185.220.101.47 port 43219 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:00.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.47", "source.port": 43220, "destination.port": 22, "auth.method": "password", "message": "Failed password for admin from 185.220.101.47 port 43220 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:06.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.47", "source.port": 43221, "destination.port": 22, "auth.method": "password", "message": "Failed password for root from 185.220.101.47 port 43221 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:12.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "pi", "source.ip": "185.220.101.47", "source.port": 43222, "destination.port": 22, "auth.method": "password", "message": "Failed password for pi from 185.220.101.47 port 43222 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:18.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.47", "source.port": 43223, "destination.port": 22, "auth.method": "password", "message": "Failed password for root from 185.220.101.47 port 43223 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:24.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43224, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43224 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:30.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.47", "source.port": 43225, "destination.port": 22, "auth.method": "password", "message": "Failed password for admin from 185.220.101.47 port 43225 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:36.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.47", "source.port": 43226, "destination.port": 22, "auth.method": "password", "message": "Failed password for root from 185.220.101.47 port 43226 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:42.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.47", "source.port": 43227, "destination.port": 22, "auth.method": "password", "message": "Failed password for admin from 185.220.101.47 port 43227 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:48.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.47", "source.port": 43228, "destination.port": 22, "auth.method": "password", "message": "Failed password for root from 185.220.101.47 port 43228 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:02:54.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43229, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43229 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:03:00.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "ubuntu", "source.ip": "185.220.101.47", "source.port": 43230, "destination.port": 22, "auth.method": "password", "message": "Failed password for ubuntu from 185.220.101.47 port 43230 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:03:06.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "test", "source.ip": "185.220.101.47", "source.port": 43231, "destination.port": 22, "auth.method": "password", "message": "Failed password for test from 185.220.101.47 port 43231 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:03:12.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "pi", "source.ip": "185.220.101.47", "source.port": 43232, "destination.port": 22, "auth.method": "password", "message": "Failed password for pi from 185.220.101.47 port 43232 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:03:18.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "test", "source.ip": "185.220.101.47", "source.port": 43233, "destination.port": 22, "auth.method": "password", "message": "Failed password for test from 185.220.101.47 port 43233 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:03:24.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 8821, "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "pi", "source.ip": "185.220.101.47", "source.port": 43234, "destination.port": 22, "auth.method": "password", "message": "Failed password for pi from 185.220.101.47 port 43234 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:00:00.000Z", "host.name": "web-01", "process.name": "sshd", "process.pid": 9102, "event.action": "authentication_success", "event.outcome": "success", "user.name": "deploy", "source.ip": "10.0.0.20", "source.port": 55441, "destination.port": 22, "auth.method": "publickey", "auth.key_type": "RSA", "auth.key_fingerprint": "SHA256:Tg8k+3jMp9fQ0Rt7sCvVuYwX2mN6bLhE1dZqA4nKoI=", "message": "Accepted publickey for deploy from 10.0.0.20 port 55441 ssh2", "log.type": "auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:18:20.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "alice", "source.ip": "192.168.1.100", "destination.port": 443, "message": "Accepted login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T11:14:57.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "alice", "source.ip": "192.168.1.100", "destination.port": 443, "message": "Accepted login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:07:58.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "charlie", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Accepted login for charlie", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T11:31:09.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "charlie", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Accepted login for charlie", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T11:20:37.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "185.220.101.47", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T08:43:06.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "admin", "source.ip": "192.168.1.100", "destination.port": 443, "message": "Accepted login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:55:25.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "alice", "source.ip": "192.168.1.100", "destination.port": 443, "message": "Failed login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T12:03:31.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T11:11:59.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.47", "destination.port": 443, "message": "Failed login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:29:56.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "deploy", "source.ip": "10.0.0.11", "destination.port": 443, "message": "Accepted login for deploy", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:06:33.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "deploy", "source.ip": "10.0.0.10", "destination.port": 443, "message": "Accepted login for deploy", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:17:58.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "10.0.0.10", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:08:56.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "alice", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Accepted login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T11:29:05.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Failed login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T11:22:35.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "charlie", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Accepted login for charlie", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T12:49:09.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "charlie", "source.ip": "10.0.0.20", "destination.port": 443, "message": "Accepted login for charlie", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:01:57.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "alice", "source.ip": "185.220.101.47", "destination.port": 443, "message": "Accepted login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T13:06:44.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "alice", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Accepted login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:57:11.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "10.0.0.20", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:06:58.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:29:35.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "admin", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Accepted login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:27:30.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "alice", "source.ip": "192.168.1.100", "destination.port": 443, "message": "Accepted login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T15:44:57.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T12:37:50.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "bob", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Failed login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:09:17.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Failed login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T15:18:54.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "root", "source.ip": "10.0.0.11", "destination.port": 443, "message": "Failed login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:48:54.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "admin", "source.ip": "185.220.101.47", "destination.port": 443, "message": "Accepted login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T15:00:03.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "admin", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Accepted login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:53:08.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "deploy", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Failed login for deploy", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:10:05.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T11:56:16.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "10.0.0.11", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T12:42:57.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:27:23.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "10.0.0.11", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:16:51.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T13:41:20.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "charlie", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Accepted login for charlie", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T13:23:12.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "10.0.0.10", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T15:30:41.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "alice", "source.ip": "10.0.0.20", "destination.port": 443, "message": "Failed login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:58:51.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T13:42:30.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:13:44.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "deploy", "source.ip": "10.0.0.11", "destination.port": 443, "message": "Accepted login for deploy", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:16:04.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "alice", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Accepted login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T12:13:38.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T15:50:29.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "deploy", "source.ip": "185.220.101.47", "destination.port": 443, "message": "Accepted login for deploy", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:11:24.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "charlie", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Accepted login for charlie", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:12:01.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "10.0.0.20", "destination.port": 443, "message": "Failed login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T09:16:56.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "alice", "source.ip": "185.220.101.47", "destination.port": 443, "message": "Failed login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:15:35.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "10.0.0.20", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:56:45.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:48:30.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Failed login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:11:28.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "10.0.0.10", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:33:39.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "admin", "source.ip": "192.168.1.100", "destination.port": 443, "message": "Accepted login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T12:53:06.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "alice", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Accepted login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T10:24:26.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "deploy", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Accepted login for deploy", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T08:24:42.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Failed login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T13:02:08.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "charlie", "source.ip": "192.168.1.100", "destination.port": 443, "message": "Failed login for charlie", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T15:30:43.000Z", "host.name": "web-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "root", "source.ip": "10.0.0.12", "destination.port": 443, "message": "Accepted login for root", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T08:52:48.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "admin", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Accepted login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T14:52:18.000Z", "host.name": "auth-01", "process.name": "nginx", "event.action": "authentication_success", "event.outcome": "success", "user.name": "bob", "source.ip": "10.0.0.10", "destination.port": 443, "message": "Accepted login for bob", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T08:24:44.000Z", "host.name": "api-01", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "alice", "source.ip": "185.220.101.48", "destination.port": 443, "message": "Failed login for alice", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T12:43:37.000Z", "host.name": "web-02", "process.name": "nginx", "event.action": "authentication_failure", "event.outcome": "failure", "user.name": "admin", "source.ip": "192.168.1.101", "destination.port": 443, "message": "Failed login for admin", "log.type": "app_auth"}
+{"index": {"_index": "tp-auth"}}
+{"@timestamp": "2024-01-15T16:00:00.000Z", "host.name": "web-01", "process.name": "sudo", "process.pid": 12345, "event.action": "privilege_escalation", "event.outcome": "success", "user.name": "deploy", "user.effective.name": "root", "message": "deploy : TTY=pts/0 ; PWD=/home/deploy ; USER=root ; COMMAND=/bin/bash", "log.type": "auth"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:34:49.000Z", "host.name": "web-02", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T11:34:36.000Z", "host.name": "api-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:37:03.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:19:21.000Z", "host.name": "api-01", "process.name": "kernel", "log.level": "INFO", "message": "eth0: renamed from veth1a2b3c", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T11:00:54.000Z", "host.name": "auth-01", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:18:46.000Z", "host.name": "web-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:25:59.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:58:02.000Z", "host.name": "web-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:18:40.000Z", "host.name": "web-02", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:46:18.000Z", "host.name": "web-02", "process.name": "systemd", "log.level": "INFO", "message": "reload nginx.service", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T15:28:44.000Z", "host.name": "web-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:12:41.000Z", "host.name": "web-02", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:10:20.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T11:48:42.000Z", "host.name": "auth-01", "process.name": "cron", "log.level": "INFO", "message": "/USR/SBIN/CRON[1234]: (root) CMD (/usr/local/bin/backup.sh)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:17:06.000Z", "host.name": "auth-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:34:03.000Z", "host.name": "web-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:25:26.000Z", "host.name": "web-02", "process.name": "cron", "log.level": "INFO", "message": "/USR/SBIN/CRON[1234]: (root) CMD (/usr/local/bin/backup.sh)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:06:19.000Z", "host.name": "auth-01", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:46:58.000Z", "host.name": "api-01", "process.name": "systemd", "log.level": "INFO", "message": "reload nginx.service", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:34:34.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:58:20.000Z", "host.name": "api-01", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:33:10.000Z", "host.name": "web-02", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T10:14:37.000Z", "host.name": "api-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T10:02:48.000Z", "host.name": "api-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:24:58.000Z", "host.name": "auth-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T10:53:08.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:06:06.000Z", "host.name": "api-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:06:33.000Z", "host.name": "auth-01", "process.name": "systemd", "log.level": "INFO", "message": "reload nginx.service", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T15:26:56.000Z", "host.name": "web-02", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T10:38:37.000Z", "host.name": "api-01", "process.name": "kernel", "log.level": "INFO", "message": "eth0: renamed from veth1a2b3c", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:30:00.000Z", "host.name": "api-01", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:01:35.000Z", "host.name": "auth-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:56:51.000Z", "host.name": "api-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:06:56.000Z", "host.name": "web-02", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:59:39.000Z", "host.name": "web-02", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:27:43.000Z", "host.name": "web-02", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:28:40.000Z", "host.name": "auth-01", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T11:00:23.000Z", "host.name": "web-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:12:01.000Z", "host.name": "web-01", "process.name": "cron", "log.level": "INFO", "message": "/USR/SBIN/CRON[1234]: (root) CMD (/usr/local/bin/backup.sh)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:00:33.000Z", "host.name": "auth-01", "process.name": "cron", "log.level": "INFO", "message": "/USR/SBIN/CRON[1234]: (root) CMD (/usr/local/bin/backup.sh)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:56:33.000Z", "host.name": "auth-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:55:16.000Z", "host.name": "api-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T10:55:24.000Z", "host.name": "web-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:59:49.000Z", "host.name": "web-02", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:52:15.000Z", "host.name": "web-02", "process.name": "kernel", "log.level": "INFO", "message": "eth0: renamed from veth1a2b3c", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T11:48:13.000Z", "host.name": "web-01", "process.name": "cron", "log.level": "INFO", "message": "/USR/SBIN/CRON[1234]: (root) CMD (/usr/local/bin/backup.sh)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T15:36:40.000Z", "host.name": "auth-01", "process.name": "systemd", "log.level": "INFO", "message": "reload nginx.service", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:41:45.000Z", "host.name": "web-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:05:03.000Z", "host.name": "web-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T11:02:58.000Z", "host.name": "auth-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:50:14.000Z", "host.name": "web-02", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T15:44:47.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:45:18.000Z", "host.name": "api-01", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:28:44.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:32:27.000Z", "host.name": "web-01", "process.name": "cron", "log.level": "INFO", "message": "/USR/SBIN/CRON[1234]: (root) CMD (/usr/local/bin/backup.sh)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:42:17.000Z", "host.name": "api-01", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:10:05.000Z", "host.name": "web-02", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:33:39.000Z", "host.name": "auth-01", "process.name": "systemd", "log.level": "INFO", "message": "reload nginx.service", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:41:24.000Z", "host.name": "web-01", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T11:38:54.000Z", "host.name": "web-02", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:16:47.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T10:15:28.000Z", "host.name": "api-01", "process.name": "kernel", "log.level": "INFO", "message": "eth0: renamed from veth1a2b3c", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T11:29:28.000Z", "host.name": "auth-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:51:39.000Z", "host.name": "api-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T10:44:54.000Z", "host.name": "api-01", "process.name": "kernel", "log.level": "INFO", "message": "eth0: renamed from veth1a2b3c", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:56:59.000Z", "host.name": "web-02", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:33:55.000Z", "host.name": "auth-01", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T10:47:33.000Z", "host.name": "auth-01", "process.name": "cron", "log.level": "INFO", "message": "/USR/SBIN/CRON[1234]: (root) CMD (/usr/local/bin/backup.sh)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:14:41.000Z", "host.name": "web-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:48:49.000Z", "host.name": "api-01", "process.name": "fail2ban", "log.level": "WARN", "message": "Ban 185.220.101.47", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T13:35:40.000Z", "host.name": "web-02", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:12:56.000Z", "host.name": "web-02", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:08:28.000Z", "host.name": "auth-01", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:23:21.000Z", "host.name": "web-02", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T14:56:04.000Z", "host.name": "web-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T12:46:59.000Z", "host.name": "api-01", "process.name": "cron", "log.level": "INFO", "message": "(root) CMD (/usr/bin/certbot renew --quiet)", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:42:39.000Z", "host.name": "web-01", "process.name": "systemd", "log.level": "INFO", "message": "Started Session 42 of user deploy.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T15:32:37.000Z", "host.name": "web-02", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:29:51.000Z", "host.name": "auth-01", "process.name": "kernel", "log.level": "WARN", "message": "Possible SYN flooding on port 80. Sending cookies.", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:03:28.000Z", "host.name": "auth-01", "process.name": "postfix", "log.level": "INFO", "message": "connect from mail.example.com[93.184.216.34]", "log.type": "syslog"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:50:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 42979, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:50:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 56723, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:51:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 54597, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:52:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 41823, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:53:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 54858, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:53:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 44323, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:54:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 56818, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:55:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 53612, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:56:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 54968, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:56:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 58478, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:57:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 41891, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T08:58:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 58310, "destination.port": 22, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=22", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:00:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 55151, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:00:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 62045, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:01:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 50098, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:02:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 63700, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:03:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 40713, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:03:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 52974, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:04:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 48338, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:05:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 40098, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:06:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 64438, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:06:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 47140, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:07:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 58950, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:08:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "source.port": 42393, "destination.port": 3389, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=185.220.101.47 DST=203.0.113.10 PROTO=TCP DPT=3389", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:10:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 41484, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:10:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 53883, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:11:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 51289, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:12:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 62950, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:13:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 42089, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:13:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 57732, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:14:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 41974, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:15:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 42261, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:16:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 55468, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:16:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 41039, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:17:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 49407, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:18:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 53397, "destination.port": 445, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=445", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:20:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 45897, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:20:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 44437, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:21:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 61021, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:22:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 63897, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:23:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 61164, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:23:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 53774, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:24:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 52270, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:25:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 52533, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:26:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 54697, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:26:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 52369, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:27:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 52309, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:28:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "45.33.32.156", "destination.ip": "203.0.113.10", "source.port": 42629, "destination.port": 1433, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=45.33.32.156 DST=203.0.113.10 PROTO=TCP DPT=1433", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:30:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 62371, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:30:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 61685, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:31:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 57671, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:32:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 44357, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:33:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 61415, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:33:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 51395, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:34:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 43887, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:35:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 45848, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:36:00.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 57604, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:36:45.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 52879, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:37:30.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 57329, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-syslog"}}
+{"@timestamp": "2024-01-15T09:38:15.000Z", "host.name": "fw-01", "process.name": "kernel", "log.level": "WARN", "network.transport": "tcp", "source.ip": "23.105.131.70", "destination.ip": "203.0.113.10", "source.port": 44172, "destination.port": 80, "event.action": "denied", "message": "IPTABLES-DROP: IN=eth0 SRC=23.105.131.70 DST=203.0.113.10 PROTO=TCP DPT=80", "log.type": "firewall"}
+{"index": {"_index": "tp-alerts"}}
+{"@timestamp": "2024-01-15T11:30:00.000Z", "log.level": "CRITICAL", "rule.id": "SQL_INJECT_001", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "threat.category": "SQLi", "threat.score": 98, "payload.hash": "a3f8c2e1d4b6970123456789abcdef01", "event.kind": "alert", "log.type": "detection"}
+{"index": {"_index": "tp-alerts"}}
+{"@timestamp": "2024-01-15T11:35:00.000Z", "log.level": "CRITICAL", "rule.id": "SQL_INJECT_001", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "threat.category": "SQLi", "threat.score": 97, "payload.hash": "b4e9d3f2e5c708134567890bcdef0123", "event.kind": "alert", "log.type": "detection"}
+{"index": {"_index": "tp-alerts"}}
+{"@timestamp": "2024-01-15T09:00:00.000Z", "log.level": "HIGH", "rule.id": "BRUTE_FORCE_SSH", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "threat.category": "BruteForce", "threat.score": 85, "payload.hash": null, "event.kind": "alert", "log.type": "detection"}
+{"index": {"_index": "tp-alerts"}}
+{"@timestamp": "2024-01-15T10:00:00.000Z", "log.level": "MEDIUM", "rule.id": "RECON_SCAN_001", "source.ip": "185.220.101.47", "destination.ip": "203.0.113.10", "threat.category": "Reconnaissance", "threat.score": 65, "payload.hash": null, "event.kind": "alert", "log.type": "detection"}
+{"index": {"_index": "tp-alerts"}}
+{"@timestamp": "2024-01-15T13:00:00.000Z", "log.level": "HIGH", "rule.id": "PATH_TRAV_001", "source.ip": "10.0.0.20", "destination.ip": "203.0.113.10", "threat.category": "PathTraversal", "threat.score": 88, "payload.hash": "c5f0e4a3d6b819245678901cdef0123", "event.kind": "alert", "log.type": "detection"}
+{"index": {"_index": "tp-alerts"}}
+{"@timestamp": "2024-01-15T14:00:00.000Z", "log.level": "MEDIUM", "rule.id": "LATERAL_MOVE_001", "source.ip": "10.0.0.20", "destination.ip": "203.0.113.10", "threat.category": "LateralMovement", "threat.score": 60, "payload.hash": null, "event.kind": "alert", "log.type": "detection"}
+{"index": {"_index": "tp-alerts"}}
+{"@timestamp": "2024-01-15T16:00:00.000Z", "log.level": "HIGH", "rule.id": "PRIV_ESC_001", "source.ip": "10.0.0.20", "destination.ip": "203.0.113.10", "threat.category": "PrivilegeEscalation", "threat.score": 80, "payload.hash": null, "event.kind": "alert", "log.type": "detection"}
+{"index": {"_index": "tp-alerts"}}
+{"@timestamp": "2024-01-15T15:00:00.000Z", "log.level": "MEDIUM", "rule.id": "LARGE_UPLOAD_001", "source.ip": "10.0.0.20", "destination.ip": "203.0.113.10", "threat.category": "DataExfiltration", "threat.score": 72, "payload.hash": null, "event.kind": "alert", "log.type": "detection"}

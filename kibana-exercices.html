@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kibana — Exercices Pratiques Recherche Logs</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f8fc;--surface:#ffffff;--sf2:#f0f2f9;--border:#e2e5f0;--border2:#c8cde0;
+  --ink:#1a1d2e;--ink2:#4a4f6a;--muted:#8890b0;--muted2:#b8bdd0;
+  --kibana:#006bb4;--kib2:#0082d6;--elastic:#f04e98;
+  --kql:#0284c7;--lucene:#16a34a;--dsl:#d97706;--sql:#7c3aed;--eql:#db2777;--esql:#0d9488;
+  --ok:#15803d;--warn:#b45309;--danger:#be185d;
+  --ex1:#0369a1;--ex2:#15803d;--ex3:#9333ea;--ex4:#be185d;--ex5:#b45309;--ex6:#0f766e;
+  --sb-w:256px;--top-h:56px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ══ TOPBAR ══ */
+.topbar{position:sticky;top:0;z-index:300;height:var(--top-h);background:var(--surface);border-bottom:2px solid var(--kibana);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;box-shadow:0 2px 12px rgba(0,107,180,.08)}
+.logo{display:flex;align-items:center;gap:.5rem}
+.logo-icon{width:30px;height:30px;background:var(--kibana);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-family:'Fira Code',monospace;font-weight:500;flex-shrink:0}
+.logo-text{font-size:.9rem;font-weight:800}.logo-text span{color:var(--kibana)}
+.topbar-nav{display:flex;gap:.25rem;margin-left:auto}
+.tnav{font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:.35rem .85rem;cursor:pointer;border-radius:20px;transition:all .15s;white-space:nowrap;background:none;border:none;font-family:'Syne',sans-serif}
+.tnav:hover{color:var(--ink2);background:var(--sf2)}
+.tnav.active{color:var(--kibana);background:rgba(0,107,180,.08);border:1px solid rgba(0,107,180,.2)}
+.hamburger{display:none;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.3rem;padding:.2rem}
+
+/* ══ LAYOUT ══ */
+.layout{display:grid;grid-template-columns:var(--sb-w) 1fr;min-height:calc(100vh - var(--top-h));align-items:start}
+
+/* ══ SIDEBAR ══ */
+.sidebar{position:sticky;top:var(--top-h);height:calc(100vh - var(--top-h));overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:1.25rem 0 2rem;transition:transform .25s ease}
+.sb-lbl{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);padding:.8rem 1.1rem .25rem}
+.sblink{display:flex;align-items:center;gap:.6rem;padding:.4rem 1.1rem;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;width:100%;text-align:left;border-left:3px solid transparent;transition:all .12s;font-family:'Syne',sans-serif}
+.sblink:hover{color:var(--ink2);border-left-color:var(--border2);background:var(--sf2)}
+.sblink.active{color:var(--kibana);border-left-color:var(--kibana);background:rgba(0,107,180,.06)}
+.sblink .ico{font-size:.9rem;flex-shrink:0;width:20px;text-align:center}
+.sblink .xbadge{font-family:'Fira Code',monospace;font-size:.56rem;padding:.08rem .38rem;border-radius:3px;margin-left:auto;font-weight:500}
+.sb-divider{height:1px;background:var(--border);margin:.75rem 1.1rem}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:250}
+.sb-overlay.show{display:block}
+
+/* ══ MAIN ══ */
+.main{padding:2.5rem 2.5rem 5rem;min-width:0}
+.section{display:none}.section.active{display:block}
+
+/* ══ HERO ══ */
+.page-hero{background:linear-gradient(135deg,#eef6ff 0%,#f0f7ff 50%,#f5f0ff 100%);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden}
+.page-hero::after{content:'';position:absolute;right:-30px;top:-30px;width:180px;height:180px;background:radial-gradient(circle,rgba(0,107,180,.08) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.22rem .65rem;border-radius:20px;margin-bottom:.75rem;color:var(--kibana);background:rgba(0,107,180,.08);border:1px solid rgba(0,107,180,.2)}
+.hero-title{font-size:clamp(1.6rem,3.5vw,2.1rem);font-weight:800;line-height:1.1;margin-bottom:.5rem}
+.hero-sub{font-size:.88rem;color:var(--ink2);line-height:1.75;max-width:580px;font-weight:400}
+
+/* ══ HEADINGS ══ */
+h2{font-size:1.1rem;font-weight:800;color:var(--ink);margin:2.25rem 0 .6rem;display:flex;align-items:center;gap:.65rem}
+.h2-n{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:.72rem;font-weight:600;flex-shrink:0;background:var(--kibana);color:#fff}
+h3{font-size:.85rem;font-weight:700;color:var(--ink2);margin:1.5rem 0 .4rem;text-transform:uppercase;letter-spacing:.07em}
+p{font-size:.87rem;color:var(--ink2);line-height:1.8;margin-bottom:.85rem;font-weight:400}
+hr.sep{border:none;border-top:1px solid var(--border);margin:2rem 0}
+code{font-family:'Fira Code',monospace;font-size:.82em;background:rgba(0,107,180,.07);color:var(--kibana);padding:.1em .38em;border-radius:4px;border:1px solid rgba(0,107,180,.15)}
+
+/* ══ CODE BLOCKS ══ */
+.cw{margin:.9rem 0}
+.ctop{background:var(--sf2);border:1px solid var(--border);border-bottom:none;border-radius:6px 6px 0 0;padding:.4rem 1rem;display:flex;align-items:center;justify-content:space-between;font-family:'Fira Code',monospace;font-size:.62rem;color:var(--muted)}
+.clang{font-size:.58rem;padding:.1rem .45rem;border-radius:3px;font-family:'Fira Code',monospace;font-weight:500}
+.cl-kql{background:rgba(2,132,199,.1);color:var(--kql);border:1px solid rgba(2,132,199,.25)}
+.cl-dsl{background:rgba(217,119,6,.1);color:var(--dsl);border:1px solid rgba(217,119,6,.25)}
+.cl-bash{background:rgba(22,163,74,.1);color:var(--lucene);border:1px solid rgba(22,163,74,.25)}
+.cl-esql{background:rgba(13,148,136,.1);color:var(--esql);border:1px solid rgba(13,148,136,.25)}
+.cl-json{background:rgba(124,58,237,.1);color:var(--sql);border:1px solid rgba(124,58,237,.25)}
+.copy-b{background:none;border:1px solid var(--border);color:var(--muted2);font-family:'Fira Code',monospace;font-size:.58rem;padding:.1rem .4rem;border-radius:3px;cursor:pointer;transition:all .15s}
+.copy-b:hover{color:var(--ink);border-color:var(--border2)}.copy-b.ok{color:var(--ok);border-color:var(--ok)}
+pre{background:#1a1d2e;border:1px solid var(--border);border-radius:0 0 6px 6px;padding:1rem 1.15rem;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.78rem;line-height:1.8;color:#c8cce0}
+pre.alone{border-radius:6px}
+.ck{color:#7ecad4}.cs{color:#a8cc8c}.cn{color:#f0a070}.co{color:#e06c75}.cc{color:#4a5a72;font-style:italic}.cp{color:#ce93d8}.cf{color:#ffb74d}
+
+/* ══ CALLOUTS ══ */
+.box{border-radius:7px;padding:.85rem 1rem;margin:.9rem 0;font-size:.84rem;display:flex;gap:.7rem;align-items:flex-start}
+.box-i{font-size:1rem;flex-shrink:0;margin-top:.1rem}
+.box-b p{margin:0;color:inherit;font-size:.83rem}.box-b strong{font-weight:700;display:block;margin-bottom:.15rem}
+.box.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.box.tip{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d}
+.box.warn{background:#fffbeb;border:1px solid #fde68a;color:#78350f}
+.box.danger{background:#fff1f2;border:1px solid #fecdd3;color:#881337}
+
+/* ══ KPATH ══ */
+.kpath{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;font-family:'Fira Code',monospace;font-size:.72rem;background:var(--sf2);border:1px solid var(--border);padding:.4rem .9rem;border-radius:5px;margin:.85rem 0}
+.kpath .seg{color:var(--ink2);font-weight:600}.kpath .cur{color:var(--kibana);font-weight:700}.kpath .arr{color:var(--muted2)}
+
+/* ══ TABLES ══ */
+.tbl-wrap{overflow-x:auto;margin:.9rem 0}
+table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+th{background:var(--sf2);padding:.5rem .85rem;text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:.5rem .85rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(0,107,180,.02)}
+
+/* ══ BADGES ══ */
+.badge{display:inline-block;font-family:'Fira Code',monospace;font-size:.62rem;font-weight:500;padding:.12rem .5rem;border-radius:4px}
+.b-kql{background:rgba(2,132,199,.1);color:var(--kql);border:1px solid rgba(2,132,199,.25)}
+.b-esql{background:rgba(13,148,136,.1);color:var(--esql);border:1px solid rgba(13,148,136,.25)}
+.b-ok{background:#f0fdf4;color:var(--ok);border:1px solid #bbf7d0}
+.b-warn{background:#fffbeb;color:var(--warn);border:1px solid #fde68a}
+.b-danger{background:#fff1f2;color:var(--danger);border:1px solid #fecdd3}
+
+/* ══ DATASET INFO ══ */
+.dataset-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem;margin:1rem 0}
+.ds-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;border-top:3px solid}
+.ds-card.nginx{border-top-color:var(--kql)}
+.ds-card.auth{border-top-color:var(--lucene)}
+.ds-card.syslog{border-top-color:var(--dsl)}
+.ds-card.alerts{border-top-color:var(--danger)}
+.ds-index{font-family:'Fira Code',monospace;font-size:.78rem;font-weight:500;margin-bottom:.3rem}
+.ds-count{font-size:1.4rem;font-weight:800;margin-bottom:.2rem}
+.ds-desc{font-size:.75rem;color:var(--muted);line-height:1.5}
+.ds-fields{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.6rem}
+.ds-field{font-family:'Fira Code',monospace;font-size:.58rem;background:var(--sf2);border:1px solid var(--border);color:var(--ink2);padding:.08rem .38rem;border-radius:3px}
+
+/* ══ WALKTHROUGH ══ */
+.walkthrough{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.25rem 0}
+.wt-step{display:grid;grid-template-columns:52px 1fr;border-bottom:1px solid var(--border);transition:background .15s}
+.wt-step:last-child{border-bottom:none}.wt-step:hover{background:rgba(0,107,180,.015)}
+.wt-num{background:var(--sf2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.9rem .5rem .5rem;gap:.3rem}
+.wt-circle{width:26px;height:26px;border-radius:50%;background:var(--kibana);color:#fff;font-family:'Fira Code',monospace;font-size:.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wt-line{width:2px;flex:1;background:var(--border);min-height:10px;margin-top:4px}
+.wt-step:last-child .wt-line{display:none}
+.wt-body{padding:.9rem 1.1rem}.wt-body h4{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.4rem}
+.wt-body p{margin-bottom:.4rem;font-size:.84rem}
+
+/* ══ EXERCISE CARD ══ */
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.ex-header{padding:1.1rem 1.25rem;display:flex;align-items:flex-start;gap:.85rem;border-bottom:1px solid var(--border)}
+.ex-num{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:.82rem;font-weight:700;color:#fff;flex-shrink:0}
+.ex-meta h3{font-size:.95rem;font-weight:800;color:var(--ink);margin:0 0 .2rem;text-transform:none;letter-spacing:0}
+.ex-meta p{font-size:.82rem;color:var(--ink2);margin:0}
+.ex-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.4rem}
+.ex-tag{font-family:'Fira Code',monospace;font-size:.58rem;padding:.1rem .4rem;border-radius:3px;font-weight:500}
+.ex-body{padding:1.1rem 1.25rem}
+
+/* Exercise difficulty */
+.diff{font-size:.62rem;padding:.12rem .5rem;border-radius:3px;font-family:'Fira Code',monospace;font-weight:500}
+.diff-easy{background:#f0fdf4;color:var(--ok);border:1px solid #bbf7d0}
+.diff-med{background:#fffbeb;color:var(--warn);border:1px solid #fde68a}
+.diff-hard{background:#fff1f2;color:var(--danger);border:1px solid #fecdd3}
+
+/* ══ QUESTION BLOCK ══ */
+.qblock{background:var(--sf2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.1rem;margin:.75rem 0;position:relative}
+.qblock-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.65rem}
+.qblock-q{font-size:.88rem;font-weight:700;color:var(--ink);flex:1;line-height:1.5}
+.qblock-pts{font-family:'Fira Code',monospace;font-size:.62rem;background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:.12rem .5rem;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.qblock-hint{font-size:.8rem;color:var(--muted);font-style:italic;margin-bottom:.5rem}
+.reveal-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Fira Code',monospace;font-size:.65rem;padding:.25rem .7rem;border-radius:4px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:.3rem}
+.reveal-btn:hover{color:var(--kibana);border-color:rgba(0,107,180,.3);background:rgba(0,107,180,.04)}
+.reveal-btn.open{color:var(--ok);border-color:var(--ok)}
+.answer-block{display:none;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+.answer-block.show{display:block}
+.answer-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);margin-bottom:.4rem;display:flex;align-items:center;gap:.35rem}
+
+/* ══ TIMELINE ══ */
+.timeline{position:relative;margin:1rem 0;padding-left:1.5rem}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-event{position:relative;margin-bottom:1rem;padding-left:.75rem}
+.tl-dot{position:absolute;left:-1.5rem;top:.3rem;width:14px;height:14px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 2px var(--border);flex-shrink:0}
+.tl-dot.red{background:var(--danger);box-shadow:0 0 0 2px rgba(190,24,93,.2)}
+.tl-dot.orange{background:var(--warn);box-shadow:0 0 0 2px rgba(180,83,9,.2)}
+.tl-dot.blue{background:var(--kibana);box-shadow:0 0 0 2px rgba(0,107,180,.2)}
+.tl-dot.green{background:var(--ok);box-shadow:0 0 0 2px rgba(21,128,61,.2)}
+.tl-time{font-family:'Fira Code',monospace;font-size:.68rem;color:var(--muted);margin-bottom:.1rem}
+.tl-title{font-size:.83rem;font-weight:700;color:var(--ink);margin-bottom:.1rem}
+.tl-desc{font-size:.78rem;color:var(--ink2)}
+
+/* ══ PROGRESS ══ */
+.progress-bar{background:var(--border);border-radius:100px;height:6px;overflow:hidden;margin:.5rem 0}
+.pb-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--kibana),var(--kib2));transition:width .4s ease}
+.progress-row{display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem}
+
+/* ══ SCORE COUNTER ══ */
+.score-display{background:var(--sf2);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center;margin:1rem 0}
+.score-num{font-family:'Fira Code',monospace;font-size:2rem;font-weight:700;color:var(--kibana)}
+.score-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:920px){
+  .topbar-nav{display:none}.hamburger{display:block}
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:var(--top-h);left:0;width:var(--sb-w);height:calc(100vh - var(--top-h));z-index:260;transform:translateX(-100%);box-shadow:6px 0 24px rgba(0,0,0,.12)}
+  .sidebar.open{transform:translateX(0)}
+  .main{padding:1.5rem 1.1rem 4rem}
+  .dataset-grid{grid-template-columns:1fr}
+}
+@media(max-width:550px){
+  pre{font-size:.72rem}.hero-title{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-icon">K</div>
+    <div class="logo-text">Kibana <span>TP Exercices</span></div>
+  </div>
+  <nav class="topbar-nav">
+    <button class="tnav active" data-page="dataset">📦 Dataset</button>
+    <button class="tnav" data-page="tp1">TP 1 — Basics</button>
+    <button class="tnav" data-page="tp2">TP 2 — Filtres</button>
+    <button class="tnav" data-page="tp3">TP 3 — Analyse</button>
+    <button class="tnav" data-page="tp4">TP 4 — Sécurité</button>
+    <button class="tnav" data-page="tp5">TP 5 — DSL</button>
+    <button class="tnav" data-page="tp6">TP 6 — ES|QL</button>
+  </nav>
+  <button class="hamburger" id="ham">☰</button>
+</header>
+
+<div class="sb-overlay" id="overlay"></div>
+
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="sb-lbl">Démarrage</div>
+  <button class="sblink active" data-page="dataset" data-anchor=""><span class="ico">📦</span>Jeu de données</button>
+  <button class="sblink" data-page="dataset" data-anchor="import"><span class="ico">⬆️</span>Importer dans ES</button>
+  <button class="sblink" data-page="dataset" data-anchor="dataviews"><span class="ico">📂</span>Créer les Data Views</button>
+  <button class="sblink" data-page="dataset" data-anchor="scenario"><span class="ico">🎭</span>Scénario d'attaque</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Exercices</div>
+
+  <button class="sblink" data-page="tp1" data-anchor=""><span class="ico">🔵</span>TP 1 — Recherche basique<span class="xbadge" style="background:rgba(2,132,199,.1);color:var(--kql);border:1px solid rgba(2,132,199,.25)">KQL</span></button>
+  <button class="sblink" data-page="tp2" data-anchor=""><span class="ico">🔶</span>TP 2 — Filtres & Champs<span class="xbadge" style="background:rgba(217,119,6,.1);color:var(--dsl);border:1px solid rgba(217,119,6,.25)">KQL</span></button>
+  <button class="sblink" data-page="tp3" data-anchor=""><span class="ico">📊</span>TP 3 — Analyse logs<span class="xbadge" style="background:rgba(124,58,237,.1);color:var(--sql);border:1px solid rgba(124,58,237,.25)">KQL+</span></button>
+  <button class="sblink" data-page="tp4" data-anchor=""><span class="ico">🛡️</span>TP 4 — Investigation<span class="xbadge" style="background:rgba(219,39,119,.1);color:var(--eql);border:1px solid rgba(219,39,119,.25)">multi</span></button>
+  <button class="sblink" data-page="tp5" data-anchor=""><span class="ico">🟠</span>TP 5 — Query DSL<span class="xbadge" style="background:rgba(217,119,6,.1);color:var(--dsl);border:1px solid rgba(217,119,6,.25)">DSL</span></button>
+  <button class="sblink" data-page="tp6" data-anchor=""><span class="ico">🩵</span>TP 6 — ES|QL<span class="xbadge" style="background:rgba(13,148,136,.1);color:var(--esql);border:1px solid rgba(13,148,136,.25)">ES|QL</span></button>
+</aside>
+
+<main class="main" id="main">
+
+<!-- ════════════ DATASET ════════════ -->
+<div class="section active" id="sec-dataset">
+  <div class="page-hero">
+    <div class="hero-tag">📦 Jeu de données pédagogique</div>
+    <h1 class="hero-title">Dataset — Journée<br>d'une infrastructure attaquée</h1>
+    <p class="hero-sub">521 documents réels simulant une journée complète : trafic légitime, phase de scan, injection SQL, mouvement latéral et escalade de privilèges. Quatre index Elasticsearch à importer.</p>
+  </div>
+
+  <!-- Index overview -->
+  <h2><span class="h2-n">1</span> Contenu du dataset</h2>
+  <div class="dataset-grid">
+    <div class="ds-card nginx">
+      <div class="ds-index" style="color:var(--kql)">📄 tp-nginx</div>
+      <div class="ds-count">276</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem">documents</div>
+      <div class="ds-desc">Logs d'accès nginx : trafic légitime, scan de vulnérabilités, tentatives SQLi, path traversal et gros upload suspect.</div>
+      <div class="ds-fields">
+        <span class="ds-field">@timestamp</span><span class="ds-field">source.ip</span><span class="ds-field">url.path</span>
+        <span class="ds-field">http.response.status_code</span><span class="ds-field">user_agent.original</span><span class="ds-field">tags</span>
+      </div>
+    </div>
+    <div class="ds-card auth">
+      <div class="ds-index" style="color:var(--lucene)">🔐 tp-auth</div>
+      <div class="ds-count">97</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem">documents</div>
+      <div class="ds-desc">Logs d'authentification : brute force SSH (35 tentatives), connexion réussie avec clé, logins applicatifs, sudo root.</div>
+      <div class="ds-fields">
+        <span class="ds-field">event.outcome</span><span class="ds-field">user.name</span><span class="ds-field">source.ip</span>
+        <span class="ds-field">destination.port</span><span class="ds-field">auth.method</span><span class="ds-field">event.action</span>
+      </div>
+    </div>
+    <div class="ds-card syslog">
+      <div class="ds-index" style="color:var(--dsl)">🖥️ tp-syslog</div>
+      <div class="ds-count">140</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem">documents</div>
+      <div class="ds-desc">Syslog système + logs firewall iptables : 60 connexions bloquées sur ports sensibles (22, 3389, 445, 1433) depuis IPs externes.</div>
+      <div class="ds-fields">
+        <span class="ds-field">process.name</span><span class="ds-field">log.level</span><span class="ds-field">source.ip</span>
+        <span class="ds-field">destination.port</span><span class="ds-field">network.transport</span><span class="ds-field">event.action</span>
+      </div>
+    </div>
+    <div class="ds-card alerts">
+      <div class="ds-index" style="color:var(--danger)">🚨 tp-alerts</div>
+      <div class="ds-count">8</div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem">documents</div>
+      <div class="ds-desc">Alertes de l'agent de détection : SQLi CRITICAL ×2, Brute Force HIGH, Scan MEDIUM, Path Traversal, Mouvement Latéral, Privesc, Exfiltration.</div>
+      <div class="ds-fields">
+        <span class="ds-field">log.level</span><span class="ds-field">rule.id</span><span class="ds-field">threat.category</span>
+        <span class="ds-field">threat.score</span><span class="ds-field">source.ip</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="import">
+
+  <!-- Import steps -->
+  <h2><span class="h2-n">2</span> Importer le dataset dans Elasticsearch</h2>
+
+  <div class="box warn">
+    <div class="box-i">⚠️</div>
+    <div class="box-b"><strong>Prérequis</strong><p>Elasticsearch et Kibana doivent être démarrés. Le fichier <code>tp-kibana-dataset.ndjson</code> doit être téléchargé sur votre machine.</p></div>
+  </div>
+
+  <h3>Méthode 1 — Via curl (recommandé)</h3>
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Vérifier qu'Elasticsearch répond</h4>
+        <div class="cw"><div class="ctop"><span>Terminal</span><span class="clang cl-bash">BASH</span></div>
+<pre>curl -u elastic:votre_password http://localhost:9200/
+<span class="cc"># Réponse attendue : {"name":"node-1","cluster_name":"my-cluster"...}</span></pre></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Lancer l'import Bulk API</h4>
+        <div class="cw"><div class="ctop"><span>Import avec curl</span><span class="clang cl-bash">BASH</span></div>
+<pre><span class="cc"># Sans authentification (dev local)</span>
+curl -X POST "http://localhost:9200/_bulk" \
+  -H "Content-Type: application/x-ndjson" \
+  --data-binary "@tp-kibana-dataset.ndjson"
+
+<span class="cc"># Avec authentification</span>
+curl -u elastic:votre_password \
+  -X POST "http://localhost:9200/_bulk" \
+  -H "Content-Type: application/x-ndjson" \
+  --data-binary "@tp-kibana-dataset.ndjson"</pre></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body">
+        <h4>Vérifier l'import</h4>
+        <div class="cw"><div class="ctop"><span>Compter les documents par index</span><span class="clang cl-bash">BASH</span></div>
+<pre>curl "http://localhost:9200/tp-nginx,tp-auth,tp-syslog,tp-alerts/_count"
+<span class="cc"># {"count":521,...}</span></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Méthode 2 — Via la Console Kibana</h3>
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Ouvrir Dev Tools Console</h4>
+        <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Dev Tools → Console</span></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Vérifier les index créés</h4>
+        <p>Après l'import curl, tapez ceci dans la Console pour confirmer :</p>
+        <div class="cw"><div class="ctop"><span>Console Kibana</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="co">GET</span> <span class="cs">/_cat/indices/tp-*?v&h=index,docs.count,store.size</span></pre></div>
+        <p>Vous devez voir les 4 index <code>tp-nginx</code>, <code>tp-auth</code>, <code>tp-syslog</code>, <code>tp-alerts</code>.</p>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body">
+        <h4>Si les index n'apparaissent pas — créer manuellement un document test</h4>
+        <div class="cw"><div class="ctop"><span>Test rapide</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="co">POST</span> <span class="cs">/tp-nginx/_doc</span>
+{
+  <span class="ck">"@timestamp"</span>: <span class="cs">"2024-01-15T10:00:00Z"</span>,
+  <span class="ck">"source.ip"</span>: <span class="cs">"10.0.0.1"</span>,
+  <span class="ck">"http.response.status_code"</span>: <span class="cn">200</span>,
+  <span class="ck">"message"</span>: <span class="cs">"test"</span>
+}</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="dataviews">
+
+  <!-- Data Views -->
+  <h2><span class="h2-n">3</span> Créer les Data Views dans Kibana</h2>
+  <p>Pour explorer les données dans Discover, il faut créer un Data View pour chaque index (ou un seul qui couvre tout).</p>
+
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Aller dans Stack Management → Data Views</h4>
+        <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="seg">Stack Management</span><span class="arr">›</span><span class="cur">Kibana → Data Views</span></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Créer un Data View global</h4>
+        <p>Cliquez sur <strong>"Create data view"</strong>. Renseignez :</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Champ</th><th>Valeur</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Name</td><td><code>TP Kibana — All Logs</code></td><td>Nom affiché dans Discover</td></tr>
+            <tr><td>Index pattern</td><td><code>tp-*</code></td><td>Couvre les 4 index d'un coup</td></tr>
+            <tr><td>Timestamp field</td><td><code>@timestamp</code></td><td>Champ de date pour la timeline</td></tr>
+          </tbody>
+        </table></div>
+        <p>Cliquez sur <strong>"Save data view to Kibana"</strong>.</p>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body">
+        <h4>Optionnel — Data Views séparés par index</h4>
+        <p>Répétez l'opération avec <code>tp-nginx</code>, <code>tp-auth</code>, <code>tp-syslog</code>, <code>tp-alerts</code> pour pouvoir explorer chaque source séparément.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="box tip">
+    <div class="box-i">✅</div>
+    <div class="box-b"><strong>Vérification finale</strong><p>Allez dans <strong>Discover</strong>, sélectionnez le Data View <code>tp-*</code>, réglez la plage de temps sur <strong>"Jan 15, 2024"</strong> (date du dataset). Vous devez voir 521 documents dans l'histogramme.</p></div>
+  </div>
+
+  <hr class="sep" id="scenario">
+
+  <!-- Scenario -->
+  <h2><span class="h2-n">4</span> Le scénario — Que s'est-il passé ?</h2>
+  <p>Voici la chronologie de l'attaque cachée dans les logs. <strong>Ne lisez pas cette section avant d'avoir fait les exercices !</strong></p>
+
+  <div class="box danger">
+    <div class="box-i">🔒</div>
+    <div class="box-b"><strong>SPOILER — À lire après les TPs</strong><p>Cette timeline résume l'attaque que vous devrez reconstituer dans le TP 4. Faites d'abord les exercices TP 1 à 3 !</p></div>
+  </div>
+
+  <details style="background:var(--sf2);border:1px solid var(--border);border-radius:8px;padding:1rem;margin:.9rem 0">
+    <summary style="font-size:.88rem;font-weight:700;cursor:pointer;color:var(--ink2)">🔓 Révéler la timeline de l'attaque</summary>
+    <div class="timeline" style="margin-top:1rem">
+      <div class="tl-event"><div class="tl-dot blue"></div><div class="tl-time">08h00 — 10h00</div><div class="tl-title">Trafic légitime</div><div class="tl-desc">Utilisateurs normaux depuis 10.0.0.x et 192.168.x. Codes 200 majoritaires.</div></div>
+      <div class="tl-event"><div class="tl-dot orange"></div><div class="tl-time">09h00 — 09h03</div><div class="tl-title">Brute Force SSH — 35 tentatives</div><div class="tl-desc">IP 185.220.101.47 tente root/admin/ubuntu en rafale sur le port 22. Alerte BRUTE_FORCE_SSH déclenchée.</div></div>
+      <div class="tl-event"><div class="tl-dot orange"></div><div class="tl-time">10h00 — 11h00</div><div class="tl-title">Scan de vulnérabilités</div><div class="tl-desc">40 requêtes sur /wp-login.php, /.env, /phpmyadmin/, etc. depuis 185.220.101.47 avec Nikto/sqlmap. Alerte RECON_SCAN.</div></div>
+      <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">11h30 — 12h00</div><div class="tl-title">Injection SQL — SQLi CRITICAL</div><div class="tl-desc">32 requêtes SQLi (UNION SELECT, OR 1=1, DROP TABLE) via sqlmap. Alerte SQL_INJECT_001 score 98. Réponses 200 = succès.</div></div>
+      <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">13h00</div><div class="tl-title">Path Traversal — Exfiltration /etc/passwd</div><div class="tl-desc">IP 10.0.0.20 (machine interne compromise) accède /api/export?file=../../../etc/passwd — réponse 200.</div></div>
+      <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">14h00</div><div class="tl-title">Mouvement latéral — SSH interne</div><div class="tl-desc">10.0.0.20 se connecte en SSH sur web-01 avec la clé RSA du compte deploy. Alerte LATERAL_MOVE.</div></div>
+      <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">15h00</div><div class="tl-title">Exfiltration — Upload 9.8 Mo</div><div class="tl-desc">POST /api/v1/upload — 9 850 000 bytes envoyés depuis 10.0.0.20. Alerte LARGE_UPLOAD.</div></div>
+      <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">16h00</div><div class="tl-title">Escalade de privilèges — sudo root</div><div class="tl-desc">Le compte deploy execute sudo /bin/bash → obtient root. Alerte PRIV_ESC_001 déclenchée.</div></div>
+    </div>
+  </details>
+</div>
+
+<!-- ════════════ TP 1 ════════════ -->
+<div class="section" id="sec-tp1">
+  <div class="page-hero">
+    <div class="hero-tag">🔵 TP 1 — Recherche basique</div>
+    <h1 class="hero-title">TP 1 — Premiers pas<br>dans Discover</h1>
+    <p class="hero-sub">Apprenez à naviguer dans Discover, faire des recherches KQL simples et lire les résultats. Index : <code>tp-nginx</code> — Data View : <code>tp-*</code></p>
+  </div>
+
+  <div class="box info">
+    <div class="box-i">📋</div>
+    <div class="box-b"><strong>Avant de commencer</strong><p>1. Ouvrir Discover → sélectionner le Data View <code>tp-*</code><br>2. Régler la plage de temps : <strong>Jan 15, 2024 00:00 → Jan 15, 2024 23:59</strong><br>3. Vérifier que vous voyez des documents</p></div>
+  </div>
+
+  <!-- Ex 1.1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex1)">1.1</div>
+      <div class="ex-meta">
+        <h3>Compter les erreurs HTTP</h3>
+        <p>Trouvez tous les documents nginx avec un code HTTP 404.</p>
+        <div class="ex-tags">
+          <span class="diff diff-easy">facile</span>
+          <span class="ex-tag b-kql">KQL</span>
+          <span class="ex-tag" style="background:var(--sf2);border:1px solid var(--border);color:var(--muted)">index: tp-nginx</span>
+        </div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Écrivez la requête KQL pour afficher uniquement les requêtes ayant reçu une réponse 404.</div>
+          <span class="qblock-pts">2 pts</span>
+        </div>
+        <div class="qblock-hint">💡 Le champ s'appelle <code>http.response.status_code</code></div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>Barre de recherche Discover</span><span class="clang cl-kql">KQL</span></div>
+<pre>http.response.status_code: 404</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Résultat attendu : <strong>~26 documents</strong> avec code 404 dans l'index tp-nginx.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Maintenant affichez TOUTES les erreurs (400, 401, 403, 404, 500) en une seule requête.</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <div class="qblock-hint">💡 Utilisez la syntaxe avec parenthèses et OR</div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>http.response.status_code: (400 OR 401 OR 403 OR 404 OR 500)</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Ou avec une plage : <code>http.response.status_code >= 400</code></p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q3 — Développez un document de résultat (clic ▶). Quel champ contient l'adresse IP du client ? Quelle est la valeur pour le premier résultat ?</div>
+          <span class="qblock-pts">1 pt</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <p style="font-size:.82rem;color:var(--ink2)">Le champ est <code>source.ip</code>. La valeur dépend du document trié. Les IPs légitimes sont dans <code>10.0.0.x</code> / <code>192.168.x.x</code>, les suspectes en <code>185.220.x.x</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 1.2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex1)">1.2</div>
+      <div class="ex-meta">
+        <h3>Rechercher par IP et méthode</h3>
+        <p>Explorez les requêtes d'une IP spécifique avec un filtre sur la méthode HTTP.</p>
+        <div class="ex-tags"><span class="diff diff-easy">facile</span><span class="ex-tag b-kql">KQL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Affichez toutes les requêtes venant de l'IP <code>185.220.101.47</code>. Combien y en a-t-il ?</div>
+          <span class="qblock-pts">2 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>source.ip: "185.220.101.47"</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Attendu : environ <strong>72 documents</strong> (40 scans + 32 SQLi) dans tp-nginx. Plus les tentatives SSH dans tp-auth.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Parmi les requêtes de cette IP, affichez uniquement les POST. Combien ?</div>
+          <span class="qblock-pts">2 pts</span>
+        </div>
+        <div class="qblock-hint">💡 Combinez deux conditions avec AND</div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>source.ip: "185.220.101.47" AND http.request.method: "POST"</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Attendu : <strong>0 POST</strong> pour cette IP — elle n'utilise que GET pour le scan et SQLi. Intéressant !</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q3 — Affichez les requêtes de tout le sous-réseau <code>185.220.101.x</code> (pas juste l'IP .47).</div>
+          <span class="qblock-pts">2 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL — wildcard</span><span class="clang cl-kql">KQL</span></div>
+<pre>source.ip: 185.220.101.*</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 1.3 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex1)">1.3</div>
+      <div class="ex-meta">
+        <h3>Recherche dans les URL</h3>
+        <p>Trouvez les accès suspects dans les chemins d'URL.</p>
+        <div class="ex-tags"><span class="diff diff-easy">facile</span><span class="ex-tag b-kql">KQL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Trouvez toutes les requêtes vers une URL contenant <code>admin</code>.</div>
+          <span class="qblock-pts">2 pts</span>
+        </div>
+        <div class="qblock-hint">💡 Utilisez un wildcard *admin*</div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>url.path: *admin*</pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Trouvez les requêtes dont l'URL contient <code>wp-login</code> OU <code>phpmyadmin</code> OU <code>.env</code>.</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>url.path: (*wp-login* OR *phpmyadmin* OR *.env*)</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Ces URL sont caractéristiques d'un <strong>scan de vulnérabilités</strong> cherchant des panneaux d'admin et des fichiers sensibles.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q3 — Trouvez les requêtes dont l'URL contient <code>../</code> (path traversal). Quelle IP les émet ?</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>url.path: *../*</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">IP source : <strong>10.0.0.20</strong> — une IP <em>interne</em> ! Ce n'est pas l'attaquant externe mais une machine déjà compromise en interne.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TP 2 ════════════ -->
+<div class="section" id="sec-tp2">
+  <div class="page-hero">
+    <div class="hero-tag">🔶 TP 2 — Filtres & Champs</div>
+    <h1 class="hero-title">TP 2 — Maîtriser<br>les filtres Kibana</h1>
+    <p class="hero-sub">Apprenez à combiner filtres visuels et requêtes KQL, gérer les colonnes et utiliser la fenêtre temporelle. Index : <code>tp-auth</code> et <code>tp-nginx</code></p>
+  </div>
+
+  <!-- Ex 2.1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex2)">2.1</div>
+      <div class="ex-meta">
+        <h3>Filtres visuels et colonnes</h3>
+        <p>Utilisez les filtres cliquables de l'interface Kibana.</p>
+        <div class="ex-tags"><span class="diff diff-easy">facile</span><span class="ex-tag b-kql">Interface</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Dans Discover avec le Data View <code>tp-*</code>, ajoutez les colonnes <code>source.ip</code>, <code>http.response.status_code</code> et <code>url.path</code> au tableau des résultats. Décrivez les clics nécessaires.</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <p style="font-size:.82rem;color:var(--ink2)">Dans le <strong>panneau gauche</strong> "Available fields", cherchez chaque champ → survolez → cliquez <strong>"+ Add"</strong>. Répétez pour les 3 champs. Les colonnes s'ajoutent au tableau à droite. Vous pouvez aussi réordonner en glissant les en-têtes.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Développez un document avec code 404, cliquez sur la valeur "404" du champ <code>http.response.status_code</code>. Quelles options apparaissent ? Cliquez sur <strong>"Filter for value"</strong>. Que se passe-t-il ?</div>
+          <span class="qblock-pts">2 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <p style="font-size:.82rem;color:var(--ink2)">Deux icônes apparaissent : <strong>🔍 Filter for value</strong> (inclure 404) et <strong>🔍⊖ Filter out value</strong> (exclure 404). En cliquant "Filter for value", un badge bleu <code>http.response.status_code: 404</code> apparaît sous la barre de recherche et les résultats se filtrent.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 2.2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex2)">2.2</div>
+      <div class="ex-meta">
+        <h3>Analyse des authentifications</h3>
+        <p>Explorez l'index tp-auth pour trouver les tentatives de connexion suspectes.</p>
+        <div class="ex-tags"><span class="diff diff-med">intermédiaire</span><span class="ex-tag b-kql">KQL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Dans l'index <code>tp-auth</code>, trouvez tous les échecs d'authentification. Combien y en a-t-il ? Sur quel port SSH principalement ?</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>event.outcome: "failure"</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Environ <strong>44 échecs</strong> (35 SSH + ~9 app). Port SSH : <strong>22</strong>. Champ <code>destination.port</code>.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Trouvez uniquement les tentatives sur le compte <code>root</code>. De quelle IP viennent-elles ?</div>
+          <span class="qblock-pts">2 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>event.outcome: "failure" AND user.name: "root"</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">IP source : <strong>185.220.101.47</strong> — l'attaquant externe.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q3 — Y a-t-il eu une connexion SSH RÉUSSIE ? Si oui, quel utilisateur, de quelle IP, et avec quelle méthode d'auth ?</div>
+          <span class="qblock-pts">4 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>event.outcome: "success" AND destination.port: 22</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Utilisateur : <strong>deploy</strong> — IP : <strong>10.0.0.20</strong> (interne) — Méthode : <strong>publickey RSA</strong> — Pas par mot de passe ! La machine 10.0.0.20 avait la clé privée de deploy.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 2.3 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex2)">2.3</div>
+      <div class="ex-meta">
+        <h3>Fenêtre temporelle</h3>
+        <p>Utilisez le time picker pour isoler des plages horaires.</p>
+        <div class="ex-tags"><span class="diff diff-easy">facile</span><span class="ex-tag b-kql">Interface</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Réglez la fenêtre temporelle sur <strong>09:00 → 10:00 le 15 jan 2024</strong>. Combien de requêtes viennent de <code>185.220.101.47</code> dans ce créneau ?</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <div class="qblock-hint">💡 Utilisez "Absolute" dans le time picker pour entrer des dates précises</div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <p style="font-size:.82rem;color:var(--ink2)"><strong>09:00–10:00</strong> : brute force SSH (35 tentatives dans tp-auth). Dans tp-nginx : aucune requête web de cette IP à ce moment, le scan commence à 10h.</p>
+          <div class="cw"><div class="ctop"><span>KQL pour filtrer</span><span class="clang cl-kql">KQL</span></div>
+<pre>source.ip: "185.220.101.47"
+<span class="cc"># + régler time picker : Jan 15 09:00:00 → Jan 15 10:00:00</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Sur l'histogramme temporel, repérez le pic de requêtes vers 11h30. Cliquez-glissez sur ce pic pour zoomer. Quelle URL revient le plus souvent dans cette plage ?</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <p style="font-size:.82rem;color:var(--ink2)">L'URL la plus fréquente vers 11h30 est <strong>/api/v1/users?id=...</strong> avec des paramètres SQLi. C'est la phase d'injection SQL. Le user-agent est <strong>sqlmap/1.7.8</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TP 3 ════════════ -->
+<div class="section" id="sec-tp3">
+  <div class="page-hero">
+    <div class="hero-tag">📊 TP 3 — Analyse de logs</div>
+    <h1 class="hero-title">TP 3 — Requêtes<br>avancées et combinées</h1>
+    <p class="hero-sub">Requêtes KQL plus complexes, négations, champs existants, combinaisons multi-index. Tous les index <code>tp-*</code></p>
+  </div>
+
+  <!-- Ex 3.1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex3)">3.1</div>
+      <div class="ex-meta">
+        <h3>Détecter les outils d'attaque</h3>
+        <p>Identifiez les user-agents malveillants dans les logs nginx.</p>
+        <div class="ex-tags"><span class="diff diff-med">intermédiaire</span><span class="ex-tag b-kql">KQL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Trouvez toutes les requêtes dont le user-agent contient <code>sqlmap</code>. Combien ? Sur quels URL ?</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>user_agent.original: *sqlmap*</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Attendu : <strong>32 requêtes</strong> toutes sur <code>/api/v1/users</code>, <code>/api/v1/products</code>, <code>/api/v1/orders</code> — ce sont les endpoints API qui ont subi l'injection SQL.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Trouvez toutes les requêtes avec n'importe quel outil suspect : sqlmap, Nikto, masscan, nmap, python-requests, Go-http-client en une seule requête KQL.</div>
+          <span class="qblock-pts">4 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>user_agent.original: (*sqlmap* OR *nikto* OR *masscan* OR *nmap* OR *python-requests* OR *Go-http-client*)</pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q3 — Inversement, affichez uniquement le trafic avec des browsers légitimes (NOT les outils ci-dessus).</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>NOT user_agent.original: (*sqlmap* OR *nikto* OR *masscan* OR *nmap* OR *python-requests* OR *Go-http-client*)</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 3.2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex3)">3.2</div>
+      <div class="ex-meta">
+        <h3>Firewall — Ports sensibles bloqués</h3>
+        <p>Analysez les logs firewall dans tp-syslog.</p>
+        <div class="ex-tags"><span class="diff diff-med">intermédiaire</span><span class="ex-tag b-kql">KQL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Dans les logs tp-syslog, trouvez toutes les connexions bloquées (<code>event.action: "denied"</code>) vers le port 22 (SSH). Combien ? De quelles IPs ?</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>event.action: "denied" AND destination.port: 22</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">12 connexions bloquées, IP source : <strong>185.220.101.47</strong>. Notez que la machine 10.0.0.20 n'est pas bloquée car elle est interne.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Trouvez toutes les connexions bloquées vers les ports sensibles : 22 (SSH), 3389 (RDP), 445 (SMB), 1433 (MSSQL). Quelles IPs attaquantes avez-vous identifiées ?</div>
+          <span class="qblock-pts">4 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>event.action: "denied" AND destination.port: (22 OR 3389 OR 445 OR 1433)</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">IPs : <strong>185.220.101.47</strong> (SSH+RDP) et <strong>45.33.32.156</strong> (SMB+MSSQL) — deux attaquants différents tentent différents vecteurs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 3.3 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex3)">3.3</div>
+      <div class="ex-meta">
+        <h3>Requêtes KQL complexes</h3>
+        <p>Combinez plusieurs conditions avec groupement et négation.</p>
+        <div class="ex-tags"><span class="diff diff-hard">avancé</span><span class="ex-tag b-kql">KQL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Trouvez les requêtes HTTP qui ont eu un code 200 (succès) mais qui viennent d'une IP externe (NOT 10.x.x.x et NOT 192.168.x.x) et sur un chemin sensible.</div>
+          <span class="qblock-pts">5 pts</span>
+        </div>
+        <div class="qblock-hint">💡 Combinez http.response.status_code, source.ip avec NOT et url.path avec wildcard</div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>http.response.status_code: 200
+  AND NOT source.ip: (10.* OR 192.168.*)
+  AND url.path: (*admin* OR *wp-login* OR *phpmyadmin* OR *config* OR *backup*)</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Ces résultats sont les plus dangereux : l'attaquant <em>externe</em> a obtenu un 200 sur des URLs sensibles → potentiel succès d'intrusion.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Identifiez les requêtes avec une réponse de plus de 1 Mo (<code>http.response.body.bytes > 1000000</code>). Qui fait ces grosses requêtes et vers quelles URL ?</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>http.response.body.bytes > 1000000</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">IP <strong>10.0.0.20</strong> vers <code>/api/v1/upload</code> — <strong>9.85 Mo</strong>. C'est l'événement d'exfiltration de données.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TP 4 ════════════ -->
+<div class="section" id="sec-tp4">
+  <div class="page-hero">
+    <div class="hero-tag">🛡️ TP 4 — Investigation SOC</div>
+    <h1 class="hero-title">TP 4 — Reconstituer<br>la chaîne d'attaque</h1>
+    <p class="hero-sub">Exercice de synthèse : utilisez tous les index pour reconstituer l'attaque complète, identifier les IPs et comprendre le mouvement latéral. Niveau : avancé.</p>
+  </div>
+
+  <div class="box danger">
+    <div class="box-i">🚨</div>
+    <div class="box-b"><strong>Contexte SOC</strong><p>Vous êtes analyste SOC. L'alerte <code>SQL_INJECT_001 CRITICAL score=98</code> vient de se déclencher dans tp-alerts. Votre mission : remonter la chaîne complète de l'attaque.</p></div>
+  </div>
+
+  <!-- Investigation questions -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex4)">4.1</div>
+      <div class="ex-meta">
+        <h3>Identifier l'attaquant initial</h3>
+        <p>Depuis tp-alerts et tp-nginx, reconstituez le début de l'attaque.</p>
+        <div class="ex-tags"><span class="diff diff-hard">avancé</span><span class="ex-tag b-kql">multi-index</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Dans tp-alerts, consultez toutes les alertes triées par timestamp. Quelle est l'IP de l'attaquant initial ? Quelle est la première alerte déclenchée ?</div>
+          <span class="qblock-pts">4 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL dans Discover — index tp-alerts</span><span class="clang cl-kql">KQL</span></div>
+<pre><span class="cc"># Laisser vide (toutes les alertes) — trier par @timestamp ASC</span></pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Première alerte : <strong>BRUTE_FORCE_SSH</strong> à 09h00 depuis <strong>185.220.101.47</strong>. C'est l'attaquant externe. Vient ensuite RECON_SCAN à 10h, puis SQL_INJECT_001 à 11h30.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Dans tp-nginx, combien de requêtes SQLi l'IP 185.220.101.47 a-t-elle réussi (code 200) ? Cela indique-t-il un succès de l'injection ?</div>
+          <span class="qblock-pts">4 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>source.ip: "185.220.101.47"
+  AND user_agent.original: *sqlmap*
+  AND http.response.status_code: 200</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Plusieurs requêtes avec code <strong>200</strong> — oui, l'injection a réussi ! Le serveur a retourné des données. Comparez la taille des réponses (<code>http.response.body.bytes</code>) — les plus grandes suggèrent une exfiltration via l'injection.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 4.2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex4)">4.2</div>
+      <div class="ex-meta">
+        <h3>Tracer le mouvement latéral</h3>
+        <p>Comprendre comment l'attaque s'est propagée de l'externe vers l'interne.</p>
+        <div class="ex-tags"><span class="diff diff-hard">avancé</span><span class="ex-tag b-kql">multi-index</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Dans tp-nginx, regardez les activités de l'IP interne <code>10.0.0.20</code>. Qu'a-t-elle fait ? Reconstituez sa timeline.</div>
+          <span class="qblock-pts">5 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>source.ip: "10.0.0.20"</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Timeline de 10.0.0.20 :<br>
+          • 13h00 — Path traversal (../etc/passwd) → 200 ✗<br>
+          • 14h00 — Connexion SSH réussie (deploy) vers web-01<br>
+          • 15h00 — Upload 9.85 Mo → /api/v1/upload<br>
+          Cette machine est <strong>compromise</strong> : l'attaquant y a pris pied via SQLi et l'utilise pour l'étape suivante.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Dans tp-auth, trouvez l'événement de sudo. Qui a exécuté sudo ? En tant que quel utilisateur ? Qu'est-ce que ça implique ?</div>
+          <span class="qblock-pts">4 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>KQL</span><span class="clang cl-kql">KQL</span></div>
+<pre>event.action: "privilege_escalation"</pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">L'utilisateur <strong>deploy</strong> a exécuté <code>sudo /bin/bash</code> pour devenir <strong>root</strong>. Cela signifie que l'attaquant a obtenu un <strong>shell root</strong> sur web-01 → compromission totale du serveur.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q3 — [SYNTHÈSE] Rédigez en 5-6 points la chaîne d'attaque complète depuis l'IP 185.220.101.47 jusqu'au root sur web-01.</div>
+          <span class="qblock-pts">6 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Chaîne d'attaque</div>
+          <div class="timeline" style="margin-top:.5rem">
+            <div class="tl-event"><div class="tl-dot orange"></div><div class="tl-time">1. 09h00 — Reconnaissance</div><div class="tl-desc">Brute force SSH depuis 185.220.101.47 (35 tentatives, toutes échouées sur port 22).</div></div>
+            <div class="tl-event"><div class="tl-dot orange"></div><div class="tl-time">2. 10h00 — Scan vulnérabilités</div><div class="tl-desc">Scan automatisé (Nikto/sqlmap) sur wp-login, phpmyadmin, .env, .git/config.</div></div>
+            <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">3. 11h30 — Injection SQL réussie</div><div class="tl-desc">32 requêtes SQLi via sqlmap → codes 200 → extraction de données depuis les API. Compromission de 10.0.0.20.</div></div>
+            <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">4. 13h00 — Path traversal</div><div class="tl-desc">Depuis 10.0.0.20 (machine compromise), lecture de /etc/passwd et /etc/shadow → récupération des hashes.</div></div>
+            <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">5. 14h00 — Mouvement latéral</div><div class="tl-desc">SSH depuis 10.0.0.20 → web-01 avec la clé RSA du compte deploy (récupérée via SQLi ou path traversal).</div></div>
+            <div class="tl-event"><div class="tl-dot red"></div><div class="tl-time">6. 15h-16h — Exfiltration + Privesc</div><div class="tl-desc">Upload 9.85 Mo de données sensibles, puis sudo /bin/bash → root sur web-01. Infrastructure totalement compromise.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TP 5 ════════════ -->
+<div class="section" id="sec-tp5">
+  <div class="page-hero">
+    <div class="hero-tag">🟠 TP 5 — Query DSL</div>
+    <h1 class="hero-title">TP 5 — Requêtes DSL<br>dans la Console Kibana</h1>
+    <p class="hero-sub">Passez à la Dev Tools Console pour des requêtes JSON avec agrégations, bool queries et stats avancées sur le dataset.</p>
+  </div>
+
+  <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Dev Tools → Console</span></div>
+
+  <!-- Ex 5.1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex5)">5.1</div>
+      <div class="ex-meta">
+        <h3>Bool Query et agrégations</h3>
+        <p>Construire des requêtes DSL avec des conditions multiples.</p>
+        <div class="ex-tags"><span class="diff diff-med">intermédiaire</span><span class="ex-tag" style="background:rgba(217,119,6,.1);color:var(--dsl);border:1px solid rgba(217,119,6,.25)">DSL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Via la Console, comptez les documents dans chaque index tp-* avec une seule requête.</div>
+          <span class="qblock-pts">2 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>Console Kibana</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="co">GET</span> <span class="cs">/tp-*/_count</span>
+<span class="cc">// Ou pour un breakdown par index :</span>
+<span class="co">GET</span> <span class="cs">/_cat/indices/tp-*?v&h=index,docs.count&s=index</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Écrivez une bool query qui retourne les requêtes nginx qui (MUST) viennent de l'IP 185.220.101.47, (FILTER) ont un code ≥ 400, et (MUST_NOT) contiennent "favicon" dans l'URL.</div>
+          <span class="qblock-pts">5 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>Console Kibana</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="co">GET</span> <span class="cs">/tp-nginx/_search</span>
+{
+  <span class="ck">"query"</span>: {
+    <span class="ck">"bool"</span>: {
+      <span class="ck">"must"</span>: [
+        { <span class="ck">"term"</span>: { <span class="ck">"source.ip"</span>: <span class="cs">"185.220.101.47"</span> } }
+      ],
+      <span class="ck">"filter"</span>: [
+        { <span class="ck">"range"</span>: { <span class="ck">"http.response.status_code"</span>: { <span class="ck">"gte"</span>: <span class="cn">400</span> } } }
+      ],
+      <span class="ck">"must_not"</span>: [
+        { <span class="ck">"wildcard"</span>: { <span class="ck">"url.path"</span>: { <span class="ck">"value"</span>: <span class="cs">"*favicon*"</span> } } }
+      ]
+    }
+  },
+  <span class="ck">"size"</span>: <span class="cn">20</span>
+}</pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q3 — Faites une agrégation qui compte le nombre de requêtes par code HTTP et par IP source (top 5 IPs) sur l'index tp-nginx.</div>
+          <span class="qblock-pts">6 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>Console Kibana — Agrégations imbriquées</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="co">GET</span> <span class="cs">/tp-nginx/_search</span>
+{
+  <span class="ck">"size"</span>: <span class="cn">0</span>,
+  <span class="ck">"aggs"</span>: {
+    <span class="ck">"par_status"</span>: {
+      <span class="ck">"terms"</span>: { <span class="ck">"field"</span>: <span class="cs">"http.response.status_code"</span>, <span class="ck">"size"</span>: <span class="cn">10</span> }
+    },
+    <span class="ck">"top_ips"</span>: {
+      <span class="ck">"terms"</span>: { <span class="ck">"field"</span>: <span class="cs">"source.ip"</span>, <span class="ck">"size"</span>: <span class="cn">5</span> },
+      <span class="ck">"aggs"</span>: {
+        <span class="ck">"nb_requetes"</span>: { <span class="ck">"value_count"</span>: { <span class="ck">"field"</span>: <span class="cs">"source.ip"</span> } }
+      }
+    }
+  }
+}</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TP 6 ════════════ -->
+<div class="section" id="sec-tp6">
+  <div class="page-hero">
+    <div class="hero-tag">🩵 TP 6 — ES|QL</div>
+    <h1 class="hero-title">TP 6 — Analyse<br>avec ES|QL</h1>
+    <p class="hero-sub">Utilisez ES|QL dans Discover pour des requêtes analytiques avancées avec pipe, transformations EVAL et agrégations STATS. ES 8.11+ requis.</p>
+  </div>
+
+  <div class="box info">
+    <div class="box-i">ℹ️</div>
+    <div class="box-b"><strong>Activer ES|QL</strong><p>Dans Discover → cliquer sur le sélecteur de langue (KQL) → choisir <strong>ES|QL</strong>. La barre de recherche change d'apparence. Ou via <code>POST /_query</code> dans la Console.</p></div>
+  </div>
+
+  <!-- Ex 6.1 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex6)">6.1</div>
+      <div class="ex-meta">
+        <h3>Analyse statistique des logs nginx</h3>
+        <div class="ex-tags"><span class="diff diff-med">intermédiaire</span><span class="ex-tag b-esql">ES|QL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Avec ES|QL, trouvez le top 5 des IPs qui ont généré le plus de requêtes dans tp-nginx.</div>
+          <span class="qblock-pts">3 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>ES|QL — Discover ou Console</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-nginx
+  <span class="cp">|</span> <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> <span class="ck">source.ip</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> nb <span class="co">DESC</span>
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">5</span></pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">L'IP <strong>185.220.101.47</strong> doit être en tête avec ~72 requêtes.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Classifiez les requêtes par catégorie avec EVAL + CASE : "Erreur serveur" (5xx), "Erreur client" (4xx), "Succès" (2xx-3xx). Comptez chaque catégorie.</div>
+          <span class="qblock-pts">5 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-nginx
+  <span class="cp">|</span> <span class="cp">EVAL</span> categorie = <span class="cf">CASE</span>(
+      <span class="ck">http.response.status_code</span> >= <span class="cn">500</span>, <span class="cs">"Erreur serveur 5xx"</span>,
+      <span class="ck">http.response.status_code</span> >= <span class="cn">400</span>, <span class="cs">"Erreur client 4xx"</span>,
+      <span class="cs">"Succès 2xx/3xx"</span>
+    )
+  <span class="cp">|</span> <span class="cp">STATS</span> total = <span class="cf">COUNT</span>(*) <span class="co">BY</span> categorie
+  <span class="cp">|</span> <span class="cp">SORT</span> total <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q3 — Trouvez la taille moyenne et maximale des réponses par IP, pour les IP qui ont envoyé plus de 10 requêtes.</div>
+          <span class="qblock-pts">5 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-nginx
+  <span class="cp">|</span> <span class="cp">STATS</span>
+      nb       = <span class="cf">COUNT</span>(*),
+      avg_size = <span class="cf">AVG</span>(<span class="ck">http.response.body.bytes</span>),
+      max_size = <span class="cf">MAX</span>(<span class="ck">http.response.body.bytes</span>)
+      <span class="co">BY</span> <span class="ck">source.ip</span>
+  <span class="cp">|</span> <span class="cp">WHERE</span> nb > <span class="cn">10</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> max_size <span class="co">DESC</span></pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">L'IP <strong>10.0.0.20</strong> aura le <code>max_size</code> le plus élevé (9 850 000 bytes = l'upload suspect).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ex 6.2 -->
+  <div class="ex-card">
+    <div class="ex-header">
+      <div class="ex-num" style="background:var(--ex6)">6.2</div>
+      <div class="ex-meta">
+        <h3>Investigation multi-source avec ES|QL</h3>
+        <div class="ex-tags"><span class="diff diff-hard">avancé</span><span class="ex-tag b-esql">ES|QL</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q1 — Avec ES|QL sur tous les index <code>tp-*</code>, trouvez toutes les activités de l'IP 185.220.101.47 triées dans le temps. Utilisez KEEP pour ne conserver que les champs importants.</div>
+          <span class="qblock-pts">5 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>ES|QL — Pivot multi-source</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-*
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">source.ip</span> == <span class="cs">"185.220.101.47"</span>
+  <span class="cp">|</span> <span class="cp">KEEP</span> <span class="ck">@timestamp</span>, <span class="ck">source.ip</span>, <span class="ck">log.type</span>,
+         <span class="ck">url.path</span>, <span class="ck">user.name</span>, <span class="ck">event.action</span>,
+         <span class="ck">http.response.status_code</span>, <span class="ck">destination.port</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> <span class="ck">@timestamp</span> <span class="co">ASC</span>
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">100</span></pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Vous verrez la timeline complète : auth failures SSH → scans nginx → SQLi. La vue multi-index permet de corréler les sources.</p>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header">
+          <div class="qblock-q">Q2 — Générez un résumé par heure du nombre d'événements de chaque IP suspecte (185.220.101.47 et 10.0.0.20) en utilisant DATE_TRUNC.</div>
+          <span class="qblock-pts">6 pts</span>
+        </div>
+        <button class="reveal-btn" onclick="toggleAnswer(this)">▶ Voir la réponse</button>
+        <div class="answer-block">
+          <div class="answer-label">✅ Réponse</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-*
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">source.ip</span> <span class="co">IN</span> (<span class="cs">"185.220.101.47"</span>, <span class="cs">"10.0.0.20"</span>)
+  <span class="cp">|</span> <span class="cp">EVAL</span> heure = <span class="cf">DATE_TRUNC</span>(<span class="cn">1</span> hour, <span class="ck">@timestamp</span>)
+  <span class="cp">|</span> <span class="cp">STATS</span> evenements = <span class="cf">COUNT</span>(*) <span class="co">BY</span> heure, <span class="ck">source.ip</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> heure <span class="co">ASC</span>, evenements <span class="co">DESC</span></pre></div>
+          <p style="font-size:.82rem;color:var(--ink2)">Ce tableau montre clairement le pic d'activité de 185.220.101.47 entre 09h-12h (phase attaque), puis l'activité de 10.0.0.20 entre 13h-16h (phase post-compromission).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ─── Navigation ──────────────────────────────────────────────
+const PAGES = {dataset:'sec-dataset',tp1:'sec-tp1',tp2:'sec-tp2',tp3:'sec-tp3',tp4:'sec-tp4',tp5:'sec-tp5',tp6:'sec-tp6'};
+
+function goTo(page, anchor) {
+  Object.entries(PAGES).forEach(([k,v]) => document.getElementById(v).classList.toggle('active', k === page));
+  document.querySelectorAll('.tnav').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.sblink').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === page && (b.dataset.anchor||'') === (anchor||''));
+  });
+  if (anchor) {
+    setTimeout(() => {
+      const el = document.getElementById(anchor);
+      if (el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 70, behavior:'smooth'});
+    }, 35);
+  } else {
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  closeSidebar();
+}
+
+document.querySelectorAll('[data-page]').forEach(b => {
+  b.addEventListener('click', () => goTo(b.dataset.page, b.dataset.anchor||''));
+});
+
+// ─── Mobile sidebar ───────────────────────────────────────────
+document.getElementById('ham').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+});
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+document.getElementById('overlay').addEventListener('click', closeSidebar);
+
+// ─── Reveal answers ───────────────────────────────────────────
+function toggleAnswer(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = answer.classList.contains('show');
+  answer.classList.toggle('show', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+  btn.innerHTML = isOpen ? '▶ Voir la réponse' : '▼ Masquer la réponse';
+}
+
+// ─── Copy buttons ─────────────────────────────────────────────
+document.querySelectorAll('.copy-b').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const pre = btn.closest('.ctop')?.nextElementSibling;
+    if (pre) navigator.clipboard.writeText(pre.textContent).then(() => {
+      btn.textContent = '✓'; btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'copier'; btn.classList.remove('ok'); }, 2000);
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROK — Exercice Avancé | Analyse Logs Intrusion</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #030b0f;
+  --bg2: #060f15;
+  --surface: #071520;
+  --surface2: #0a1e2e;
+  --border: #0d2d40;
+  --border2: #0f3d58;
+  --cyan: #00ffe7;
+  --cyan2: #00b8a8;
+  --cyan-dim: rgba(0,255,231,0.08);
+  --orange: #ff6b2b;
+  --orange-dim: rgba(255,107,43,0.1);
+  --red: #ff2d4f;
+  --red-dim: rgba(255,45,79,0.08);
+  --green: #39ff6e;
+  --green-dim: rgba(57,255,110,0.08);
+  --yellow: #ffd200;
+  --yellow-dim: rgba(255,210,0,0.08);
+  --purple: #b44fff;
+  --text: #c8e8f0;
+  --muted: #3a6070;
+  --muted2: #5a8090;
+  --scanline: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  background-image: var(--scanline);
+  overflow-x: hidden;
+}
+
+/* NOISE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* GLOBAL GLOW */
+.glow-cyan { text-shadow: 0 0 10px var(--cyan), 0 0 30px rgba(0,255,231,0.3); }
+.glow-orange { text-shadow: 0 0 10px var(--orange), 0 0 25px rgba(255,107,43,0.3); }
+.glow-red { text-shadow: 0 0 10px var(--red); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--cyan2); border-radius: 2px; }
+
+/* ======================== NAV ======================== */
+nav {
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(3,11,15,0.95);
+  border-bottom: 1px solid var(--border2);
+  backdrop-filter: blur(12px);
+  padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 30px rgba(0,255,231,0.06);
+}
+
+.nav-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+}
+
+.nav-logo span { color: var(--orange); }
+
+.nav-links { display: flex; gap: 0; }
+.nav-link {
+  font-size: 0.7rem;
+  color: var(--muted2);
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--cyan);
+  border-color: rgba(0,255,231,0.2);
+  background: var(--cyan-dim);
+}
+
+.nav-badge {
+  font-size: 0.65rem;
+  background: var(--red-dim);
+  border: 1px solid rgba(255,45,79,0.3);
+  color: var(--red);
+  padding: 0.2rem 0.6rem;
+  font-family: 'Share Tech Mono', monospace;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ======================== HERO ======================== */
+.hero {
+  padding: 4rem 2rem 3rem;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse at top right, rgba(0,255,231,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.hero h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 0.75rem;
+  color: var(--cyan);
+  text-shadow: 0 0 40px rgba(0,255,231,0.2), 0 0 80px rgba(0,255,231,0.08);
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--orange);
+  text-shadow: 0 0 30px rgba(255,107,43,0.3);
+}
+
+.hero-sub {
+  color: var(--muted2);
+  font-size: 0.88rem;
+  max-width: 700px;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.hero-meta {
+  display: flex; gap: 2rem; flex-wrap: wrap;
+}
+
+.meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; }
+.meta-dot { width: 6px; height: 6px; border-radius: 50%; }
+.meta-dot.red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.meta-dot.orange { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+.meta-dot.green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.meta-label { color: var(--muted2); }
+.meta-val { color: var(--text); }
+
+/* ======================== LAYOUT ======================== */
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: calc(100vh - 120px);
+}
+
+/* ======================== SIDEBAR ======================== */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: sticky; top: 52px;
+  height: calc(100vh - 52px);
+  overflow-y: auto;
+  padding: 1.5rem 0;
+}
+
+.sidebar-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.75rem;
+}
+
+.sb-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.4rem 1.25rem;
+  font-size: 0.78rem;
+  color: var(--muted2);
+  cursor: pointer;
+  transition: all 0.12s;
+  border-left: 2px solid transparent;
+  font-family: 'Share Tech Mono', monospace;
+}
+.sb-item:hover, .sb-item.active {
+  color: var(--cyan);
+  border-left-color: var(--cyan);
+  background: var(--cyan-dim);
+}
+.sb-item .sb-num {
+  font-size: 0.6rem;
+  color: var(--muted);
+  min-width: 18px;
+}
+.sb-item.done { color: var(--green); border-left-color: var(--green); }
+.sb-item.done::after { content: ' ✓'; font-size: 0.65rem; margin-left: auto; }
+
+.sb-section-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 1rem 1.25rem 0.3rem;
+}
+
+/* ======================== MAIN ======================== */
+.main {
+  padding: 2.5rem;
+  max-width: 900px;
+}
+
+/* ======================== SECTIONS ======================== */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* ======================== TYPOGRAPHY ======================== */
+h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+
+h2 .h2-num {
+  font-size: 0.7rem;
+  background: rgba(0,255,231,0.08);
+  border: 1px solid rgba(0,255,231,0.2);
+  color: var(--cyan2);
+  padding: 0.15rem 0.5rem;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--orange);
+  margin: 2rem 0 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+p {
+  color: #8ab5c5;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+/* ======================== CODE ======================== */
+.code-wrap { margin: 1rem 0; }
+
+.code-label {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #040d14;
+  border: 1px solid var(--border2);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  padding: 0.4rem 1rem;
+  font-size: 0.65rem;
+  color: var(--muted2);
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.code-label .lang-tag {
+  background: var(--cyan-dim);
+  border: 1px solid rgba(0,255,231,0.15);
+  color: var(--cyan2);
+  padding: 0.1rem 0.5rem;
+  border-radius: 2px;
+  font-size: 0.6rem;
+}
+
+pre {
+  background: #020910;
+  border: 1px solid var(--border2);
+  border-radius: 0 0 4px 4px;
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--text);
+  position: relative;
+}
+
+pre.standalone { border-radius: 4px; }
+
+/* syntax */
+.c { color: var(--cyan); }
+.o { color: var(--orange); }
+.g { color: var(--green); }
+.y { color: var(--yellow); }
+.p { color: var(--purple); }
+.r { color: var(--red); }
+.m { color: var(--muted2); font-style: italic; }
+.w { color: #fff; font-weight: 600; }
+
+/* ======================== PATTERN TABLE ======================== */
+.pattern-grid {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.pg-header {
+  display: grid;
+  grid-template-columns: 200px 1fr 140px;
+  background: #040d14;
+  border-bottom: 1px solid var(--border2);
+  padding: 0.5rem 1rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.pg-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 140px;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid rgba(13,45,64,0.5);
+  font-size: 0.78rem;
+  align-items: start;
+  transition: background 0.1s;
+}
+.pg-row:last-child { border-bottom: none; }
+.pg-row:hover { background: rgba(0,255,231,0.02); }
+
+.pg-name {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--cyan);
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.pg-regex {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--orange);
+  font-size: 0.72rem;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.pg-match {
+  font-size: 0.72rem;
+  color: var(--muted2);
+  line-height: 1.5;
+}
+
+.cat-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 2px;
+  font-family: 'Share Tech Mono', monospace;
+  margin-bottom: 0.2rem;
+}
+.cat-ip { background: rgba(0,255,231,0.08); color: var(--cyan); border: 1px solid rgba(0,255,231,0.2); }
+.cat-net { background: rgba(255,107,43,0.08); color: var(--orange); border: 1px solid rgba(255,107,43,0.2); }
+.cat-num { background: rgba(57,255,110,0.08); color: var(--green); border: 1px solid rgba(57,255,110,0.2); }
+.cat-str { background: rgba(180,79,255,0.08); color: var(--purple); border: 1px solid rgba(180,79,255,0.2); }
+.cat-date { background: rgba(255,210,0,0.08); color: var(--yellow); border: 1px solid rgba(255,210,0,0.2); }
+.cat-sys { background: rgba(255,45,79,0.08); color: var(--red); border: 1px solid rgba(255,45,79,0.2); }
+.cat-log { background: rgba(90,128,144,0.15); color: #8ab5c5; border: 1px solid rgba(90,128,144,0.2); }
+
+/* ======================== BOXES ======================== */
+.box {
+  border-radius: 4px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  font-size: 0.82rem;
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  border-left: 3px solid;
+}
+.box-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+.box-body { flex: 1; }
+.box-body strong { display: block; margin-bottom: 0.2rem; font-size: 0.8rem; }
+.box-body p { margin: 0; font-size: 0.8rem; }
+
+.box.info { background: var(--cyan-dim); border-color: var(--cyan2); }
+.box.warn { background: var(--orange-dim); border-color: var(--orange); }
+.box.danger { background: var(--red-dim); border-color: var(--red); }
+.box.success { background: var(--green-dim); border-color: var(--green); }
+.box.tip { background: rgba(180,79,255,0.06); border-color: var(--purple); }
+
+/* ======================== EXERCISE ======================== */
+.exercise-header {
+  background: linear-gradient(135deg, #070f1a 0%, #0a1520 100%);
+  border: 1px solid var(--border2);
+  border-top: 2px solid var(--orange);
+  border-radius: 0 0 6px 6px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.exercise-header::before {
+  content: 'EXERCISE';
+  position: absolute;
+  top: -8px; right: 1rem;
+  font-family: 'Orbitron', monospace;
+  font-size: 3rem;
+  font-weight: 900;
+  color: rgba(255,107,43,0.04);
+  letter-spacing: 0.2em;
+  pointer-events: none;
+}
+
+.ex-meta {
+  display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;
+}
+
+.ex-tag {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  font-family: 'Share Tech Mono', monospace;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+}
+.ex-tag.lvl { background: rgba(255,45,79,0.12); color: var(--red); border: 1px solid rgba(255,45,79,0.3); }
+.ex-tag.time { background: var(--orange-dim); color: var(--orange); border: 1px solid rgba(255,107,43,0.3); }
+.ex-tag.tools { background: var(--cyan-dim); color: var(--cyan2); border: 1px solid rgba(0,255,231,0.2); }
+
+.ex-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem;
+  color: var(--orange);
+  margin-bottom: 0.5rem;
+}
+
+.ex-desc { color: #8ab5c5; font-size: 0.83rem; line-height: 1.7; }
+
+/* LOG DISPLAY */
+.log-display {
+  background: #010508;
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 1.2rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.9;
+  overflow-x: auto;
+  position: relative;
+}
+
+.log-display::before {
+  content: 'RAW LOGS — CLASSIFIÉ';
+  position: absolute;
+  top: 0.4rem; right: 0.75rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: rgba(255,45,79,0.4);
+  font-family: 'Orbitron', monospace;
+}
+
+.log-line { display: block; padding: 0.1rem 0; }
+.log-line:hover { background: rgba(0,255,231,0.03); }
+.log-ts { color: var(--muted2); }
+.log-host { color: var(--cyan2); }
+.log-proc { color: var(--orange); }
+.log-pid { color: var(--muted); }
+.log-msg { color: var(--text); }
+.log-ip { color: var(--green); }
+.log-status { color: var(--yellow); }
+.log-danger { color: var(--red); }
+
+/* STEPS */
+.steps { counter-reset: step; }
+.step {
+  display: flex; gap: 1.25rem; margin-bottom: 2rem; align-items: flex-start;
+  counter-increment: step;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  background: var(--orange-dim);
+  border: 1px solid rgba(255,107,43,0.35);
+  color: var(--orange);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 12px rgba(255,107,43,0.1);
+}
+.step-body h4 {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.82rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.05em;
+}
+.step-body p { margin-bottom: 0.5rem; }
+
+/* QUESTION CARD */
+.qcard {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.qcard:hover { border-color: rgba(0,255,231,0.2); }
+
+.qcard-head {
+  padding: 0.9rem 1.2rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+  cursor: pointer;
+}
+.q-num {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--orange);
+  background: var(--orange-dim);
+  border: 1px solid rgba(255,107,43,0.25);
+  padding: 0.2rem 0.45rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+.q-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.5;
+  flex: 1;
+}
+.q-pts {
+  font-size: 0.68rem;
+  color: var(--muted2);
+  font-family: 'Share Tech Mono', monospace;
+  flex-shrink: 0;
+}
+
+.qcard-answer {
+  display: none;
+  padding: 0 1.2rem 1.2rem;
+  border-top: 1px solid var(--border);
+}
+
+.qcard.revealed .qcard-answer { display: block; }
+.qcard.revealed { border-color: rgba(0,255,231,0.25); }
+
+.reveal-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--muted2);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+.reveal-btn:hover { color: var(--cyan); border-color: rgba(0,255,231,0.3); background: var(--cyan-dim); }
+
+/* PROGRESS */
+.progress-bar-wrap {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 2rem;
+}
+.pb-label { font-size: 0.7rem; color: var(--muted2); margin-bottom: 0.5rem; font-family: 'Share Tech Mono', monospace; }
+.pb-track {
+  height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.pb-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan2), var(--cyan));
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--cyan2);
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* SCORE */
+.score-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  background: var(--cyan-dim);
+  border: 1px solid rgba(0,255,231,0.25);
+  color: var(--cyan);
+  border-radius: 2px;
+}
+
+/* INTERACTIVE GROK TESTER */
+.grok-tester {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.gt-header {
+  background: #040d14;
+  border-bottom: 1px solid var(--border2);
+  padding: 0.7rem 1.2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.gt-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.72rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+}
+
+.gt-status {
+  font-size: 0.65rem;
+  font-family: 'Share Tech Mono', monospace;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+}
+.gt-status.ok { background: var(--green-dim); color: var(--green); border: 1px solid rgba(57,255,110,0.25); }
+.gt-status.fail { background: var(--red-dim); color: var(--red); border: 1px solid rgba(255,45,79,0.25); }
+.gt-status.idle { background: var(--border); color: var(--muted2); }
+
+.gt-body { padding: 1.2rem; }
+
+.gt-field { margin-bottom: 1rem; }
+.gt-field label {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted2);
+  margin-bottom: 0.35rem;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.gt-field textarea, .gt-field input {
+  width: 100%;
+  background: #020910;
+  border: 1px solid var(--border2);
+  color: var(--orange);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 3px;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.15s;
+}
+.gt-field textarea:focus, .gt-field input:focus {
+  border-color: rgba(0,255,231,0.3);
+  color: var(--cyan);
+  box-shadow: 0 0 0 2px rgba(0,255,231,0.04);
+}
+
+.gt-run-btn {
+  background: linear-gradient(135deg, rgba(255,107,43,0.15), rgba(255,107,43,0.08));
+  border: 1px solid rgba(255,107,43,0.35);
+  color: var(--orange);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.55rem 1.5rem;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+.gt-run-btn:hover {
+  background: linear-gradient(135deg, rgba(255,107,43,0.25), rgba(255,107,43,0.15));
+  box-shadow: 0 0 15px rgba(255,107,43,0.15);
+}
+
+.gt-result {
+  background: #010508;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.78rem;
+  min-height: 60px;
+  display: none;
+}
+.gt-result.show { display: block; }
+
+.gt-field-match {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.3rem 0; border-bottom: 1px solid rgba(13,45,64,0.4);
+}
+.gt-field-match:last-child { border-bottom: none; }
+.gfm-name { color: var(--cyan2); min-width: 140px; font-size: 0.75rem; }
+.gfm-val { color: var(--green); }
+.gfm-type { color: var(--muted); font-size: 0.68rem; margin-left: auto; }
+
+/* ======================== CHEATSHEET ======================== */
+.cheat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cheat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.cheat-card:hover { border-color: rgba(0,255,231,0.2); }
+
+.cheat-card-head {
+  background: #040d14;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.cheat-rows { padding: 0.25rem 0; }
+.cheat-row {
+  display: flex; align-items: baseline; gap: 0.75rem;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.75rem;
+  border-bottom: 1px solid rgba(13,45,64,0.3);
+}
+.cheat-row:last-child { border-bottom: none; }
+.cr-k { font-family: 'Share Tech Mono', monospace; color: var(--cyan); min-width: 90px; font-size: 0.73rem; }
+.cr-v { color: var(--muted2); font-size: 0.72rem; line-height: 1.4; }
+
+/* SEPARATOR */
+.sep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+/* ANIMATE IN */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-section.active > * {
+  animation: fadeUp 0.3s ease both;
+}
+
+/* MOBILE */
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .cheat-grid { grid-template-columns: 1fr; }
+  .pg-header, .pg-row { grid-template-columns: 150px 1fr; }
+  .pg-row > :last-child { display: none; }
+  .pg-header > :last-child { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GROK<span>://</span>LAB</div>
+  <div class="nav-links">
+    <span class="nav-link active" onclick="showPage('cours')">Cours</span>
+    <span class="nav-link" onclick="showPage('patterns')">Patterns</span>
+    <span class="nav-link" onclick="showPage('exercice')">Exercice</span>
+    <span class="nav-link" onclick="showPage('tester')">Tester</span>
+    <span class="nav-link" onclick="showPage('corrige')">Corrigé</span>
+  </div>
+  <div class="nav-badge">⚠ NIVEAU AVANCÉ</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">// LOGSTASH — FILTRE GROK — ECS V1</div>
+  <h1>Analyse de Logs<br><em>d'Intrusion Réseau</em></h1>
+  <p class="hero-sub">Maîtrisez les filtres Grok pour parser, enrichir et corréler des logs multi-sources d'une attaque réelle. Extraction de patterns complexes, champs custom, gestion des erreurs.</p>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-dot red"></div><span class="meta-label">Niveau :</span><span class="meta-val">Avancé</span></div>
+    <div class="meta-item"><div class="meta-dot orange"></div><span class="meta-label">Durée :</span><span class="meta-val">90-120 min</span></div>
+    <div class="meta-item"><div class="meta-dot green"></div><span class="meta-label">Stack :</span><span class="meta-val">Logstash + ELK</span></div>
+    <div class="meta-item"><div class="meta-dot green"></div><span class="meta-label">Score max :</span><span class="meta-val">100 pts</span></div>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-title">Navigation</div>
+  <div class="sb-section-label">📚 Cours</div>
+  <div class="sb-item active" onclick="showPage('cours'); setSb(this)"><span class="sb-num">01</span> Introduction Grok</div>
+  <div class="sb-item" onclick="showPage('patterns'); setSb(this)"><span class="sb-num">02</span> Référence Patterns</div>
+
+  <div class="sb-section-label">🎯 Exercice</div>
+  <div class="sb-item" onclick="showPage('exercice'); setSb(this)"><span class="sb-num">03</span> Contexte opérationnel</div>
+  <div class="sb-item" onclick="showPage('exercice'); setSb(this)"><span class="sb-num">04</span> Questions guidées</div>
+  <div class="sb-item" onclick="showPage('tester'); setSb(this)"><span class="sb-num">05</span> Testeur interactif</div>
+
+  <div class="sb-section-label">✅ Correction</div>
+  <div class="sb-item" onclick="showPage('corrige'); setSb(this)"><span class="sb-num">06</span> Corrigé complet</div>
+  <div class="sb-item" onclick="showPage('corrige'); setSb(this)"><span class="sb-num">07</span> Pipeline final</div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ==================== COURS ==================== -->
+<div class="page-section active" id="page-cours">
+
+  <h2><span class="h2-num">01</span> Introduction au filtre Grok</h2>
+
+  <p>Grok est le filtre le plus puissant de Logstash. Il permet de parser des lignes de logs non structurées en champs nommés et typés, en s'appuyant sur une bibliothèque de <strong>patterns regex prédéfinis</strong> et composables.</p>
+
+  <div class="box info">
+    <div class="box-icon">💡</div>
+    <div class="box-body">
+      <strong>Philosophie Grok</strong>
+      <p>Au lieu d'écrire des regex complexes from scratch, Grok vous fournit des patterns nommés réutilisables. <code style="color:var(--cyan)">%{PATTERN:nom_champ:type}</code> — c'est tout ce dont vous avez besoin.</p>
+    </div>
+  </div>
+
+  <h3>01 — Syntaxe fondamentale</h3>
+
+  <div class="code-wrap">
+    <div class="code-label"><span>Syntaxe Grok</span><span class="lang-tag">GROK</span></div>
+    <pre><span class="m"># Forme de base — extraction sans type</span>
+<span class="c">%{</span><span class="o">PATTERN_NAME</span><span class="c">:</span><span class="g">field_name</span><span class="c">}</span>
+
+<span class="m"># Forme typée — conversion automatique</span>
+<span class="c">%{</span><span class="o">PATTERN_NAME</span><span class="c">:</span><span class="g">field_name</span><span class="c">:</span><span class="y">type</span><span class="c">}</span>
+<span class="m"># Types disponibles : int, float, (string par défaut)</span>
+
+<span class="m"># Pattern sans capture (utilisation en position)</span>
+<span class="c">%{</span><span class="o">PATTERN_NAME</span><span class="c">}</span>
+
+<span class="m"># Regex inline dans Grok</span>
+<span class="c">(?&lt;</span><span class="g">field_name</span><span class="c">&gt;</span><span class="o">votre_regex_ici</span><span class="c">)</span>
+
+<span class="m"># Combinaison patterns + littéraux</span>
+<span class="c">%{</span><span class="o">IP</span><span class="c">:</span><span class="g">src_ip</span><span class="c">}</span> <span class="w">-</span> <span class="c">%{</span><span class="o">USER</span><span class="c">:</span><span class="g">username</span><span class="c">}</span> <span class="c">%{</span><span class="o">HTTPDATE</span><span class="c">:</span><span class="g">timestamp</span><span class="c">}</span></pre>
+  </div>
+
+  <h3>02 — Configuration dans Logstash</h3>
+
+  <div class="code-wrap">
+    <div class="code-label"><span>logstash.conf — Structure complète</span><span class="lang-tag">LOGSTASH</span></div>
+    <pre><span class="m"># logstash.conf</span>
+<span class="y">input</span> {
+  <span class="y">file</span> {
+    <span class="g">path</span> => <span class="o">"/var/log/syslog"</span>
+    <span class="g">start_position</span> => <span class="o">"beginning"</span>
+    <span class="g">sincedb_path</span> => <span class="o">"/dev/null"</span>
+  }
+}
+
+<span class="y">filter</span> {
+  <span class="c">grok</span> {
+    <span class="m"># Pattern unique</span>
+    <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{SYSLOGTIMESTAMP:timestamp} %{HOSTNAME:host} %{WORD:program}(?:\[%{POSINT:pid:int}\])?: %{GREEDYDATA:log_message}"</span> }
+
+    <span class="m"># Patterns alternatifs (essayés dans l'ordre)</span>
+    <span class="g">match</span> => { <span class="o">"message"</span> => [
+      <span class="o">"%{COMBINEDAPACHELOG}"</span>,
+      <span class="o">"%{COMMONAPACHELOG}"</span>,
+      <span class="o">"%{SYSLOGLINE}"</span>
+    ]}
+
+    <span class="m"># Écraser les champs existants</span>
+    <span class="g">overwrite</span> => [<span class="o">"message"</span>]
+
+    <span class="m"># Tag si échec du parsing</span>
+    <span class="g">tag_on_failure</span> => [<span class="o">"_grokparsefailure"</span>, <span class="o">"grok_fail"</span>]
+
+    <span class="m"># Ajouter des patterns custom</span>
+    <span class="g">patterns_dir</span> => [<span class="o">"/etc/logstash/patterns"</span>]
+  }
+
+  <span class="m"># Conversion de date</span>
+  <span class="c">date</span> {
+    <span class="g">match</span> => [ <span class="o">"timestamp"</span>, <span class="o">"dd/MMM/yyyy:HH:mm:ss Z"</span> ]
+    <span class="g">target</span> => <span class="o">"@timestamp"</span>
+  }
+
+  <span class="m"># Géolocalisation IP</span>
+  <span class="c">geoip</span> {
+    <span class="g">source</span> => <span class="o">"src_ip"</span>
+    <span class="g">target</span> => <span class="o">"geoip"</span>
+  }
+
+  <span class="m"># Supprimer les champs temporaires</span>
+  <span class="c">mutate</span> {
+    <span class="g">remove_field</span> => [<span class="o">"message"</span>, <span class="o">"timestamp"</span>]
+    <span class="g">add_tag</span> => [<span class="o">"parsed"</span>]
+  }
+}
+
+<span class="y">output</span> {
+  <span class="c">elasticsearch</span> {
+    <span class="g">hosts</span> => [<span class="o">"localhost:9200"</span>]
+    <span class="g">index</span> => <span class="o">"logs-%{+YYYY.MM.dd}"</span>
+  }
+}</pre>
+  </div>
+
+  <h3>03 — Patterns composites et custom</h3>
+
+  <div class="code-wrap">
+    <div class="code-label"><span>patterns/custom.grok — Définir ses propres patterns</span><span class="lang-tag">GROK</span></div>
+    <pre><span class="m"># Fichier de patterns personnalisés</span>
+<span class="m"># Syntaxe : NOM_PATTERN   regex_ici</span>
+
+<span class="m"># MAC Address</span>
+<span class="c">MAC_ADDR</span>           <span class="o">(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}</span>
+
+<span class="m"># CVE identifier</span>
+<span class="c">CVE_ID</span>             <span class="o">CVE-\d{4}-\d{4,7}</span>
+
+<span class="m"># Hash MD5/SHA1/SHA256</span>
+<span class="c">MD5HASH</span>            <span class="o">[0-9a-fA-F]{32}</span>
+<span class="c">SHA1HASH</span>           <span class="o">[0-9a-fA-F]{40}</span>
+<span class="c">SHA256HASH</span>         <span class="o">[0-9a-fA-F]{64}</span>
+
+<span class="m"># Login LDAP-style</span>
+<span class="c">LDAP_USER</span>          <span class="o">(?:[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|[A-Za-z0-9._-]+)</span>
+
+<span class="m"># Port TCP/UDP</span>
+<span class="c">TCPPORT</span>            <span class="o">(?:6[0-5][0-5][0-3][0-5]|[1-5]\d{4}|[1-9]\d{1,3}|[0-9])</span>
+
+<span class="m"># Utilisation dans logstash.conf</span>
+<span class="m"># %{MAC_ADDR:attacker_mac} %{CVE_ID:cve_ref}</span></pre>
+  </div>
+
+  <h3>04 — Options avancées du filtre Grok</h3>
+
+  <div class="code-wrap">
+    <div class="code-label"><span>Options avancées</span><span class="lang-tag">LOGSTASH</span></div>
+    <pre><span class="c">grok</span> {
+  <span class="m"># Multiple captures du même pattern sur une ligne</span>
+  <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{IP} %{IP:dst_ip}"</span> }
+
+  <span class="m"># keep_empty_captures — garder les champs vides</span>
+  <span class="g">keep_empty_captures</span> => <span class="y">true</span>
+
+  <span class="m"># named_captures_only — ignorer les groupes non nommés</span>
+  <span class="g">named_captures_only</span> => <span class="y">true</span>
+
+  <span class="m"># break_on_match — stopper après le 1er pattern matché</span>
+  <span class="g">break_on_match</span> => <span class="y">true</span>
+
+  <span class="m"># timeout_millis — timeout du parsing</span>
+  <span class="g">timeout_millis</span> => <span class="y">1500</span>
+}
+
+<span class="m"># Condition sur le résultat</span>
+<span class="y">if</span> <span class="o">"_grokparsefailure"</span> <span class="y">in</span> [<span class="g">tags</span>] {
+  <span class="c">mutate</span> {
+    <span class="g">add_field</span> => { <span class="o">"parse_error"</span> => <span class="o">"true"</span> }
+  }
+  <span class="c">drop</span> { }  <span class="m"># ou router vers une DLQ</span>
+}
+
+<span class="m"># Condition sur champ parsé</span>
+<span class="y">if</span> [<span class="g">http_status</span>] =~ <span class="o">/^[45]/</span> {
+  <span class="c">mutate</span> { <span class="g">add_tag</span> => [<span class="o">"error_response"</span>] }
+}</pre>
+  </div>
+
+  <div class="box tip">
+    <div class="box-icon">🔮</div>
+    <div class="box-body">
+      <strong>Performance Grok</strong>
+      <p>Les patterns sont compilés en regex Java. Évitez les patterns greedy (<code style="color:var(--cyan)">GREEDYDATA</code>) en début de pattern — ils causent beaucoup de backtracking. Préférez placer vos patterns les plus discriminants en premier.</p>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <h3>05 — Patterns Apache / Nginx</h3>
+
+  <div class="code-wrap">
+    <div class="code-label"><span>COMBINEDAPACHELOG décomposé</span><span class="lang-tag">GROK</span></div>
+    <pre><span class="m"># Ce que fait COMBINEDAPACHELOG en interne :</span>
+<span class="c">%{IPORHOST:clientip}</span> <span class="m"># IP ou hostname du client</span>
+<span class="c">%{HTTPDUSER:ident}</span>   <span class="m"># Identité RFC1413</span>
+<span class="c">%{HTTPDUSER:auth}</span>    <span class="m"># Utilisateur authentifié</span>
+<span class="w">\[</span><span class="c">%{HTTPDATE:timestamp}</span><span class="w">\]</span>
+<span class="w">"</span><span class="c">%{WORD:verb}</span> <span class="c">%{NOTSPACE:request}</span> <span class="c">HTTP/%{NUMBER:httpversion}</span><span class="w">"</span>
+<span class="c">%{NUMBER:response:int}</span>    <span class="m"># Status HTTP</span>
+<span class="c">(?:%{NUMBER:bytes:int}</span>|<span class="w">-</span><span class="c">)</span> <span class="m"># Taille réponse</span>
+<span class="w">"</span><span class="c">%{QS:referrer}</span><span class="w">"</span>           <span class="m"># Referrer</span>
+<span class="w">"</span><span class="c">%{QS:agent}</span><span class="w">"</span>              <span class="m"># User-Agent</span>
+
+<span class="m"># Exemple d'utilisation :</span>
+<span class="c">grok</span> {
+  <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{COMBINEDAPACHELOG}"</span> }
+}</pre>
+  </div>
+
+  <h3>06 — Patterns Syslog</h3>
+
+  <div class="code-wrap">
+    <div class="code-label"><span>SYSLOGLINE décomposé</span><span class="lang-tag">GROK</span></div>
+    <pre><span class="m"># Structure syslog standard :</span>
+<span class="c">%{SYSLOGTIMESTAMP:timestamp}</span>  <span class="m"># Ex: Jan  5 12:34:56</span>
+<span class="c">(?:%{SYSLOGFACILITY} )?</span>        <span class="m"># Facility optionnelle (&lt;14&gt;)</span>
+<span class="c">%{IPORHOST:logsource}</span>         <span class="m"># Source du log</span>
+<span class="c">%{SYSLOGPROG}</span>                 <span class="m"># Programme[PID]:</span>
+<span class="c">%{GREEDYDATA:message}</span>         <span class="m"># Message restant</span>
+
+<span class="m"># Syslog avec RFC 5424 :</span>
+<span class="c">%{POSINT:syslog_version}</span>      <span class="m"># Version protocole</span>
+<span class="c">%{TIMESTAMP_ISO8601:timestamp}</span> <span class="m"># ISO 8601</span>
+<span class="c">%{HOSTNAME:hostname}</span>          <span class="m"># Hostname</span>
+<span class="c">%{WORD:app_name}</span>              <span class="m"># Nom application</span></pre>
+  </div>
+
+</div>
+
+<!-- ==================== PATTERNS ==================== -->
+<div class="page-section" id="page-patterns">
+
+  <h2><span class="h2-num">02</span> Référence complète des patterns ECS v1</h2>
+
+  <p>Tous les patterns disponibles dans <code style="color:var(--cyan)">logstash-patterns-core/patterns/ecs-v1/grok-patterns</code>. Ces patterns sont composables — un pattern peut référencer d'autres patterns.</p>
+
+  <div class="box warn">
+    <div class="box-icon">⚡</div>
+    <div class="box-body">
+      <strong>Notation</strong>
+      <p>La syntaxe <code style="color:var(--orange)">(?:...)</code> est un groupe non-capturant, <code style="color:var(--orange)">(?:...)?</code> est optionnel, <code style="color:var(--orange)">(?i)</code> est insensible à la casse.</p>
+    </div>
+  </div>
+
+  <!-- NETWORK / IP -->
+  <h3>🌐 Réseau & IP</h3>
+  <div class="pattern-grid">
+    <div class="pg-header"><span>Nom Pattern</span><span>Regex / Composition</span><span>Exemple</span></div>
+    <div class="pg-row">
+      <div><span class="pg-name">IP</span><br><span class="cat-badge cat-ip">réseau</span></div>
+      <div class="pg-regex">(?:%{IPV6}|%{IPV4})</div>
+      <div class="pg-match">192.168.1.1<br>fe80::1</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">IPV4</span><br><span class="cat-badge cat-ip">réseau</span></div>
+      <div class="pg-regex">(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:...)){3}...</div>
+      <div class="pg-match">10.0.0.1<br>255.255.255.0</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">IPV6</span><br><span class="cat-badge cat-ip">réseau</span></div>
+      <div class="pg-regex">(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4} (+ variantes ::)</div>
+      <div class="pg-match">fe80::1<br>2001:db8::1</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">IPORHOST</span><br><span class="cat-badge cat-ip">réseau</span></div>
+      <div class="pg-regex">(?:%{IP}|%{HOSTNAME})</div>
+      <div class="pg-match">192.168.1.1<br>server.local</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">HOSTNAME</span><br><span class="cat-badge cat-net">host</span></div>
+      <div class="pg-regex">\b(?:[0-9A-Za-z][0-9A-Za-z-]{0,62})(?:\.(?:[0-9A-Za-z]...))*\.?\b</div>
+      <div class="pg-match">server01<br>mail.corp.fr</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">HOSTPORT</span><br><span class="cat-badge cat-net">host</span></div>
+      <div class="pg-regex">%{IPORHOST}:%{POSINT}</div>
+      <div class="pg-match">192.168.1.1:8080</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">CISCOMAC</span><br><span class="cat-badge cat-ip">réseau</span></div>
+      <div class="pg-regex">(?:[A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}</div>
+      <div class="pg-match">0000.0c07.ac01</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">WINDOWSMAC</span><br><span class="cat-badge cat-ip">réseau</span></div>
+      <div class="pg-regex">(?:[A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}</div>
+      <div class="pg-match">AA-BB-CC-DD-EE-FF</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">COMMONMAC</span><br><span class="cat-badge cat-ip">réseau</span></div>
+      <div class="pg-regex">(?:[A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}</div>
+      <div class="pg-match">aa:bb:cc:dd:ee:ff</div>
+    </div>
+  </div>
+
+  <!-- NUMBERS -->
+  <h3>🔢 Nombres</h3>
+  <div class="pattern-grid">
+    <div class="pg-header"><span>Nom Pattern</span><span>Regex / Composition</span><span>Exemple</span></div>
+    <div class="pg-row">
+      <div><span class="pg-name">INT</span><br><span class="cat-badge cat-num">nombre</span></div>
+      <div class="pg-regex">(?:[+-]?(?:[0-9]+))</div>
+      <div class="pg-match">-42, 0, 9999</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">POSINT</span><br><span class="cat-badge cat-num">nombre</span></div>
+      <div class="pg-regex">\b(?:[1-9][0-9]*)\b</div>
+      <div class="pg-match">1, 443, 65535</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">NONNEGINT</span><br><span class="cat-badge cat-num">nombre</span></div>
+      <div class="pg-regex">\b(?:[0-9]+)\b</div>
+      <div class="pg-match">0, 1, 404</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">NUMBER</span><br><span class="cat-badge cat-num">nombre</span></div>
+      <div class="pg-regex">(?:%{BASE10NUM})</div>
+      <div class="pg-match">3.14, -0.5, 1e10</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">BASE10NUM</span><br><span class="cat-badge cat-num">nombre</span></div>
+      <div class="pg-regex">(?:[+-]?(?:(?:[0-9]+(?:\.[0-9]+)?)|(?:\.[0-9]+)))</div>
+      <div class="pg-match">3.14, .5, -42</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">BASE16NUM</span><br><span class="cat-badge cat-num">nombre</span></div>
+      <div class="pg-regex">(?:0[xX]?[0-9a-fA-F]+)</div>
+      <div class="pg-match">0xFF, 0x1A2B</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">BASE16FLOAT</span><br><span class="cat-badge cat-num">nombre</span></div>
+      <div class="pg-regex">\b(?:[+-]?(?:0x)?(?:(?:[0-9a-fA-F]+(?:\.[0-9a-fA-F]*)?)|...))</div>
+      <div class="pg-match">0x1.8p+1</div>
+    </div>
+  </div>
+
+  <!-- STRINGS -->
+  <h3>📝 Chaînes de caractères</h3>
+  <div class="pattern-grid">
+    <div class="pg-header"><span>Nom Pattern</span><span>Regex / Composition</span><span>Exemple</span></div>
+    <div class="pg-row">
+      <div><span class="pg-name">WORD</span><br><span class="cat-badge cat-str">texte</span></div>
+      <div class="pg-regex">\b\w+\b</div>
+      <div class="pg-match">hello, nginx, ERR</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">NOTSPACE</span><br><span class="cat-badge cat-str">texte</span></div>
+      <div class="pg-regex">\S+</div>
+      <div class="pg-match">GET, /api/v1, -</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">SPACE</span><br><span class="cat-badge cat-str">texte</span></div>
+      <div class="pg-regex">\s*</div>
+      <div class="pg-match">(espaces)</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">DATA</span><br><span class="cat-badge cat-str">texte</span></div>
+      <div class="pg-regex">.*?</div>
+      <div class="pg-match">n'importe quoi (lazy)</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">GREEDYDATA</span><br><span class="cat-badge cat-str">texte</span></div>
+      <div class="pg-regex">.*</div>
+      <div class="pg-match">tout jusqu'à la fin</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">QUOTEDSTRING</span><br><span class="cat-badge cat-str">texte</span></div>
+      <div class="pg-regex">"(?:[^"\\]|\\.)*"</div>
+      <div class="pg-match">"Mozilla/5.0"</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">QS</span><br><span class="cat-badge cat-str">texte</span></div>
+      <div class="pg-regex">%{QUOTEDSTRING}</div>
+      <div class="pg-match">alias de QUOTEDSTRING</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">UUID</span><br><span class="cat-badge cat-str">texte</span></div>
+      <div class="pg-regex">[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}</div>
+      <div class="pg-match">550e8400-e29b-41d4-a716-446655440000</div>
+    </div>
+  </div>
+
+  <!-- DATES -->
+  <h3>📅 Dates & Temps</h3>
+  <div class="pattern-grid">
+    <div class="pg-header"><span>Nom Pattern</span><span>Format</span><span>Exemple</span></div>
+    <div class="pg-row">
+      <div><span class="pg-name">MONTH</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec</div>
+      <div class="pg-match">Jan, Dec</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">MONTHNUM</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">(?:0?[1-9]|1[0-2])</div>
+      <div class="pg-match">01, 12</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">MONTHDAY</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">(?:(?:0[1-9])|(?:[12][0-9])|(?:3[01])|[1-9])</div>
+      <div class="pg-match">01, 31</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">YEAR</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">(?:\d\d){1,2}</div>
+      <div class="pg-match">2024, 24</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">TIME</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">%{HOUR}:%{MINUTE}(?::%{SECOND})</div>
+      <div class="pg-match">14:32:01</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">DATE_EU</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">%{MONTHDAY}[./-]%{MONTHNUM}[./-]%{YEAR}</div>
+      <div class="pg-match">15/03/2024</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">DATE_US</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">%{MONTHNUM}[/-]%{MONTHDAY}[/-]%{YEAR}</div>
+      <div class="pg-match">03/15/2024</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">HTTPDATE</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">%{MONTHDAY}/%{MONTH}/%{YEAR}:%{TIME} %{INT}</div>
+      <div class="pg-match">15/Jan/2024:14:32:01 +0100</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">TIMESTAMP_ISO8601</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">%{YEAR}-%{MONTHNUM2}-%{MONTHDAY}T%{HOUR}:...Z</div>
+      <div class="pg-match">2024-03-15T14:32:01.000Z</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">SYSLOGTIMESTAMP</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">%{MONTH} +%{MONTHDAY} %{TIME}</div>
+      <div class="pg-match">Jan  5 14:32:01</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">TZ</span><br><span class="cat-badge cat-date">date</span></div>
+      <div class="pg-regex">(?:[APMCE][SD]T|UTC|...)</div>
+      <div class="pg-match">UTC, CET, EST</div>
+    </div>
+  </div>
+
+  <!-- SYSTEM / PROCESS -->
+  <h3>⚙️ Système & Processus</h3>
+  <div class="pattern-grid">
+    <div class="pg-header"><span>Nom Pattern</span><span>Regex / Composition</span><span>Exemple</span></div>
+    <div class="pg-row">
+      <div><span class="pg-name">USERNAME</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">[a-zA-Z0-9._-]+</div>
+      <div class="pg-match">root, admin, jdupont</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">USER</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">%{USERNAME}</div>
+      <div class="pg-match">alias de USERNAME</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">EMAILLOCALPART</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9...])*</div>
+      <div class="pg-match">john.doe</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">EMAILADDRESS</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">%{EMAILLOCALPART}@%{HOSTNAME}</div>
+      <div class="pg-match">john@corp.fr</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">HTTPDUSER</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">%{EMAILADDRESS}|%{USER}</div>
+      <div class="pg-match">user, user@host</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">UNIXPATH</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">(?:/[\w_%!$@:.,+\-]*)+</div>
+      <div class="pg-match">/var/log/syslog</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">WINPATH</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">(?:[A-Za-z]+:|\\)(?:\\[^\\?*]*)+</div>
+      <div class="pg-match">C:\Windows\System32</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">PATH</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">(?:%{UNIXPATH}|%{WINPATH})</div>
+      <div class="pg-match">Unix ou Windows</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">SYSLOGPROG</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">%{PROG:program}(?:\[%{POSINT:pid}\])?</div>
+      <div class="pg-match">sshd[1234]</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">SYSLOGHOST</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">%{IPORHOST}</div>
+      <div class="pg-match">192.168.1.1, host</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">PROG</span><br><span class="cat-badge cat-sys">système</span></div>
+      <div class="pg-regex">[\x21-\x5a\x5c\x5e-\x7e]+</div>
+      <div class="pg-match">nginx, sshd, kernel</div>
+    </div>
+  </div>
+
+  <!-- HTTP -->
+  <h3>🌍 HTTP & Web</h3>
+  <div class="pattern-grid">
+    <div class="pg-header"><span>Nom Pattern</span><span>Regex / Composition</span><span>Exemple</span></div>
+    <div class="pg-row">
+      <div><span class="pg-name">URIPROTO</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">[A-Za-z][\w-]+</div>
+      <div class="pg-match">http, https, ftp</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">URIHOST</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">%{IPORHOST}(?::%{POSINT})?</div>
+      <div class="pg-match">example.com:8080</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">URIPATH</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">(?:/[A-Za-z0-9$.+!*'(){},~:;=@#%&_\-]*)+</div>
+      <div class="pg-match">/api/v1/users</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">URIPARAM</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">\?[A-Za-z0-9$.+!*'|(){},~@#%&/=:;_?\-\[\]&lt;&gt;]*</div>
+      <div class="pg-match">?id=1&page=2</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">URI</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">%{URIPROTO}://(?:%{USER}(?::[^@]*)?@)?(?:%{URIHOST})?(?:%{URIPATH}(?:%{URIPARAM})?)?</div>
+      <div class="pg-match">https://api.corp.fr/v1?key=abc</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">COMMONAPACHELOG</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">%{IPORHOST} %{HTTPDUSER} %{HTTPDUSER} \[%{HTTPDATE}\] "(?:%{WORD} %{NOTSPACE} HTTP/%{NUMBER})|-" %{NUMBER} (?:%{NUMBER}|-)</div>
+      <div class="pg-match">Log Apache Combined</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">COMBINEDAPACHELOG</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">%{COMMONAPACHELOG} %{QS:referrer} %{QS:agent}</div>
+      <div class="pg-match">Log Apache + referrer + UA</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">HTTPD20_ERRORLOG</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">\[%{HTTPDERROR_DATE:timestamp}\] \[%{LOGLEVEL:loglevel}\] (?:\[client %{IPORHOST:clientip}\] )?%{GREEDYDATA}</div>
+      <div class="pg-match">Erreurs Apache 2.0</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">HTTPD24_ERRORLOG</span><br><span class="cat-badge cat-net">http</span></div>
+      <div class="pg-regex">\[%{HTTPDERROR_DATE}\] \[%{WORD:module}:%{LOGLEVEL}\] \[pid %{POSINT:pid}:tid %{NUMBER:tid}\]...</div>
+      <div class="pg-match">Erreurs Apache 2.4</div>
+    </div>
+  </div>
+
+  <!-- LOGLEVEL / SYSLOG -->
+  <h3>📋 Log Levels & Syslog</h3>
+  <div class="pattern-grid">
+    <div class="pg-header"><span>Nom Pattern</span><span>Regex / Composition</span><span>Exemple</span></div>
+    <div class="pg-row">
+      <div><span class="pg-name">LOGLEVEL</span><br><span class="cat-badge cat-log">log</span></div>
+      <div class="pg-regex">(?:[Aa]lert|ALERT|[Tt]race|TRACE|[Dd]ebug|DEBUG|[Nn]otice|NOTICE|[Ii]nfo|INFO|[Ww]arn(?:ing)?|WARN(?:ING)?|[Ee]rr(?:or)?|ERR(?:OR)?|[Cc]rit(?:ical)?|CRIT(?:ICAL)?|[Ff]atal|FATAL|[Ss]evere|SEVERE|EMERG(?:ENCY)?|[Ee]merg(?:ency)?)</div>
+      <div class="pg-match">INFO, WARN, ERROR, CRIT</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">SYSLOGFACILITY</span><br><span class="cat-badge cat-log">log</span></div>
+      <div class="pg-regex">&lt;(?:[0-9]+)&gt;</div>
+      <div class="pg-match">&lt;14&gt;, &lt;30&gt;</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">SYSLOGSEVERITY</span><br><span class="cat-badge cat-log">log</span></div>
+      <div class="pg-regex">(?:%{SYSLOGFACILITY})</div>
+      <div class="pg-match">Severity numérique</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">SYSLOGLINE</span><br><span class="cat-badge cat-log">log</span></div>
+      <div class="pg-regex">%{SYSLOGBASE} %{GREEDYDATA:message}</div>
+      <div class="pg-match">Ligne syslog complète</div>
+    </div>
+    <div class="pg-row">
+      <div><span class="pg-name">SYSLOGBASE</span><br><span class="cat-badge cat-log">log</span></div>
+      <div class="pg-regex">%{SYSLOGTIMESTAMP:timestamp} (?:%{SYSLOGFACILITY} )?%{SYSLOGHOST:logsource} %{SYSLOGPROG}</div>
+      <div class="pg-match">Base syslog sans message</div>
+    </div>
+  </div>
+
+  <!-- CHEATSHEET -->
+  <h3>⚡ Cheatsheet rapide</h3>
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <div class="cheat-card-head"><span style="color:var(--cyan)">IP / Réseau</span></div>
+      <div class="cheat-rows">
+        <div class="cheat-row"><span class="cr-k">%{IP}</span><span class="cr-v">IPv4 ou IPv6</span></div>
+        <div class="cheat-row"><span class="cr-k">%{IPV4}</span><span class="cr-v">IPv4 uniquement</span></div>
+        <div class="cheat-row"><span class="cr-k">%{HOSTNAME}</span><span class="cr-v">Nom d'hôte DNS</span></div>
+        <div class="cheat-row"><span class="cr-k">%{IPORHOST}</span><span class="cr-v">IP ou hostname</span></div>
+        <div class="cheat-row"><span class="cr-k">%{HOSTPORT}</span><span class="cr-v">host:port</span></div>
+        <div class="cheat-row"><span class="cr-k">%{COMMONMAC}</span><span class="cr-v">MAC aa:bb:cc...</span></div>
+      </div>
+    </div>
+    <div class="cheat-card">
+      <div class="cheat-card-head"><span style="color:var(--orange)">Nombres</span></div>
+      <div class="cheat-rows">
+        <div class="cheat-row"><span class="cr-k">%{INT}</span><span class="cr-v">Entier signé</span></div>
+        <div class="cheat-row"><span class="cr-k">%{POSINT}</span><span class="cr-v">Entier positif</span></div>
+        <div class="cheat-row"><span class="cr-k">%{NUMBER}</span><span class="cr-v">Flottant / entier</span></div>
+        <div class="cheat-row"><span class="cr-k">%{BASE16NUM}</span><span class="cr-v">Hexadécimal</span></div>
+        <div class="cheat-row"><span class="cr-k">%{NONNEGINT}</span><span class="cr-v">Entier ≥ 0</span></div>
+      </div>
+    </div>
+    <div class="cheat-card">
+      <div class="cheat-card-head"><span style="color:var(--yellow)">Dates</span></div>
+      <div class="cheat-rows">
+        <div class="cheat-row"><span class="cr-k">%{HTTPDATE}</span><span class="cr-v">Apache log date</span></div>
+        <div class="cheat-row"><span class="cr-k">%{TIMESTAMP_ISO8601}</span><span class="cr-v">ISO 8601</span></div>
+        <div class="cheat-row"><span class="cr-k">%{SYSLOGTIMESTAMP}</span><span class="cr-v">Syslog date</span></div>
+        <div class="cheat-row"><span class="cr-k">%{DATE_EU}</span><span class="cr-v">dd/MM/yyyy</span></div>
+        <div class="cheat-row"><span class="cr-k">%{TIME}</span><span class="cr-v">HH:mm:ss</span></div>
+      </div>
+    </div>
+    <div class="cheat-card">
+      <div class="cheat-card-head"><span style="color:var(--green)">Texte</span></div>
+      <div class="cheat-rows">
+        <div class="cheat-row"><span class="cr-k">%{WORD}</span><span class="cr-v">Mot alphanum</span></div>
+        <div class="cheat-row"><span class="cr-k">%{NOTSPACE}</span><span class="cr-v">Sans espaces</span></div>
+        <div class="cheat-row"><span class="cr-k">%{DATA}</span><span class="cr-v">Anything (lazy)</span></div>
+        <div class="cheat-row"><span class="cr-k">%{GREEDYDATA}</span><span class="cr-v">Tout jusqu'à fin</span></div>
+        <div class="cheat-row"><span class="cr-k">%{QS}</span><span class="cr-v">Quoted string</span></div>
+        <div class="cheat-row"><span class="cr-k">%{UUID}</span><span class="cr-v">UUID standard</span></div>
+      </div>
+    </div>
+    <div class="cheat-card">
+      <div class="cheat-card-head"><span style="color:var(--red)">Système</span></div>
+      <div class="cheat-rows">
+        <div class="cheat-row"><span class="cr-k">%{USERNAME}</span><span class="cr-v">Login utilisateur</span></div>
+        <div class="cheat-row"><span class="cr-k">%{UNIXPATH}</span><span class="cr-v">Chemin /unix</span></div>
+        <div class="cheat-row"><span class="cr-k">%{WINPATH}</span><span class="cr-v">Chemin Windows</span></div>
+        <div class="cheat-row"><span class="cr-k">%{PROG}</span><span class="cr-v">Nom de programme</span></div>
+        <div class="cheat-row"><span class="cr-k">%{SYSLOGPROG}</span><span class="cr-v">prog[pid]:</span></div>
+      </div>
+    </div>
+    <div class="cheat-card">
+      <div class="cheat-card-head"><span style="color:var(--purple)">HTTP / Log</span></div>
+      <div class="cheat-rows">
+        <div class="cheat-row"><span class="cr-k">%{COMBINEDAPACHELOG}</span><span class="cr-v">Apache combined</span></div>
+        <div class="cheat-row"><span class="cr-k">%{LOGLEVEL}</span><span class="cr-v">INFO/WARN/ERROR</span></div>
+        <div class="cheat-row"><span class="cr-k">%{URI}</span><span class="cr-v">URL complète</span></div>
+        <div class="cheat-row"><span class="cr-k">%{URIPATH}</span><span class="cr-v">/chemin/url</span></div>
+        <div class="cheat-row"><span class="cr-k">%{SYSLOGLINE}</span><span class="cr-v">Ligne syslog</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== EXERCICE ==================== -->
+<div class="page-section" id="page-exercice">
+
+  <div class="exercise-header">
+    <div class="ex-meta">
+      <span class="ex-tag lvl">🔴 AVANCÉ</span>
+      <span class="ex-tag time">⏱ 90-120 min</span>
+      <span class="ex-tag tools">🛠 Logstash + ES + Kibana</span>
+      <span class="ex-tag tools">100 pts</span>
+    </div>
+    <div class="ex-title">OPERATION DARK PARSE<br>— Corrélation de logs d'intrusion —</div>
+    <div class="ex-desc">
+      Le SOC de votre organisation a détecté une activité suspecte. Vous recevez des dumps de logs bruts provenant de 4 sources différentes : nginx, sshd, firewall iptables, et un agent de détection custom. 
+      Votre mission : construire un pipeline Logstash avec filtres Grok qui parse, normalise et corrèle ces événements pour reconstituer l'attaque.
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="pb-label" id="progress-label">Progression : 0 / 6 questions révélées</div>
+    <div class="pb-track"><div class="pb-fill" id="progress-fill"></div></div>
+  </div>
+
+  <h3>📡 Logs bruts reçus</h3>
+  <p>Analysez ces 4 extraits de logs. Ils proviennent de systèmes différents, collectés sur une fenêtre de 15 minutes pendant laquelle l'attaque a eu lieu.</p>
+
+  <h2 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--muted2);">SOURCE 1 — Nginx access log</h2>
+  <div class="log-display">
+    <span class="log-line"><span class="log-ip">185.220.101.47</span> - - [<span class="log-ts">15/Jan/2024:14:22:01 +0100</span>] "<span class="log-msg">GET /api/v1/users?id=1 OR 1=1-- HTTP/1.1</span>" <span class="log-danger">200</span> 4823 "-" "sqlmap/1.7.8#stable (https://sqlmap.org)"</span>
+    <span class="log-line"><span class="log-ip">185.220.101.47</span> - - [<span class="log-ts">15/Jan/2024:14:22:03 +0100</span>] "<span class="log-msg">GET /api/v1/users?id=1 UNION SELECT username,password,3-- HTTP/1.1</span>" <span class="log-danger">200</span> 12048 "-" "sqlmap/1.7.8#stable (https://sqlmap.org)"</span>
+    <span class="log-line"><span class="log-ip">185.220.101.47</span> - - [<span class="log-ts">15/Jan/2024:14:23:15 +0100</span>] "<span class="log-msg">POST /wp-login.php HTTP/1.1</span>" <span class="log-status">401</span> 312 "-" "python-requests/2.31.0"</span>
+    <span class="log-line"><span class="log-ip">10.0.0.99</span> - admin [<span class="log-ts">15/Jan/2024:14:35:42 +0100</span>] "<span class="log-msg">GET /admin/export?format=../../../etc/passwd HTTP/1.1</span>" <span class="log-danger">200</span> 2847 "http://corp.local/" "Mozilla/5.0"</span>
+  </div>
+
+  <h2 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--muted2); margin-top:1.5rem;">SOURCE 2 — SSHD auth log</h2>
+  <div class="log-display">
+    <span class="log-line"><span class="log-ts">Jan 15 14:20:01</span> <span class="log-host">fw-01</span> <span class="log-proc">sshd</span><span class="log-pid">[8821]</span>: Failed password for <span class="log-danger">root</span> from <span class="log-ip">185.220.101.47</span> port 43218 ssh2</span>
+    <span class="log-line"><span class="log-ts">Jan 15 14:20:02</span> <span class="log-host">fw-01</span> <span class="log-proc">sshd</span><span class="log-pid">[8821]</span>: Failed password for <span class="log-danger">root</span> from <span class="log-ip">185.220.101.47</span> port 43219 ssh2</span>
+    <span class="log-line"><span class="log-ts">Jan 15 14:20:03</span> <span class="log-host">fw-01</span> <span class="log-proc">sshd</span><span class="log-pid">[8821]</span>: Failed password for <span class="log-danger">root</span> from <span class="log-ip">185.220.101.47</span> port 43220 ssh2</span>
+    <span class="log-line"><span class="log-ts">Jan 15 14:31:07</span> <span class="log-host">web-01</span> <span class="log-proc">sshd</span><span class="log-pid">[9102]</span>: Accepted publickey for <span class="log-msg">deploy</span> from <span class="log-ip">10.0.0.99</span> port 55441 ssh2: RSA SHA256:Tg8k+3jMp9fQ0Rt7sCvVuYwX2mN6bLhE1dZqA4nKoI=</span>
+    <span class="log-line"><span class="log-ts">Jan 15 14:33:50</span> <span class="log-host">web-01</span> <span class="log-proc">sshd</span><span class="log-pid">[9102]</span>: pam_unix(sshd:session): session opened for user <span class="log-msg">deploy</span> by (uid=0)</span>
+  </div>
+
+  <h2 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--muted2); margin-top:1.5rem;">SOURCE 3 — Firewall iptables log</h2>
+  <div class="log-display">
+    <span class="log-line"><span class="log-ts">Jan 15 14:19:55</span> <span class="log-host">fw-01</span> <span class="log-proc">kernel</span>: [<span class="log-msg">12345.678901</span>] <span class="log-danger">IPTABLES-DROP:</span> IN=eth0 OUT= MAC=<span class="log-msg">aa:bb:cc:dd:ee:ff:11:22:33:44:55:66:08:00</span> SRC=<span class="log-ip">185.220.101.47</span> DST=<span class="log-ip">203.0.113.10</span> LEN=60 TOS=0x00 PREC=0x00 TTL=<span class="log-status">45</span> ID=<span class="log-status">54321</span> DF PROTO=<span class="log-msg">TCP</span> SPT=<span class="log-status">43215</span> DPT=<span class="log-danger">22</span> WINDOW=<span class="log-status">64240</span> RES=0x00 SYN URGP=0</span>
+    <span class="log-line"><span class="log-ts">Jan 15 14:22:00</span> <span class="log-host">fw-01</span> <span class="log-proc">kernel</span>: [<span class="log-msg">12457.123456</span>] <span class="log-danger">IPTABLES-DROP:</span> IN=eth0 OUT= MAC=<span class="log-msg">aa:bb:cc:dd:ee:ff:11:22:33:44:55:66:08:00</span> SRC=<span class="log-ip">185.220.101.47</span> DST=<span class="log-ip">203.0.113.10</span> LEN=52 TOS=0x00 PREC=0x00 TTL=<span class="log-status">47</span> ID=<span class="log-status">12345</span> DF PROTO=<span class="log-msg">TCP</span> SPT=<span class="log-status">43217</span> DPT=<span class="log-danger">80</span> WINDOW=<span class="log-status">64240</span> RES=0x00 SYN URGP=0</span>
+  </div>
+
+  <h2 style="font-size:0.9rem; margin-bottom:0.5rem; color:var(--muted2); margin-top:1.5rem;">SOURCE 4 — Agent de détection custom (JSON-ish)</h2>
+  <div class="log-display">
+    <span class="log-line"><span class="log-ts">2024-01-15T14:22:01.445Z</span> [<span class="log-danger">ALERT</span>] rule_id=<span class="log-status">SQL_INJECT_001</span> src_ip=<span class="log-ip">185.220.101.47</span> dst_ip=<span class="log-ip">203.0.113.10</span> http_method=<span class="log-msg">GET</span> uri=<span class="log-msg">/api/v1/users</span> payload_hash=<span class="log-msg">a3f8c2e1d4b6970123456789abcdef0123456789abcdef0123456789abcdef01</span> score=<span class="log-danger">98</span> category=<span class="log-msg">SQLi</span></span>
+    <span class="log-line"><span class="log-ts">2024-01-15T14:31:07.002Z</span> [<span class="log-status">INFO</span>] rule_id=<span class="log-msg">LATERAL_MOVE_003</span> src_ip=<span class="log-ip">10.0.0.99</span> dst_ip=<span class="log-ip">10.0.0.10</span> http_method=<span class="log-msg">-</span> uri=<span class="log-msg">-</span> payload_hash=<span class="log-msg">-</span> score=<span class="log-status">55</span> category=<span class="log-msg">LateralMovement</span></span>
+  </div>
+
+  <hr class="sep">
+
+  <h3>🎯 Questions</h3>
+
+  <div class="steps" id="questions-container">
+
+    <div class="qcard" id="q1">
+      <div class="qcard-head">
+        <span class="q-num">Q1</span>
+        <div class="q-text">
+          <strong>Parser les logs Nginx (COMBINEDAPACHELOG + détection SQLi)</strong><br>
+          Écrivez un filtre Grok qui parse les lignes du Source 1. En plus des champs standards, vous devez extraire dans un champ <code style="color:var(--cyan)">attack_tool</code> le nom de l'outil depuis le User-Agent (ex: <code>sqlmap</code>, <code>python-requests</code>). Ajoutez une condition pour tagger les requêtes contenant <code>UNION</code>, <code>OR 1=1</code>, ou <code>../</code> avec le tag <code>sqli_attempt</code>.
+        </div>
+        <span class="q-pts">20 pts</span>
+      </div>
+      <div class="qcard-answer">
+        <div class="box warn"><div class="box-icon">💡</div><div class="box-body"><p>Révélé dans l'onglet <strong>Corrigé</strong>. Essayez d'abord dans le Testeur !</p></div></div>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('q1', this)">▶ Révéler l'indice</button>
+    </div>
+
+    <div class="qcard" id="q2">
+      <div class="qcard-head">
+        <span class="q-num">Q2</span>
+        <div class="q-text">
+          <strong>Parser les logs SSHD — brute force + connexion légitime</strong><br>
+          Créez un pattern Grok capable de parser les deux formats de lignes SSHD (Source 2) : les tentatives échouées (<code>Failed password</code>) ET les connexions réussies par clé (<code>Accepted publickey</code>). Extrayez : timestamp, hostname, PID, action (failed/accepted), username, IP source, port source, méthode auth, et empreinte de clé (SHA256:...) quand elle est présente.
+        </div>
+        <span class="q-pts">20 pts</span>
+      </div>
+      <div class="qcard-answer">
+        <div class="box warn"><div class="box-icon">💡</div><div class="box-body"><p>Utilisez des patterns alternatifs dans un array <code style="color:var(--cyan)">match</code>. Le champ clé fingerprint est optionnel.</p></div></div>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('q2', this)">▶ Révéler l'indice</button>
+    </div>
+
+    <div class="qcard" id="q3">
+      <div class="qcard-head">
+        <span class="q-num">Q3</span>
+        <div class="q-text">
+          <strong>Parser les logs iptables (pattern custom)</strong><br>
+          Les logs iptables ont un format propriétaire non couvert par les patterns natifs. Créez un <strong>pattern custom</strong> dans un fichier <code>patterns/iptables.grok</code> nommé <code>IPTABLES_DROP</code> qui extrait : l'interface réseau (IN=), les IPs src/dst, protocole, ports src/dst, TTL, et la MAC source. Testez-le sur la Source 3.
+        </div>
+        <span class="q-pts">25 pts</span>
+      </div>
+      <div class="qcard-answer">
+        <div class="box warn"><div class="box-icon">💡</div><div class="box-body"><p>Les champs iptables sont en format <code>KEY=VALUE</code>. Utilisez <code>(?&lt;field&gt;...)</code> pour les regex inline et les patterns <code>%{COMMONMAC}</code>, <code>%{IPV4}</code>, <code>%{WORD}</code>, <code>%{POSINT}</code>.</p></div></div>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('q3', this)">▶ Révéler l'indice</button>
+    </div>
+
+    <div class="qcard" id="q4">
+      <div class="qcard-head">
+        <span class="q-num">Q4</span>
+        <div class="q-text">
+          <strong>Parser les logs de l'agent de détection (format KV custom)</strong><br>
+          La Source 4 utilise un format semi-structuré mélant timestamp ISO8601, niveau de log entre crochets, puis des paires <code>key=value</code> séparées par des espaces. Certains champs peuvent valoir <code>-</code> (absent). Écrivez le filtre Grok + utilisez le filtre <code>kv</code> ou une approche tout-Grok pour extraire tous les champs nommés. Le <code>payload_hash</code> est un SHA256 ou <code>-</code>.
+        </div>
+        <span class="q-pts">20 pts</span>
+      </div>
+      <div class="qcard-answer">
+        <div class="box warn"><div class="box-icon">💡</div><div class="box-body"><p>Commencez par capturer le timestamp (<code>%{TIMESTAMP_ISO8601}</code>), le niveau (<code>%{LOGLEVEL}</code>) entre crochets, puis utilisez soit <code>%{GREEDYDATA:kv_part}</code> + filtre <code>kv</code>, soit décomposez chaque champ manuellement.</p></div></div>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('q4', this)">▶ Révéler l'indice</button>
+    </div>
+
+    <div class="qcard" id="q5">
+      <div class="qcard-head">
+        <span class="q-num">Q5</span>
+        <div class="q-text">
+          <strong>Pipeline multi-source avec routing conditionnel</strong><br>
+          Assemblez un pipeline Logstash complet qui : (1) détecte automatiquement la source du log via un champ <code>[fields][log_type]</code> ou par contenu, (2) applique le bon filtre Grok selon la source, (3) normalise le champ <code>src_ip</code> et <code>dst_ip</code> pour toutes les sources, (4) applique un filtre <code>geoip</code> sur <code>src_ip</code>, (5) route les événements ALERT vers un index <code>alerts-YYYY.MM.dd</code> et les autres vers <code>logs-YYYY.MM.dd</code>.
+        </div>
+        <span class="q-pts">10 pts</span>
+      </div>
+      <div class="qcard-answer">
+        <div class="box warn"><div class="box-icon">💡</div><div class="box-body"><p>Utilisez les conditions <code>if [fields][log_type] == "nginx"</code> ou <code>if [message] =~ /IPTABLES/</code> pour router. Le filtre <code>mutate { rename =&gt; {...} }</code> normalise les noms de champs.</p></div></div>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('q5', this)">▶ Révéler l'indice</button>
+    </div>
+
+    <div class="qcard" id="q6">
+      <div class="qcard-head">
+        <span class="q-num">Q6</span>
+        <div class="q-text">
+          <strong>[BONUS] Reconstitution de la timeline d'attaque</strong><br>
+          En analysant tous les logs parsés, rédigez en quelques lignes la <strong>chronologie de l'attaque</strong> : Que s'est-il passé entre 14:19 et 14:35 ? Quelle est l'IP de l'attaquant externe ? L'attaquant a-t-il réussi à pivoter ? Quel mouvement latéral a été détecté ? Quelle requête confirme une exfiltration potentielle ?
+        </div>
+        <span class="q-pts">5 pts BONUS</span>
+      </div>
+      <div class="qcard-answer">
+        <div class="box warn"><div class="box-icon">💡</div><div class="box-body"><p>Croisez les IPs entre les sources. <code>185.220.101.47</code> est l'attaquant externe. <code>10.0.0.99</code> semble être un hôte interne compromis.</p></div></div>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('q6', this)">▶ Révéler l'indice</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ==================== TESTEUR ==================== -->
+<div class="page-section" id="page-tester">
+
+  <h2><span class="h2-num">05</span> Testeur Grok Interactif</h2>
+  <p>Testez vos patterns Grok directement ici. Le testeur simule le comportement du filtre Grok de Logstash avec les patterns ECS v1.</p>
+
+  <div class="box info">
+    <div class="box-icon">💡</div>
+    <div class="box-body"><strong>Mode simulé</strong><p>Ce testeur émule les patterns Grok officiels en JavaScript. Le comportement est identique à Logstash pour les patterns standards.</p></div>
+  </div>
+
+  <div class="grok-tester">
+    <div class="gt-header">
+      <div class="gt-title">⚡ GROK PATTERN TESTER</div>
+      <div class="gt-status idle" id="gt-status">IDLE</div>
+    </div>
+    <div class="gt-body">
+      <div class="gt-field">
+        <label>Pattern Grok</label>
+        <input type="text" id="gt-pattern" placeholder="%{IP:src_ip} - %{USER:username} \[%{HTTPDATE:timestamp}\] &quot;%{WORD:method} %{NOTSPACE:uri}" value="%{IP:src_ip} - %{USER:username} \[%{HTTPDATE:timestamp}\]">
+      </div>
+      <div class="gt-field">
+        <label>Ligne de log à parser</label>
+        <textarea id="gt-log" rows="3">185.220.101.47 - admin [15/Jan/2024:14:22:01 +0100]</textarea>
+      </div>
+      <button class="gt-run-btn" onclick="runGrok()">▶ EXÉCUTER LE PATTERN</button>
+      <div class="gt-result" id="gt-result"></div>
+    </div>
+  </div>
+
+  <h3>Exemples prêts à tester</h3>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-top:0.75rem;">
+    <div class="cheat-card" style="cursor:pointer" onclick="loadExample('apache')">
+      <div class="cheat-card-head"><span style="color:var(--orange)">→ Apache Combined Log</span></div>
+      <div style="padding:0.5rem 0.9rem; font-size:0.72rem; color:var(--muted2); font-family:'Share Tech Mono',monospace;">COMBINEDAPACHELOG</div>
+    </div>
+    <div class="cheat-card" style="cursor:pointer" onclick="loadExample('sshd')">
+      <div class="cheat-card-head"><span style="color:var(--orange)">→ SSHD Failed Password</span></div>
+      <div style="padding:0.5rem 0.9rem; font-size:0.72rem; color:var(--muted2); font-family:'Share Tech Mono',monospace;">SYSLOGTIMESTAMP + SYSLOGPROG</div>
+    </div>
+    <div class="cheat-card" style="cursor:pointer" onclick="loadExample('agent')">
+      <div class="cheat-card-head"><span style="color:var(--orange)">→ Agent de détection</span></div>
+      <div style="padding:0.5rem 0.9rem; font-size:0.72rem; color:var(--muted2); font-family:'Share Tech Mono',monospace;">TIMESTAMP_ISO8601 + KV</div>
+    </div>
+    <div class="cheat-card" style="cursor:pointer" onclick="loadExample('iptables')">
+      <div class="cheat-card-head"><span style="color:var(--orange)">→ iptables DROP</span></div>
+      <div style="padding:0.5rem 0.9rem; font-size:0.72rem; color:var(--muted2); font-family:'Share Tech Mono',monospace;">Pattern custom iptables</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== CORRIGE ==================== -->
+<div class="page-section" id="page-corrige">
+
+  <h2><span class="h2-num">06</span> Corrigé complet</h2>
+
+  <div class="box danger">
+    <div class="box-icon">⚠️</div>
+    <div class="box-body"><strong>Spoiler</strong><p>Cette section contient la solution complète. Ne consultez qu'après avoir tenté l'exercice !</p></div>
+  </div>
+
+  <h3>Réponse Q1 — Nginx + détection SQLi</h3>
+  <div class="code-wrap">
+    <div class="code-label"><span>filter nginx + SQLi detection</span><span class="lang-tag">LOGSTASH</span></div>
+    <pre><span class="c">grok</span> {
+  <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{IPORHOST:src_ip} - (?:%{USER:username}|-) \[%{HTTPDATE:timestamp}\] \"(?:%{WORD:http_method} %{NOTSPACE:uri}(?: HTTP/%{NUMBER:http_version})?|-) \" %{NUMBER:http_status:int} (?:%{NUMBER:bytes:int}|-) %{QS:referrer} %{QS:useragent}"</span> }
+  <span class="g">tag_on_failure</span> => [<span class="o">"_grokparsefailure_nginx"</span>]
+}
+
+<span class="m"># Extraire le nom de l'outil depuis le user-agent</span>
+<span class="c">grok</span> {
+  <span class="g">match</span> => { <span class="o">"useragent"</span> => <span class="o">"(?<attack_tool>sqlmap|nikto|nmap|masscan|python-requests|Go-http-client|curl)(?:[/\s].*)?"</span> }
+  <span class="g">tag_on_failure</span> => []
+}
+
+<span class="m"># Détection SQLi dans l'URI</span>
+<span class="y">if</span> [uri] =~ <span class="o">/(?i)(union\s+select|or\s+1=1|'--|\.\.\/|exec\s*\()/</span> {
+  <span class="c">mutate</span> {
+    <span class="g">add_tag</span> => [<span class="o">"sqli_attempt"</span>]
+    <span class="g">add_field</span> => { <span class="o">"threat_type"</span> => <span class="o">"SQLi"</span> }
+  }
+}
+
+<span class="m"># Normalisation src_ip</span>
+<span class="y">if</span> [src_ip] {
+  <span class="c">mutate</span> { <span class="g">copy</span> => { <span class="o">"src_ip"</span> => <span class="o">"[source][ip]"</span> } }
+}</pre>
+  </div>
+
+  <h3>Réponse Q2 — SSHD multi-pattern</h3>
+  <div class="code-wrap">
+    <div class="code-label"><span>filter sshd — brute force + publickey</span><span class="lang-tag">LOGSTASH</span></div>
+    <pre><span class="c">grok</span> {
+  <span class="g">match</span> => { <span class="o">"message"</span> => [
+    <span class="m"># Failed password</span>
+    <span class="o">"%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{PROG:program}\[%{POSINT:pid:int}\]: Failed %{WORD:auth_method} for (?:invalid user )?%{USERNAME:username} from %{IP:src_ip} port %{POSINT:src_port:int} %{WORD:ssh_proto}"</span>,
+
+    <span class="m"># Accepted publickey avec fingerprint</span>
+    <span class="o">"%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{PROG:program}\[%{POSINT:pid:int}\]: Accepted %{WORD:auth_method} for %{USERNAME:username} from %{IP:src_ip} port %{POSINT:src_port:int} %{WORD:ssh_proto}: %{WORD:key_type} %{NOTSPACE:key_fingerprint}"</span>,
+
+    <span class="m"># Session pam_unix</span>
+    <span class="o">"%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{PROG:program}\[%{POSINT:pid:int}\]: pam_unix\(sshd:session\): session %{WORD:session_action} for user %{USERNAME:username}"</span>
+  ]}
+  <span class="g">tag_on_failure</span> => [<span class="o">"_grokparsefailure_sshd"</span>]
+}
+
+<span class="m"># Tag brute force</span>
+<span class="y">if</span> [message] =~ <span class="o">/Failed/</span> {
+  <span class="c">mutate</span> { <span class="g">add_tag</span> => [<span class="o">"ssh_bruteforce"</span>] }
+  <span class="c">mutate</span> { <span class="g">add_field</span> => { <span class="o">"event_action"</span> => <span class="o">"authentication_failure"</span> } }
+}
+
+<span class="y">if</span> [message] =~ <span class="o">/Accepted/</span> {
+  <span class="c">mutate</span> { <span class="g">add_field</span> => { <span class="o">"event_action"</span> => <span class="o">"authentication_success"</span> } }
+}</pre>
+  </div>
+
+  <h3>Réponse Q3 — Pattern custom iptables</h3>
+  <div class="code-wrap">
+    <div class="code-label"><span>patterns/iptables.grok</span><span class="lang-tag">GROK PATTERNS</span></div>
+    <pre><span class="m"># Fichier : /etc/logstash/patterns/iptables.grok</span>
+
+<span class="c">IPTABLES_TAG</span>        <span class="o">[A-Z0-9_-]+</span>
+
+<span class="c">IPTABLES_DROP</span>       <span class="o">%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{PROG:program}: \[%{NUMBER:kernel_time}\] %{IPTABLES_TAG:iptables_rule}: IN=%{NOTSPACE:net_in} OUT=(?:%{NOTSPACE:net_out})? MAC=(?:%{COMMONMAC:dst_mac}:%{COMMONMAC:src_mac}:(?:\S+))? SRC=%{IPV4:src_ip} DST=%{IPV4:dst_ip} LEN=%{POSINT:pkt_len:int} TOS=%{BASE16NUM:tos} PREC=%{BASE16NUM:prec} TTL=%{POSINT:ttl:int} ID=%{POSINT:pkt_id:int} (?:DF )?PROTO=%{WORD:protocol} SPT=%{POSINT:src_port:int} DPT=%{POSINT:dst_port:int} WINDOW=%{POSINT:tcp_window:int}(?: .+)?</span></pre>
+  </div>
+  <div class="code-wrap">
+    <div class="code-label"><span>logstash.conf — utilisation du pattern custom</span><span class="lang-tag">LOGSTASH</span></div>
+    <pre><span class="c">grok</span> {
+  <span class="g">patterns_dir</span> => [<span class="o">"/etc/logstash/patterns"</span>]
+  <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{IPTABLES_DROP}"</span> }
+  <span class="g">tag_on_failure</span> => [<span class="o">"_grokparsefailure_iptables"</span>]
+}
+
+<span class="m"># Tag connexions suspectes vers ports sensibles</span>
+<span class="y">if</span> [dst_port] <span class="y">in</span> [<span class="o">22</span>, <span class="o">23</span>, <span class="o">3389</span>, <span class="o">445</span>, <span class="o">1433</span>, <span class="o">3306</span>] {
+  <span class="c">mutate</span> { <span class="g">add_tag</span> => [<span class="o">"sensitive_port_scan"</span>] }
+}</pre>
+  </div>
+
+  <h3>Réponse Q4 — Agent de détection</h3>
+  <div class="code-wrap">
+    <div class="code-label"><span>filter agent custom</span><span class="lang-tag">LOGSTASH</span></div>
+    <pre><span class="c">grok</span> {
+  <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{TIMESTAMP_ISO8601:timestamp} \[%{LOGLEVEL:log_level}\] %{GREEDYDATA:kv_data}"</span> }
+  <span class="g">tag_on_failure</span> => [<span class="o">"_grokparsefailure_agent"</span>]
+}
+
+<span class="m"># Parser les paires key=value</span>
+<span class="c">kv</span> {
+  <span class="g">source</span> => <span class="o">"kv_data"</span>
+  <span class="g">field_split</span> => <span class="o">" "</span>
+  <span class="g">value_split</span> => <span class="o">"="</span>
+  <span class="g">target</span> => <span class="o">"agent"</span>
+}
+
+<span class="m"># Remonter les champs importants au niveau racine</span>
+<span class="c">mutate</span> {
+  <span class="g">rename</span> => {
+    <span class="o">"[agent][src_ip]"</span>       => <span class="o">"src_ip"</span>
+    <span class="o">"[agent][dst_ip]"</span>       => <span class="o">"dst_ip"</span>
+    <span class="o">"[agent][rule_id]"</span>      => <span class="o">"rule_id"</span>
+    <span class="o">"[agent][score]"</span>        => <span class="o">"threat_score"</span>
+    <span class="o">"[agent][category]"</span>     => <span class="o">"threat_category"</span>
+    <span class="o">"[agent][payload_hash]"</span> => <span class="o">"payload_hash"</span>
+  }
+  <span class="g">remove_field</span> => [<span class="o">"kv_data"</span>]
+}
+
+<span class="m"># Convertir le score en integer</span>
+<span class="c">mutate</span> { <span class="g">convert</span> => { <span class="o">"threat_score"</span> => <span class="o">"integer"</span> } }
+
+<span class="m"># Supprimer les champs "-" (valeurs nulles)</span>
+<span class="y">if</span> [payload_hash] == <span class="o">"-"</span> { <span class="c">mutate</span> { <span class="g">remove_field</span> => [<span class="o">"payload_hash"</span>] } }
+<span class="y">if</span> [<span class="o">"[agent][uri]"</span>]    == <span class="o">"-"</span> { <span class="c">mutate</span> { <span class="g">remove_field</span> => [<span class="o">"[agent][uri]"</span>] } }</pre>
+  </div>
+
+  <h3>Réponse Q5 — Pipeline multi-source complet</h3>
+  <div class="code-wrap">
+    <div class="code-label"><span>pipeline-complet.conf</span><span class="lang-tag">LOGSTASH</span></div>
+    <pre><span class="y">input</span> {
+  <span class="y">beats</span> { <span class="g">port</span> => <span class="o">5044</span> }
+}
+
+<span class="y">filter</span> {
+
+  <span class="m"># ─── NGINX ───────────────────────────────────────────</span>
+  <span class="y">if</span> [fields][log_type] == <span class="o">"nginx"</span> <span class="y">or</span> [message] =~ <span class="o">/HTTP\/[0-9.]+"/</span> {
+    <span class="c">grok</span> {
+      <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{COMBINEDAPACHELOG}"</span> }
+      <span class="g">tag_on_failure</span> => [<span class="o">"_fail_nginx"</span>]
+    }
+    <span class="c">grok</span> {
+      <span class="g">match</span> => { <span class="o">"agent"</span> => <span class="o">"(?<attack_tool>sqlmap|nikto|masscan|nmap|python-requests)"</span> }
+      <span class="g">tag_on_failure</span> => []
+    }
+    <span class="y">if</span> [request] =~ <span class="o">/(?i)(union.select|or.1=1|'--|\.\.\/)/</span> {
+      <span class="c">mutate</span> { <span class="g">add_tag</span> => [<span class="o">"sqli_attempt"</span>] }
+    }
+    <span class="c">mutate</span> { <span class="g">rename</span> => { <span class="o">"clientip"</span> => <span class="o">"src_ip"</span> } }
+  }
+
+  <span class="m"># ─── SSHD ────────────────────────────────────────────</span>
+  <span class="y">else if</span> [fields][log_type] == <span class="o">"sshd"</span> <span class="y">or</span> [message] =~ <span class="o">/sshd\[/</span> {
+    <span class="c">grok</span> {
+      <span class="g">match</span> => { <span class="o">"message"</span> => [
+        <span class="o">"%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{PROG:program}\[%{POSINT:pid:int}\]: Failed %{WORD:auth_method} for (?:invalid user )?%{USERNAME:username} from %{IP:src_ip} port %{POSINT:src_port:int}"</span>,
+        <span class="o">"%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{PROG:program}\[%{POSINT:pid:int}\]: Accepted %{WORD:auth_method} for %{USERNAME:username} from %{IP:src_ip} port %{POSINT:src_port:int} %{WORD}: %{WORD:key_type} %{NOTSPACE:key_fingerprint}"</span>
+      ]}
+    }
+    <span class="y">if</span> [message] =~ <span class="o">/Failed/</span> { <span class="c">mutate</span> { <span class="g">add_tag</span> => [<span class="o">"ssh_bruteforce"</span>] } }
+  }
+
+  <span class="m"># ─── IPTABLES ────────────────────────────────────────</span>
+  <span class="y">else if</span> [message] =~ <span class="o">/IPTABLES/</span> {
+    <span class="c">grok</span> {
+      <span class="g">patterns_dir</span> => [<span class="o">"/etc/logstash/patterns"</span>]
+      <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{IPTABLES_DROP}"</span> }
+    }
+  }
+
+  <span class="m"># ─── AGENT DÉTECTION ─────────────────────────────────</span>
+  <span class="y">else if</span> [message] =~ <span class="o">/rule_id=/</span> {
+    <span class="c">grok</span> {
+      <span class="g">match</span> => { <span class="o">"message"</span> => <span class="o">"%{TIMESTAMP_ISO8601:timestamp} \[%{LOGLEVEL:log_level}\] %{GREEDYDATA:kv_data}"</span> }
+    }
+    <span class="c">kv</span> { <span class="g">source</span> => <span class="o">"kv_data"</span> <span class="g">field_split</span> => <span class="o">" "</span> <span class="g">value_split</span> => <span class="o">"="</span> }
+    <span class="c">mutate</span> { <span class="g">rename</span> => { <span class="o">"src_ip"</span> => <span class="o">"[event][src_ip]"</span> } }
+  }
+
+  <span class="m"># ─── NORMALISATION COMMUNE ───────────────────────────</span>
+  <span class="y">if</span> [src_ip] {
+    <span class="c">geoip</span> { <span class="g">source</span> => <span class="o">"src_ip"</span> <span class="g">target</span> => <span class="o">"geoip"</span> }
+    <span class="c">mutate</span> { <span class="g">copy</span> => { <span class="o">"src_ip"</span> => <span class="o">"[source][ip]"</span> } }
+  }
+
+  <span class="m"># ─── CONVERSION DATE ─────────────────────────────────</span>
+  <span class="c">date</span> {
+    <span class="g">match</span> => [<span class="o">"timestamp"</span>,
+      <span class="o">"dd/MMM/yyyy:HH:mm:ss Z"</span>,
+      <span class="o">"MMM  d HH:mm:ss"</span>,
+      <span class="o">"MMM dd HH:mm:ss"</span>,
+      <span class="o">"ISO8601"</span>
+    ]
+    <span class="g">target</span> => <span class="o">"@timestamp"</span>
+  }
+
+  <span class="c">mutate</span> { <span class="g">remove_field</span> => [<span class="o">"timestamp"</span>, <span class="o">"message"</span>] }
+}
+
+<span class="y">output</span> {
+  <span class="m"># Alertes critiques → index dédié</span>
+  <span class="y">if</span> [log_level] == <span class="o">"ALERT"</span> <span class="y">or</span> <span class="o">"sqli_attempt"</span> <span class="y">in</span> [tags] {
+    <span class="c">elasticsearch</span> {
+      <span class="g">hosts</span> => [<span class="o">"localhost:9200"</span>]
+      <span class="g">index</span> => <span class="o">"alerts-%{+YYYY.MM.dd}"</span>
+    }
+  } <span class="y">else</span> {
+    <span class="c">elasticsearch</span> {
+      <span class="g">hosts</span> => [<span class="o">"localhost:9200"</span>]
+      <span class="g">index</span> => <span class="o">"logs-%{+YYYY.MM.dd}"</span>
+    }
+  }
+  <span class="c">stdout</span> { <span class="g">codec</span> => <span class="o">"rubydebug"</span> }
+}</pre>
+  </div>
+
+  <h3>Réponse Q6 — Timeline de l'attaque</h3>
+  <div class="exercise-header" style="border-top-color:var(--red)">
+    <div class="ex-title" style="font-size:0.95rem; color:var(--red)">🔴 RECONSTITUTION DE L'ATTAQUE</div>
+    <div class="ex-desc" style="line-height:2">
+      <strong style="color:var(--cyan)">14:19:55</strong> — Le firewall détecte et bloque des tentatives de connexion SSH depuis <span style="color:var(--red)">185.220.101.47</span> vers le port 22.<br>
+      <strong style="color:var(--cyan)">14:20:01 → 14:20:03</strong> — SSHD enregistre 3 échecs d'authentification root consécutifs : brute force SSH confirmé.<br>
+      <strong style="color:var(--cyan)">14:22:00</strong> — Le firewall bloque une tentative sur le port 80. L'attaquant pivote vers le web.<br>
+      <strong style="color:var(--cyan)">14:22:01 → 14:22:03</strong> — Nginx enregistre des requêtes SQLi (<code>OR 1=1</code>, <code>UNION SELECT</code>) via <strong>sqlmap 1.7.8</strong>. L'agent de détection trigger <strong>SQL_INJECT_001 score=98</strong>.<br>
+      <strong style="color:var(--cyan)">14:23:15</strong> — Tentative de brute force sur <code>/wp-login.php</code> via python-requests.<br>
+      <strong style="color:var(--cyan)">14:31:07</strong> — Connexion SSH réussie depuis <span style="color:var(--orange)">10.0.0.99</span> (machine interne) vers web-01 en tant que <code>deploy</code> : <strong>mouvement latéral confirmé</strong>. L'IP interne a été compromise lors de la phase SQLi.<br>
+      <strong style="color:var(--cyan)">14:33:50</strong> — Session SSH ouverte (uid=0 → <strong>escalade de privilèges</strong> suspectée).<br>
+      <strong style="color:var(--cyan)">14:35:42</strong> — Requête <code>GET /admin/export?format=../../../etc/passwd</code> depuis <span style="color:var(--orange)">10.0.0.99</span> : <strong>exfiltration du fichier /etc/passwd via path traversal</strong>. Status 200 = succès.
+    </div>
+  </div>
+
+  <div class="box success">
+    <div class="box-icon">✅</div>
+    <div class="box-body">
+      <strong>Score maximum</strong>
+      <p>Q1: 20pts + Q2: 20pts + Q3: 25pts + Q4: 20pts + Q5: 10pts + Q6 bonus: 5pts = <strong>100 pts</strong></p>
+    </div>
+  </div>
+
+</div>
+
+</main>
+</div>
+
+<script>
+// ─── NAVIGATION ─────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if (l.getAttribute('onclick').includes("'" + id + "'")) l.classList.add('active');
+  });
+  window.scrollTo(0, 0);
+}
+
+function setSb(el) {
+  document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── Q REVEAL ───────────────────────────────────────────────
+let revealed = 0;
+function toggleReveal(qid, btn) {
+  const card = document.getElementById(qid);
+  if (!card.classList.contains('revealed')) {
+    card.classList.add('revealed');
+    btn.textContent = '▼ Indice affiché';
+    revealed++;
+    updateProgress();
+  } else {
+    card.classList.remove('revealed');
+    btn.textContent = '▶ Révéler l\'indice';
+    revealed--;
+    updateProgress();
+  }
+}
+
+function updateProgress() {
+  const total = 6;
+  const pct = (revealed / total) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `Progression : ${revealed} / ${total} questions révélées`;
+}
+
+// ─── GROK TESTER ────────────────────────────────────────────
+const PATTERNS = {
+  INT:              '(?:[+-]?(?:[0-9]+))',
+  POSINT:           '[1-9][0-9]*',
+  NONNEGINT:        '[0-9]+',
+  NUMBER:           '(?:[+-]?(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+))',
+  BASE10NUM:        '(?:[+-]?(?:(?:[0-9]+(?:\\.[0-9]+)?)|(?:\\.[0-9]+)))',
+  BASE16NUM:        '(?:0[xX]?[0-9a-fA-F]+)',
+  WORD:             '\\b\\w+\\b',
+  NOTSPACE:         '\\S+',
+  SPACE:            '\\s*',
+  DATA:             '.*?',
+  GREEDYDATA:       '.*',
+  QUOTEDSTRING:     '"(?:[^"\\\\]|\\\\.)*"',
+  QS:               '"(?:[^"\\\\]|\\\\.)*"',
+  UUID:             '[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}',
+  IPV4:             '(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])',
+  IPV6:             '(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:[0-9A-Fa-f]{1,4}:){1,7}:|::(?:[0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4}',
+  IP:               '(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])',
+  HOSTNAME:         '\\b(?:[0-9A-Za-z][0-9A-Za-z-]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z-]{0,62}))*\\.?\\b',
+  IPORHOST:         '(?:(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])|\\b[0-9A-Za-z][0-9A-Za-z-]{0,62}(?:\\.[0-9A-Za-z][0-9A-Za-z-]{0,62})*\\b)',
+  HOSTPORT:         '(?:[0-9A-Za-z._-]+):[0-9]+',
+  COMMONMAC:        '(?:[A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}',
+  WINDOWSMAC:       '(?:[A-Fa-f0-9]{2}-){5}[A-Fa-f0-9]{2}',
+  CISCOMAC:         '(?:[A-Fa-f0-9]{4}\\.){2}[A-Fa-f0-9]{4}',
+  USERNAME:         '[a-zA-Z0-9._-]+',
+  USER:             '[a-zA-Z0-9._-]+',
+  HTTPDUSER:        '[a-zA-Z0-9!#$%&*+/=?^_`{|}~.@-]+',
+  EMAILADDRESS:     '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}',
+  UNIXPATH:         '(?:/[\\w_%!$@:.,+\\-]*)+',
+  WINPATH:          '(?:[A-Za-z]+:|\\\\)(?:\\\\[^\\\\?*]*)+',
+  PATH:             '(?:/[\\w_%!$@:.,+\\-]*)+',
+  URIPROTO:         '[A-Za-z][\\w-]+',
+  URIHOST:          '[0-9A-Za-z._-]+(?::[0-9]+)?',
+  URIPATH:          '(?:/[A-Za-z0-9$.+!*\'(){},~:;=@#%&_\\-]*)+',
+  URIPARAM:         '\\?[A-Za-z0-9$.+!*\'|(){},~@#%&/=:;_?\\-\\[\\]<>]*',
+  URI:              '[A-Za-z][\\w-]+://[^\\s]+',
+  PROG:             '[\\x21-\\x5a\\x5c\\x5e-\\x7e]+',
+  SYSLOGPROG:       '[\\x21-\\x5a\\x5c\\x5e-\\x7e]+(?:\\[[0-9]+\\])?',
+  SYSLOGHOST:       '(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\\.){3}(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])|[0-9A-Za-z][0-9A-Za-z-]{0,62}',
+  MONTH:            '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)',
+  MONTHNUM:         '(?:0?[1-9]|1[0-2])',
+  MONTHNUM2:        '(?:0[1-9]|1[0-2])',
+  MONTHDAY:         '(?:(?:0[1-9])|(?:[12][0-9])|(?:3[01])|[1-9])',
+  DAY:              '(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)',
+  YEAR:             '(?:\\d\\d){1,2}',
+  HOUR:             '(?:2[0123]|[01]?[0-9])',
+  MINUTE:           '(?:[0-5][0-9])',
+  SECOND:           '(?:(?:[0-5]?[0-9]|60)(?:[:.,][0-9]+)?)',
+  TIME:             '(?:2[0123]|[01]?[0-9]):(?:[0-5][0-9])(?::(?:(?:[0-5]?[0-9]|60)(?:[.,][0-9]+)?))?',
+  DATE_US:          '(?:0?[1-9]|1[0-2])[/-](?:(?:0[1-9])|(?:[12][0-9])|(?:3[01])|[1-9])[/-](?:\\d\\d){1,2}',
+  DATE_EU:          '(?:(?:0[1-9])|(?:[12][0-9])|(?:3[01])|[1-9])[./-](?:0?[1-9]|1[0-2])[./-](?:\\d\\d){1,2}',
+  HTTPDATE:         '(?:(?:0[1-9])|(?:[12][0-9])|(?:3[01])|[1-9])/(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/(?:\\d\\d){1,2}:(?:2[0123]|[01]?[0-9]):(?:[0-5][0-9]):(?:(?:[0-5]?[0-9]|60)(?:[.,][0-9]+)?) [+-][0-9]{4}',
+  TIMESTAMP_ISO8601:'(?:\\d{4})-(?:0[1-9]|1[0-2])-(?:(?:0[1-9])|(?:[12][0-9])|(?:3[01]))T(?:2[0123]|[01][0-9]):(?:[0-5][0-9]):(?:(?:[0-5]?[0-9]|60)(?:[.,][0-9]+)?)(?:Z|[+-][0-9]{2}:?[0-9]{2})?',
+  SYSLOGTIMESTAMP:  '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) +(?:(?:0[1-9])|(?:[12][0-9])|(?:3[01])|[1-9]) (?:2[0123]|[01]?[0-9]):(?:[0-5][0-9]):(?:(?:[0-5]?[0-9]|60)(?:[.,][0-9]+)?)',
+  TZ:               '(?:[APMCE][SD]T|UTC)',
+  LOGLEVEL:         '(?:[Aa]lert|ALERT|[Tt]race|TRACE|[Dd]ebug|DEBUG|[Nn]otice|NOTICE|[Ii]nfo|INFO|[Ww]arn(?:ing)?|WARN(?:ING)?|[Ee]rr(?:or)?|ERR(?:OR)?|[Cc]rit(?:ical)?|CRIT(?:ICAL)?|[Ff]atal|FATAL|EMERG(?:ENCY)?|[Ee]merg(?:ency)?)',
+  SYSLOGFACILITY:   '<[0-9]+>',
+};
+
+function resolveGrokPattern(pattern) {
+  let resolved = pattern;
+  let captures = [];
+
+  const grokRe = /%\{([A-Z0-9_]+)(?::([a-zA-Z0-9_\[\].]+))?(?::([a-z]+))?\}/g;
+  let match;
+  let iterations = 0;
+  
+  while ((match = grokRe.exec(resolved)) !== null && iterations < 100) {
+    iterations++;
+  }
+
+  // Build named-capture aware regex
+  resolved = pattern;
+  const parts = [];
+  let lastIdx = 0;
+  const tokenRe = /%\{([A-Z0-9_]+)(?::([a-zA-Z0-9_]+))?(?::([a-z]+))?\}/g;
+  let m;
+  while ((m = tokenRe.exec(resolved)) !== null) {
+    parts.push({ type: 'literal', val: resolved.slice(lastIdx, m.index) });
+    parts.push({ type: 'pattern', name: m[1], field: m[2] || null, cast: m[3] || null });
+    lastIdx = m.index + m[0].length;
+  }
+  parts.push({ type: 'literal', val: resolved.slice(lastIdx) });
+
+  let regexStr = '';
+  for (const p of parts) {
+    if (p.type === 'literal') {
+      regexStr += p.val;
+    } else {
+      const patRegex = PATTERNS[p.name] || '\\S+';
+      if (p.field) {
+        regexStr += `(?<${p.field}>${patRegex})`;
+        captures.push({ field: p.field, cast: p.cast });
+      } else {
+        regexStr += `(?:${patRegex})`;
+      }
+    }
+  }
+
+  return { regexStr, captures };
+}
+
+function runGrok() {
+  const pattern = document.getElementById('gt-pattern').value.trim();
+  const log = document.getElementById('gt-log').value.trim();
+  const resultEl = document.getElementById('gt-result');
+  const statusEl = document.getElementById('gt-status');
+
+  resultEl.classList.add('show');
+
+  try {
+    const { regexStr, captures } = resolveGrokPattern(pattern);
+    const re = new RegExp(regexStr, 's');
+    const m = re.exec(log);
+
+    if (!m) {
+      resultEl.innerHTML = `<span style="color:var(--red)">✗ PARSE FAILURE — Aucun match pour ce pattern.</span>
+<span style="color:var(--muted2); font-size:0.7rem; display:block;margin-top:0.5rem;">Regex générée : <span style="color:var(--muted)">${regexStr.replace(/</g,'&lt;').slice(0, 200)}...</span></span>`;
+      statusEl.className = 'gt-status fail';
+      statusEl.textContent = 'FAIL';
+      return;
+    }
+
+    const groups = m.groups || {};
+    let html = '<span style="color:var(--green);font-size:0.8rem;display:block;margin-bottom:0.75rem">✓ MATCH — Champs extraits :</span>';
+    
+    let hasFields = false;
+    for (const [k, v] of Object.entries(groups)) {
+      if (v !== undefined) {
+        hasFields = true;
+        const cap = captures.find(c => c.field === k);
+        const typeLabel = cap?.cast || 'string';
+        html += `<div class="gt-field-match">
+          <span class="gfm-name">${k}</span>
+          <span class="gfm-val">${v || '<em style="color:var(--muted)">(vide)</em>'}</span>
+          <span class="gfm-type">${typeLabel}</span>
+        </div>`;
+      }
+    }
+
+    if (!hasFields) {
+      html += '<span style="color:var(--yellow)">Match trouvé mais aucun champ nommé capturé. Utilisez la syntaxe %{PATTERN:nom_champ}.</span>';
+    }
+
+    resultEl.innerHTML = html;
+    statusEl.className = 'gt-status ok';
+    statusEl.textContent = 'MATCH ✓';
+
+  } catch(e) {
+    resultEl.innerHTML = `<span style="color:var(--red)">Erreur regex : ${e.message}</span>`;
+    statusEl.className = 'gt-status fail';
+    statusEl.textContent = 'ERROR';
+  }
+}
+
+function loadExample(type) {
+  const examples = {
+    apache: {
+      pattern: '%{IPORHOST:src_ip} - (?:%{USERNAME:auth}|-) \\[%{HTTPDATE:timestamp}\\] "%{WORD:http_method} %{NOTSPACE:uri} HTTP/%{NUMBER:http_version}" %{NUMBER:http_status} (?:%{NUMBER:bytes}|-)',
+      log: '185.220.101.47 - - [15/Jan/2024:14:22:01 +0100] "GET /api/v1/users?id=1 HTTP/1.1" 200 4823'
+    },
+    sshd: {
+      pattern: '%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{PROG:program}\\[%{POSINT:pid}\\]: Failed %{WORD:auth_method} for %{USERNAME:username} from %{IP:src_ip} port %{POSINT:src_port}',
+      log: 'Jan 15 14:20:01 fw-01 sshd[8821]: Failed password for root from 185.220.101.47 port 43218 ssh2'
+    },
+    agent: {
+      pattern: '%{TIMESTAMP_ISO8601:timestamp} \\[%{LOGLEVEL:log_level}\\] rule_id=%{NOTSPACE:rule_id} src_ip=%{IP:src_ip} dst_ip=%{IP:dst_ip} http_method=%{NOTSPACE:http_method} uri=%{NOTSPACE:uri} payload_hash=%{NOTSPACE:payload_hash} score=%{POSINT:score} category=%{NOTSPACE:category}',
+      log: '2024-01-15T14:22:01.445Z [ALERT] rule_id=SQL_INJECT_001 src_ip=185.220.101.47 dst_ip=203.0.113.10 http_method=GET uri=/api/v1/users payload_hash=a3f8c2e1d4b697012345678 score=98 category=SQLi'
+    },
+    iptables: {
+      pattern: '%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:hostname} %{PROG:program}: \\[%{NUMBER:kernel_time}\\] %{NOTSPACE:iptables_rule} IN=%{NOTSPACE:net_in} OUT=%{NOTSPACE:net_out} MAC=%{NOTSPACE:mac_raw} SRC=%{IPV4:src_ip} DST=%{IPV4:dst_ip} LEN=%{POSINT:pkt_len} TOS=%{BASE16NUM:tos} PREC=%{BASE16NUM:prec} TTL=%{POSINT:ttl} ID=%{POSINT:pkt_id} DF PROTO=%{WORD:protocol} SPT=%{POSINT:src_port} DPT=%{POSINT:dst_port}',
+      log: 'Jan 15 14:19:55 fw-01 kernel: [12345.678901] IPTABLES-DROP: IN=eth0 OUT= MAC=aa:bb:cc:dd:ee:ff:11:22:33:44:55:66:08:00 SRC=185.220.101.47 DST=203.0.113.10 LEN=60 TOS=0x00 PREC=0x00 TTL=45 ID=54321 DF PROTO=TCP SPT=43215 DPT=22 WINDOW=64240 RES=0x00 SYN URGP=0'
+    }
+  };
+
+  const ex = examples[type];
+  if (ex) {
+    document.getElementById('gt-pattern').value = ex.pattern;
+    document.getElementById('gt-log').value = ex.log;
+    document.getElementById('gt-result').classList.remove('show');
+    document.getElementById('gt-status').className = 'gt-status idle';
+    document.getElementById('gt-status').textContent = 'IDLE';
+    showPage('tester');
+  }
+}
+
+// Enter key → run
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.ctrlKey) runGrok();
+});
+</script>
+
+</body>
+</html>
