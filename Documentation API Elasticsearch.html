@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elasticsearch API — Guide Complet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #7c3aed;
+    --green: #10b981;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0d1117;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* LAYOUT */
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 0 0 2rem 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-logo h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-logo span {
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .sidebar-section {
+    padding: 0.25rem 0;
+  }
+
+  .sidebar-category {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.75rem 1.5rem 0.25rem;
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: 0.35rem 1.5rem;
+    font-size: 0.82rem;
+    color: #94a3b8;
+    text-decoration: none;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+  }
+
+  .sidebar-link:hover, .sidebar-link.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(0,212,255,0.04);
+  }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    max-width: calc(100vw - 280px);
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0d1b2e 50%, #0a0e1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 4rem 3rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 30%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .hero h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    color: #94a3b8;
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 0;
+  }
+
+  .section {
+    padding: 3rem;
+    border-bottom: 1px solid var(--border);
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-icon {
+    width: 42px; height: 42px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+
+  .section-subtitle {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  /* ENDPOINT CARD */
+  .endpoint-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .endpoint-card:hover {
+    border-color: rgba(0,212,255,0.3);
+  }
+
+  .endpoint-header {
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .method-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    min-width: 52px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+
+  .method-get { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+  .method-post { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.25); }
+  .method-put { background: rgba(245,158,11,0.1); color: var(--yellow); border: 1px solid rgba(245,158,11,0.25); }
+  .method-delete { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+  .method-head { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.25); }
+
+  .endpoint-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .endpoint-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .endpoint-body {
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .endpoint-body p {
+    color: #94a3b8;
+    font-size: 0.88rem;
+    margin: 1rem 0 0.75rem;
+  }
+
+  /* CODE BLOCK */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    margin: 0.75rem 0;
+    position: relative;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #161b27;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 0.5rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .code-header + pre {
+    border-radius: 0 0 6px 6px;
+    margin-top: 0;
+  }
+
+  .copy-btn {
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { background: rgba(0,212,255,0.15); }
+
+  .kw { color: #ff7b93; }
+  .str { color: #9ece6a; }
+  .num { color: #ff9e64; }
+  .key { color: #7dcfff; }
+  .cmt { color: #565f89; font-style: italic; }
+  .url { color: var(--accent); }
+  .method-c { color: var(--yellow); font-weight: 600; }
+
+  /* PARAMS TABLE */
+  .params-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 0.75rem 0;
+  }
+
+  .params-table th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .params-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: top;
+  }
+
+  .params-table tr:last-child td { border-bottom: none; }
+
+  .param-name {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 0.8rem;
+  }
+
+  .param-type {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--yellow);
+    font-size: 0.75rem;
+  }
+
+  .param-req {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 2px;
+  }
+
+  .req-yes { background: rgba(239,68,68,0.12); color: var(--red); }
+  .req-no { background: rgba(100,116,139,0.12); color: var(--muted); }
+
+  /* INFO BOX */
+  .info-box {
+    border-radius: 6px;
+    padding: 0.9rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .info-box.info { background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.2); }
+  .info-box.warn { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); }
+  .info-box.success { background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2); }
+
+  .info-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+  /* USE CASE SECTION */
+  .usecase-card {
+    background: linear-gradient(135deg, var(--surface) 0%, #0f1e32 100%);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .usecase-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .usecase-desc {
+    color: #94a3b8;
+    font-size: 0.88rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .step-content h4 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+
+  .step-content p {
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* GRID OVERVIEW */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: block;
+  }
+
+  .topic-card:hover {
+    border-color: rgba(0,212,255,0.35);
+    background: rgba(0,212,255,0.03);
+    transform: translateY(-2px);
+  }
+
+  .topic-card-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+  .topic-card-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .topic-card-desc { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* HEADER NAV */
+  .top-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .breadcrumb {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .breadcrumb span { color: var(--accent); }
+
+  .version-tag {
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.25);
+    color: #a78bfa;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+  }
+
+  /* RESPONSE EXAMPLE */
+  .response-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  .rtab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.4rem 1rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    margin-right: 2px;
+    transition: all 0.15s;
+  }
+
+  .rtab.active {
+    background: var(--code-bg);
+    color: var(--accent);
+    border-color: var(--border);
+    border-bottom-color: var(--code-bg);
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 1.5rem 0 0.75rem;
+  }
+
+  h3:first-child { margin-top: 0.5rem; }
+
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 0.1rem;
+  }
+
+  .tag-blue { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid rgba(0,212,255,0.2); }
+  .tag-purple { background: rgba(124,58,237,0.1); color: #a78bfa; border: 1px solid rgba(124,58,237,0.2); }
+  .tag-green { background: rgba(16,185,129,0.1); color: var(--green); border: 1px solid rgba(16,185,129,0.2); }
+  .tag-orange { background: rgba(255,107,53,0.1); color: var(--accent2); border: 1px solid rgba(255,107,53,0.2); }
+
+  /* animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section.active .endpoint-card,
+  .section.active .usecase-card,
+  .section.active .topic-card {
+    animation: fadeInUp 0.3s ease both;
+  }
+
+  .section.active .endpoint-card:nth-child(2) { animation-delay: 0.05s; }
+  .section.active .endpoint-card:nth-child(3) { animation-delay: 0.1s; }
+  .section.active .endpoint-card:nth-child(4) { animation-delay: 0.15s; }
+
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { max-width: 100vw; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .hero { padding: 2rem 1.5rem; }
+    .section { padding: 2rem 1.5rem; }
+    .top-bar { padding: 0.75rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>⚡ ES API Docs</h1>
+    <span>v8.x — Référence FR</span>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-category">Démarrage</div>
+    <a class="sidebar-link active" onclick="showSection('overview')">🏠 Vue d'ensemble</a>
+    <a class="sidebar-link" onclick="showSection('auth')">🔐 Authentification</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-category">Core</div>
+    <a class="sidebar-link" onclick="showSection('document')">📄 Document</a>
+    <a class="sidebar-link" onclick="showSection('search')">🔍 Search</a>
+    <a class="sidebar-link" onclick="showSection('index')">🗂️ Index</a>
+    <a class="sidebar-link" onclick="showSection('cluster')">🌐 Cluster</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-category">Requêtes avancées</div>
+    <a class="sidebar-link" onclick="showSection('eql')">⚡ EQL</a>
+    <a class="sidebar-link" onclick="showSection('esql')">🧮 ES|QL</a>
+    <a class="sidebar-link" onclick="showSection('sql')">🗃️ SQL</a>
+    <a class="sidebar-link" onclick="showSection('ingest')">⚙️ Ingest</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-category">Machine Learning</div>
+    <a class="sidebar-link" onclick="showSection('ml')">🤖 ML Générique</a>
+    <a class="sidebar-link" onclick="showSection('mlano')">📊 Anomaly Detection</a>
+    <a class="sidebar-link" onclick="showSection('inference')">🧠 Inference</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-category">Administration</div>
+    <a class="sidebar-link" onclick="showSection('security')">🛡️ Security</a>
+    <a class="sidebar-link" onclick="showSection('snapshot')">💾 Snapshot & Restore</a>
+    <a class="sidebar-link" onclick="showSection('ilm')">♻️ ILM</a>
+    <a class="sidebar-link" onclick="showSection('tasks')">📋 Task Management</a>
+    <a class="sidebar-link" onclick="showSection('cat')">🐱 CAT API</a>
+    <a class="sidebar-link" onclick="showSection('watcher')">👁️ Watcher</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-category">Divers</div>
+    <a class="sidebar-link" onclick="showSection('transform')">🔄 Transform</a>
+    <a class="sidebar-link" onclick="showSection('synonyms')">🔤 Synonyms</a>
+    <a class="sidebar-link" onclick="showSection('script')">📜 Script</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-category">Cas d'usage</div>
+    <a class="sidebar-link" onclick="showSection('usecase')">🏋️ Cas : Arme FR</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="top-bar">
+    <div class="breadcrumb">elasticsearch / <span id="breadcrumb-current">vue-d-ensemble</span></div>
+    <div class="version-tag">ES 8.x</div>
+  </div>
+
+  <!-- ==================== OVERVIEW ==================== -->
+  <section class="section active" id="section-overview">
+    <div class="hero">
+      <div class="hero-badge">⚡ ELASTICSEARCH REST API</div>
+      <h1>Documentation API<br>Elasticsearch</h1>
+      <p>Référence complète de l'API REST Elasticsearch en français. Tous les endpoints, paramètres et exemples pour maîtriser le moteur de recherche le plus puissant du marché.</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Modules</div></div>
+        <div class="stat"><div class="stat-num">200+</div><div class="stat-label">Endpoints</div></div>
+        <div class="stat"><div class="stat-num">REST</div><div class="stat-label">Architecture</div></div>
+        <div class="stat"><div class="stat-num">JSON</div><div class="stat-label">Format</div></div>
+      </div>
+    </div>
+
+    <div style="padding: 3rem;">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(0,212,255,0.1);color:var(--accent);">🏠</div>
+        <div>
+          <div class="section-title">Vue d'ensemble</div>
+          <div class="section-subtitle">Architecture REST et concepts fondamentaux</div>
+        </div>
+      </div>
+
+      <div class="info-box info">
+        <div class="info-icon">💡</div>
+        <div>Elasticsearch expose une <strong>API REST HTTP/JSON</strong> complète. Toutes les opérations (CRUD, recherche, administration) sont accessibles via des requêtes HTTP standard sur le port <code style="color:var(--accent);font-family:'JetBrains Mono',monospace;">9200</code>.</div>
+      </div>
+
+      <h3>Modules disponibles</h3>
+      <div class="grid-3">
+        <div class="topic-card" onclick="showSection('document')">
+          <div class="topic-card-icon">📄</div>
+          <div class="topic-card-name">Document API</div>
+          <div class="topic-card-desc">CRUD sur les documents</div>
+        </div>
+        <div class="topic-card" onclick="showSection('search')">
+          <div class="topic-card-icon">🔍</div>
+          <div class="topic-card-name">Search API</div>
+          <div class="topic-card-desc">Requêtes full-text, filtres, agrégations</div>
+        </div>
+        <div class="topic-card" onclick="showSection('index')">
+          <div class="topic-card-icon">🗂️</div>
+          <div class="topic-card-name">Index API</div>
+          <div class="topic-card-desc">Création et gestion des index</div>
+        </div>
+        <div class="topic-card" onclick="showSection('cluster')">
+          <div class="topic-card-icon">🌐</div>
+          <div class="topic-card-name">Cluster API</div>
+          <div class="topic-card-desc">Santé et état du cluster</div>
+        </div>
+        <div class="topic-card" onclick="showSection('eql')">
+          <div class="topic-card-icon">⚡</div>
+          <div class="topic-card-name">EQL</div>
+          <div class="topic-card-desc">Event Query Language</div>
+        </div>
+        <div class="topic-card" onclick="showSection('ml')">
+          <div class="topic-card-icon">🤖</div>
+          <div class="topic-card-name">Machine Learning</div>
+          <div class="topic-card-desc">Anomalies, NLP, prédictions</div>
+        </div>
+        <div class="topic-card" onclick="showSection('security')">
+          <div class="topic-card-icon">🛡️</div>
+          <div class="topic-card-name">Security</div>
+          <div class="topic-card-desc">Utilisateurs, rôles, tokens</div>
+        </div>
+        <div class="topic-card" onclick="showSection('snapshot')">
+          <div class="topic-card-icon">💾</div>
+          <div class="topic-card-name">Snapshot & Restore</div>
+          <div class="topic-card-desc">Sauvegardes et restauration</div>
+        </div>
+        <div class="topic-card" onclick="showSection('usecase')">
+          <div class="topic-card-icon">🏋️</div>
+          <div class="topic-card-name">Cas : Arme FR</div>
+          <div class="topic-card-desc">Exemple complet armurerie</div>
+        </div>
+      </div>
+
+      <h3>Format des requêtes</h3>
+      <div class="code-header">
+        <span>Structure générale</span>
+        <button class="copy-btn" onclick="copyCode(this)">copier</button>
+      </div>
+      <pre><span class="method-c">MÉTHODE</span> <span class="url">http://localhost:9200/&lt;index&gt;/&lt;endpoint&gt;</span>
+<span class="key">Content-Type</span>: application/json
+<span class="key">Authorization</span>: <span class="str">Basic &lt;base64&gt;</span>
+
+{
+  <span class="cmt">// Corps JSON de la requête</span>
+}</pre>
+    </div>
+  </section>
+
+  <!-- ==================== AUTH ==================== -->
+  <section class="section" id="section-auth">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(124,58,237,0.1);color:#a78bfa;">🔐</div>
+      <div>
+        <div class="section-title">Authentification</div>
+        <div class="section-subtitle">Méthodes d'authentification supportées</div>
+      </div>
+    </div>
+
+    <div class="info-box warn">
+      <div class="info-icon">⚠️</div>
+      <div>Depuis ES 8.x, la sécurité est <strong>activée par défaut</strong>. L'authentification est obligatoire sur toute installation fraîche.</div>
+    </div>
+
+    <h3>Basic Auth</h3>
+    <div class="code-header"><span>curl — Basic Auth</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+    <pre><span class="method-c">GET</span> <span class="url">http://localhost:9200/</span>
+<span class="cmt"># Avec curl :</span>
+curl -u elastic:monpassword https://localhost:9200/
+
+<span class="cmt"># En-tête manuellement :</span>
+<span class="key">Authorization</span>: Basic <span class="str">ZWxhc3RpYzptb25wYXNzd29yZA==</span></pre>
+
+    <h3>API Key Auth</h3>
+    <div class="code-header"><span>Créer une API Key</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+    <pre><span class="method-c">POST</span> <span class="url">/_security/api_key</span>
+{
+  <span class="key">"name"</span>: <span class="str">"mon-app-key"</span>,
+  <span class="key">"expiration"</span>: <span class="str">"7d"</span>,
+  <span class="key">"role_descriptors"</span>: {
+    <span class="key">"arme_fr_role"</span>: {
+      <span class="key">"cluster"</span>: [<span class="str">"monitor"</span>],
+      <span class="key">"indices"</span>: [{
+        <span class="key">"names"</span>: [<span class="str">"armes-*"</span>],
+        <span class="key">"privileges"</span>: [<span class="str">"read"</span>, <span class="str">"write"</span>]
+      }]
+    }
+  }
+}</pre>
+
+    <div class="code-header"><span>Utiliser l'API Key</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+    <pre><span class="key">Authorization</span>: ApiKey <span class="str">VnVhQ2ZHY0JDZGJrUW0tZTVhT3g6dWkybHAyYXhUTm1zeWFrdzl0dk5Qdw==</span></pre>
+
+    <h3>Bearer Token</h3>
+    <div class="code-header"><span>Token via OIDC/SAML</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+    <pre><span class="key">Authorization</span>: Bearer <span class="str">&lt;access_token&gt;</span></pre>
+  </section>
+
+  <!-- ==================== DOCUMENT ==================== -->
+  <section class="section" id="section-document">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,212,255,0.1);color:var(--accent);">📄</div>
+      <div>
+        <div class="section-title">Document API</div>
+        <div class="section-subtitle">Créer, lire, mettre à jour et supprimer des documents</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/{index}/_doc/{id}</span>
+        <span class="endpoint-desc">Indexer (créer/remplacer) un document</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Crée ou remplace entièrement un document à l'ID spécifié. Si l'index n'existe pas, il est créé automatiquement.</p>
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/armes-fr/_doc/1</span>
+{
+  <span class="key">"nom"</span>: <span class="str">"FAMAS F1"</span>,
+  <span class="key">"calibre"</span>: <span class="str">"5.56x45mm NATO"</span>,
+  <span class="key">"type"</span>: <span class="str">"fusil d'assaut"</span>,
+  <span class="key">"pays"</span>: <span class="str">"France"</span>,
+  <span class="key">"annee"</span>: <span class="num">1978</span>,
+  <span class="key">"en_service"</span>: <span class="kw">true</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/{index}/_doc</span>
+        <span class="endpoint-desc">Indexer avec ID auto-généré</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Crée un document avec un identifiant unique généré automatiquement par Elasticsearch.</p>
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/armes-fr/_doc</span>
+{
+  <span class="key">"nom"</span>: <span class="str">"HK416"</span>,
+  <span class="key">"calibre"</span>: <span class="str">"5.56x45mm NATO"</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/{index}/_doc/{id}</span>
+        <span class="endpoint-desc">Récupérer un document par son ID</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Retourne le document complet avec ses métadonnées (_index, _id, _version, found…).</p>
+        <div class="code-header"><span>Requête</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/armes-fr/_doc/1</span></pre>
+        <div class="code-header"><span>Réponse</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre>{
+  <span class="key">"_index"</span>: <span class="str">"armes-fr"</span>,
+  <span class="key">"_id"</span>: <span class="str">"1"</span>,
+  <span class="key">"_version"</span>: <span class="num">1</span>,
+  <span class="key">"found"</span>: <span class="kw">true</span>,
+  <span class="key">"_source"</span>: {
+    <span class="key">"nom"</span>: <span class="str">"FAMAS F1"</span>,
+    <span class="key">"calibre"</span>: <span class="str">"5.56x45mm NATO"</span>
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/{index}/_update/{id}</span>
+        <span class="endpoint-desc">Mise à jour partielle d'un document</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Met à jour uniquement les champs spécifiés sans réécrire tout le document.</p>
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/armes-fr/_update/1</span>
+{
+  <span class="key">"doc"</span>: {
+    <span class="key">"en_service"</span>: <span class="kw">false</span>,
+    <span class="key">"remplace_par"</span>: <span class="str">"HK416 A5"</span>
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-delete">DELETE</span>
+        <span class="endpoint-path">/{index}/_doc/{id}</span>
+        <span class="endpoint-desc">Supprimer un document</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">DELETE</span> <span class="url">/armes-fr/_doc/1</span></pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/{index}/_bulk</span>
+        <span class="endpoint-desc">Opérations en masse (Bulk API)</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Permet d'effectuer plusieurs opérations (index/create/update/delete) en une seule requête HTTP. Format NDJSON.</p>
+        <div class="code-header"><span>Indexation en masse</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/armes-fr/_bulk</span>
+{ <span class="key">"index"</span>: { <span class="key">"_id"</span>: <span class="str">"2"</span> } }
+{ <span class="key">"nom"</span>: <span class="str">"Beretta 92FS"</span>, <span class="key">"type"</span>: <span class="str">"pistolet"</span>, <span class="key">"calibre"</span>: <span class="str">"9mm Parabellum"</span> }
+{ <span class="key">"index"</span>: { <span class="key">"_id"</span>: <span class="str">"3"</span> } }
+{ <span class="key">"nom"</span>: <span class="str">"PGM Hecate II"</span>, <span class="key">"type"</span>: <span class="str">"sniper"</span>, <span class="key">"calibre"</span>: <span class="str">.50 BMG"</span> }
+{ <span class="key">"delete"</span>: { <span class="key">"_id"</span>: <span class="str">"99"</span> } }</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SEARCH ==================== -->
+  <section class="section" id="section-search">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.1);color:var(--green);">🔍</div>
+      <div>
+        <div class="section-title">Search API</div>
+        <div class="section-subtitle">Recherche full-text, filtres, tri, agrégations</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/{index}/_search</span>
+        <span class="endpoint-desc">Recherche complète (Query DSL)</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Point d'entrée principal de la recherche. Supporte le Query DSL complet d'Elasticsearch.</p>
+        <div class="code-header"><span>Recherche full-text simple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/armes-fr/_search</span>
+{
+  <span class="key">"query"</span>: {
+    <span class="key">"match"</span>: {
+      <span class="key">"nom"</span>: <span class="str">"FAMAS"</span>
+    }
+  }
+}</pre>
+
+        <div class="code-header"><span>Recherche avec filtres + tri + pagination</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/armes-fr/_search</span>
+{
+  <span class="key">"from"</span>: <span class="num">0</span>,
+  <span class="key">"size"</span>: <span class="num">10</span>,
+  <span class="key">"query"</span>: {
+    <span class="key">"bool"</span>: {
+      <span class="key">"must"</span>: [
+        { <span class="key">"match"</span>: { <span class="key">"pays"</span>: <span class="str">"France"</span> } }
+      ],
+      <span class="key">"filter"</span>: [
+        { <span class="key">"term"</span>: { <span class="key">"en_service"</span>: <span class="kw">true</span> } },
+        { <span class="key">"range"</span>: { <span class="key">"annee"</span>: { <span class="key">"gte"</span>: <span class="num">1970</span> } } }
+      ]
+    }
+  },
+  <span class="key">"sort"</span>: [{ <span class="key">"annee"</span>: { <span class="key">"order"</span>: <span class="str">"desc"</span> } }],
+  <span class="key">"_source"</span>: [<span class="str">"nom"</span>, <span class="str">"calibre"</span>, <span class="str">"annee"</span>]
+}</pre>
+
+        <div class="code-header"><span>Agrégations</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/armes-fr/_search</span>
+{
+  <span class="key">"size"</span>: <span class="num">0</span>,
+  <span class="key">"aggs"</span>: {
+    <span class="key">"par_type"</span>: {
+      <span class="key">"terms"</span>: { <span class="key">"field"</span>: <span class="str">"type.keyword"</span> }
+    },
+    <span class="key">"annee_moy"</span>: {
+      <span class="key">"avg"</span>: { <span class="key">"field"</span>: <span class="str">"annee"</span> }
+    }
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/{index}/_count</span>
+        <span class="endpoint-desc">Compter les documents</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/armes-fr/_count</span>
+{
+  <span class="key">"query"</span>: {
+    <span class="key">"term"</span>: { <span class="key">"type.keyword"</span>: <span class="str">"fusil d'assaut"</span> }
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/_msearch</span>
+        <span class="endpoint-desc">Multi-search — Plusieurs requêtes en une</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Exécute plusieurs recherches en une seule requête HTTP. Format NDJSON (header + body alternés).</p>
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/_msearch</span>
+{ <span class="key">"index"</span>: <span class="str">"armes-fr"</span> }
+{ <span class="key">"query"</span>: { <span class="key">"match"</span>: { <span class="key">"type"</span>: <span class="str">"sniper"</span> } } }
+{ <span class="key">"index"</span>: <span class="str">"armes-fr"</span> }
+{ <span class="key">"query"</span>: { <span class="key">"match"</span>: { <span class="key">"type"</span>: <span class="str">"pistolet"</span> } } }</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== INDEX ==================== -->
+  <section class="section" id="section-index">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.1);color:var(--yellow);">🗂️</div>
+      <div>
+        <div class="section-title">Index API</div>
+        <div class="section-subtitle">Création, gestion et configuration des index</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/{index}</span>
+        <span class="endpoint-desc">Créer un index avec mapping</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Création avec mapping typé</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/armes-fr</span>
+{
+  <span class="key">"settings"</span>: {
+    <span class="key">"number_of_shards"</span>: <span class="num">3</span>,
+    <span class="key">"number_of_replicas"</span>: <span class="num">1</span>,
+    <span class="key">"analysis"</span>: {
+      <span class="key">"analyzer"</span>: {
+        <span class="key">"french_analyzer"</span>: {
+          <span class="key">"type"</span>: <span class="str">"french"</span>
+        }
+      }
+    }
+  },
+  <span class="key">"mappings"</span>: {
+    <span class="key">"properties"</span>: {
+      <span class="key">"nom"</span>: { <span class="key">"type"</span>: <span class="str">"text"</span>, <span class="key">"analyzer"</span>: <span class="str">"french"</span> },
+      <span class="key">"calibre"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"type"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"pays"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"annee"</span>: { <span class="key">"type"</span>: <span class="str">"integer"</span> },
+      <span class="key">"en_service"</span>: { <span class="key">"type"</span>: <span class="str">"boolean"</span> },
+      <span class="key">"description"</span>: { <span class="key">"type"</span>: <span class="str">"text"</span> }
+    }
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/{index}/_mapping</span>
+        <span class="endpoint-desc">Voir le mapping d'un index</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/armes-fr/_mapping</span></pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-delete">DELETE</span>
+        <span class="endpoint-path">/{index}</span>
+        <span class="endpoint-desc">Supprimer un index</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="info-box warn"><div class="info-icon">⚠️</div><div>Suppression <strong>irréversible</strong> de l'index et de tous ses documents.</div></div>
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">DELETE</span> <span class="url">/armes-fr</span></pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/{index}/_refresh</span>
+        <span class="endpoint-desc">Forcer le rafraîchissement</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Rend les documents récemment indexés visibles dans les recherches immédiatement (sans attendre le refresh automatique toutes les 1s).</p>
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/armes-fr/_refresh</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CLUSTER ==================== -->
+  <section class="section" id="section-cluster">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,212,255,0.1);color:var(--accent);">🌐</div>
+      <div>
+        <div class="section-title">Cluster API</div>
+        <div class="section-subtitle">Santé, statistiques et gestion du cluster</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_cluster/health</span>
+        <span class="endpoint-desc">État de santé du cluster</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Retourne l'état global du cluster : <span class="tag tag-green">green</span> (tout OK), <span class="tag tag-orange">yellow</span> (réplicas manquants), <span class="tag tag-orange">red</span> (données manquantes).</p>
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/_cluster/health</span>
+<span class="method-c">GET</span> <span class="url">/_cluster/health/armes-fr?level=shards</span></pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_cluster/stats</span>
+        <span class="endpoint-desc">Statistiques complètes du cluster</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/_cluster/stats</span></pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_nodes/stats</span>
+        <span class="endpoint-desc">Statistiques des nœuds</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/_nodes/stats</span>
+<span class="method-c">GET</span> <span class="url">/_nodes/jvm,fs,os/stats</span>  <span class="cmt"># Métriques spécifiques</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== EQL ==================== -->
+  <section class="section" id="section-eql">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(255,107,53,0.1);color:var(--accent2);">⚡</div>
+      <div>
+        <div class="section-title">EQL — Event Query Language</div>
+        <div class="section-subtitle">Requêtes orientées événements et séquences temporelles</div>
+      </div>
+    </div>
+
+    <div class="info-box info">
+      <div class="info-icon">💡</div>
+      <div>EQL est conçu pour la <strong>détection de menaces et la corrélation d'événements</strong>. Idéal pour les cas de cybersécurité, logs d'audit, SIEM.</div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/{index}/_eql/search</span>
+        <span class="endpoint-desc">Recherche EQL</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Détection séquence suspecte</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/logs-*/_eql/search</span>
+{
+  <span class="key">"query"</span>: <span class="str">"""
+    sequence with maxspan=5m
+      [process where process.name == "cmd.exe"]
+      [network where destination.port == 443]
+  """</span>,
+  <span class="key">"size"</span>: <span class="num">10</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ES|QL ==================== -->
+  <section class="section" id="section-esql">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(124,58,237,0.1);color:#a78bfa;">🧮</div>
+      <div>
+        <div class="section-title">ES|QL — Elasticsearch Query Language</div>
+        <div class="section-subtitle">Langage de requête tabulaire nouvelle génération (ES 8.11+)</div>
+      </div>
+    </div>
+
+    <div class="info-box info">
+      <div class="info-icon">💡</div>
+      <div>ES|QL utilise une syntaxe <strong>pipe</strong> inspirée de SQL et Unix. Très puissant pour l'analyse et la transformation de données.</div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/_query</span>
+        <span class="endpoint-desc">Exécuter une requête ES|QL</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple ES|QL</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/_query</span>
+{
+  <span class="key">"query"</span>: <span class="str">"""
+    FROM armes-fr
+    | WHERE en_service == true AND pays == "France"
+    | STATS count = COUNT(*) BY type
+    | SORT count DESC
+    | LIMIT 10
+  """</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SQL ==================== -->
+  <section class="section" id="section-sql">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.1);color:var(--green);">🗃️</div>
+      <div>
+        <div class="section-title">SQL API</div>
+        <div class="section-subtitle">Interroger Elasticsearch avec du SQL standard</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/_sql</span>
+        <span class="endpoint-desc">Requête SQL sur Elasticsearch</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple SQL</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/_sql</span>
+{
+  <span class="key">"query"</span>: <span class="str">"SELECT nom, calibre, annee FROM \"armes-fr\" WHERE pays = 'France' ORDER BY annee DESC LIMIT 5"</span>,
+  <span class="key">"format"</span>: <span class="str">"json"</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/_sql/translate</span>
+        <span class="endpoint-desc">Traduire SQL → Query DSL</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Convertit une requête SQL en Query DSL Elasticsearch équivalent. Utile pour l'apprentissage et le débogage.</p>
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/_sql/translate</span>
+{
+  <span class="key">"query"</span>: <span class="str">"SELECT nom FROM \"armes-fr\" WHERE annee > 2000"</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== INGEST ==================== -->
+  <section class="section" id="section-ingest">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.1);color:var(--yellow);">⚙️</div>
+      <div>
+        <div class="section-title">Ingest API</div>
+        <div class="section-subtitle">Pipelines de transformation des données à l'ingestion</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_ingest/pipeline/{id}</span>
+        <span class="endpoint-desc">Créer un pipeline d'ingestion</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Un pipeline peut contenir des <strong>processors</strong> : set, rename, grok, date, gsub, script, etc.</p>
+        <div class="code-header"><span>Pipeline enrichissement arme</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_ingest/pipeline/enrichissement-arme</span>
+{
+  <span class="key">"description"</span>: <span class="str">"Normalise les données d'armes françaises"</span>,
+  <span class="key">"processors"</span>: [
+    {
+      <span class="key">"uppercase"</span>: { <span class="key">"field"</span>: <span class="str">"nom"</span> }
+    },
+    {
+      <span class="key">"set"</span>: {
+        <span class="key">"field"</span>: <span class="str">"ingested_at"</span>,
+        <span class="key">"value"</span>: <span class="str">"{{_ingest.timestamp}}"</span>
+      }
+    },
+    {
+      <span class="key">"script"</span>: {
+        <span class="key">"source"</span>: <span class="str">"ctx.era = ctx.annee < 1950 ? 'historique' : ctx.annee < 2000 ? 'guerre froide' : 'moderne'"</span>
+      }
+    }
+  ]
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/_ingest/pipeline/{id}/_simulate</span>
+        <span class="endpoint-desc">Simuler un pipeline</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Test du pipeline</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/_ingest/pipeline/enrichissement-arme/_simulate</span>
+{
+  <span class="key">"docs"</span>: [
+    { <span class="key">"_source"</span>: { <span class="key">"nom"</span>: <span class="str">"famas f1"</span>, <span class="key">"annee"</span>: <span class="num">1978</span> } }
+  ]
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ML ==================== -->
+  <section class="section" id="section-ml">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(124,58,237,0.1);color:#a78bfa;">🤖</div>
+      <div>
+        <div class="section-title">Machine Learning API</div>
+        <div class="section-subtitle">Jobs ML, NLP, data frame analytics</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_ml/anomaly_detectors/{job_id}</span>
+        <span class="endpoint-desc">Créer un job de détection d'anomalies</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple job anomalie</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_ml/anomaly_detectors/incidents-arme-fr</span>
+{
+  <span class="key">"analysis_config"</span>: {
+    <span class="key">"bucket_span"</span>: <span class="str">"1h"</span>,
+    <span class="key">"detectors"</span>: [{
+      <span class="key">"function"</span>: <span class="str">"count"</span>,
+      <span class="key">"partition_field_name"</span>: <span class="str">"region"</span>
+    }]
+  },
+  <span class="key">"data_description"</span>: {
+    <span class="key">"time_field"</span>: <span class="str">"@timestamp"</span>
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_ml/anomaly_detectors/_stats</span>
+        <span class="endpoint-desc">Statistiques des jobs ML</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/_ml/anomaly_detectors/incidents-arme-fr/_stats</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ML ANOMALY ==================== -->
+  <section class="section" id="section-mlano">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(239,68,68,0.1);color:var(--red);">📊</div>
+      <div>
+        <div class="section-title">ML Anomaly Detection</div>
+        <div class="section-subtitle">Détection automatique d'anomalies dans les séries temporelles</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_ml/anomaly_detectors/{job_id}/results/records</span>
+        <span class="endpoint-desc">Récupérer les enregistrements d'anomalies</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/_ml/anomaly_detectors/incidents-arme-fr/results/records</span>
+{
+  <span class="key">"record_score"</span>: <span class="num">50</span>,
+  <span class="key">"sort"</span>: <span class="str">"record_score"</span>,
+  <span class="key">"descending"</span>: <span class="kw">true</span>,
+  <span class="key">"start"</span>: <span class="str">"2024-01-01"</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== INFERENCE ==================== -->
+  <section class="section" id="section-inference">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,212,255,0.1);color:var(--accent);">🧠</div>
+      <div>
+        <div class="section-title">Inference API</div>
+        <div class="section-subtitle">Modèles NLP, embeddings, classification</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/_inference/{inference_id}</span>
+        <span class="endpoint-desc">Lancer une inférence</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Utilise un modèle déployé pour classifier, générer des embeddings, ou résumer du texte.</p>
+        <div class="code-header"><span>Classification de texte</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/_inference/sparse_embedding/my-elser-model</span>
+{
+  <span class="key">"input"</span>: <span class="str">"Le FAMAS est un fusil d'assaut français bullpup"</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SECURITY ==================== -->
+  <section class="section" id="section-security">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(239,68,68,0.1);color:var(--red);">🛡️</div>
+      <div>
+        <div class="section-title">Security API</div>
+        <div class="section-subtitle">Gestion des utilisateurs, rôles et tokens</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_security/user/{username}</span>
+        <span class="endpoint-desc">Créer un utilisateur</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_security/user/operateur_arme</span>
+{
+  <span class="key">"password"</span>: <span class="str">"Str0ngP@ss!"</span>,
+  <span class="key">"roles"</span>: [<span class="str">"arme_readonly"</span>],
+  <span class="key">"full_name"</span>: <span class="str">"Opérateur Registre Armes"</span>,
+  <span class="key">"email"</span>: <span class="str">"op@defense.fr"</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_security/role/{name}</span>
+        <span class="endpoint-desc">Créer un rôle avec permissions</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple rôle lecture armes</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_security/role/arme_readonly</span>
+{
+  <span class="key">"cluster"</span>: [<span class="str">"monitor"</span>],
+  <span class="key">"indices"</span>: [{
+    <span class="key">"names"</span>: [<span class="str">"armes-*"</span>],
+    <span class="key">"privileges"</span>: [<span class="str">"read"</span>, <span class="str">"view_index_metadata"</span>],
+    <span class="key">"query"</span>: {
+      <span class="key">"term"</span>: { <span class="key">"classifie"</span>: <span class="kw">false</span> }
+    }
+  }]
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SNAPSHOT ==================== -->
+  <section class="section" id="section-snapshot">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.1);color:var(--green);">💾</div>
+      <div>
+        <div class="section-title">Snapshot & Restore</div>
+        <div class="section-subtitle">Sauvegarde et restauration des données</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_snapshot/{repository}</span>
+        <span class="endpoint-desc">Enregistrer un dépôt de snapshots</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Dépôt filesystem</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_snapshot/backup-armes</span>
+{
+  <span class="key">"type"</span>: <span class="str">"fs"</span>,
+  <span class="key">"settings"</span>: {
+    <span class="key">"location"</span>: <span class="str">"/mnt/backup/elasticsearch"</span>,
+    <span class="key">"compress"</span>: <span class="kw">true</span>
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_snapshot/{repo}/{snapshot}</span>
+        <span class="endpoint-desc">Créer un snapshot</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Snapshot partiel</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_snapshot/backup-armes/snapshot-2024-01-15</span>
+{
+  <span class="key">"indices"</span>: [<span class="str">"armes-fr"</span>, <span class="str">"armes-historique"</span>],
+  <span class="key">"include_global_state"</span>: <span class="kw">false</span>
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-post">POST</span>
+        <span class="endpoint-path">/_snapshot/{repo}/{snapshot}/_restore</span>
+        <span class="endpoint-desc">Restaurer depuis un snapshot</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Restauration avec renommage</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/_snapshot/backup-armes/snapshot-2024-01-15/_restore</span>
+{
+  <span class="key">"indices"</span>: [<span class="str">"armes-fr"</span>],
+  <span class="key">"rename_pattern"</span>: <span class="str">"armes-(.+)"</span>,
+  <span class="key">"rename_replacement"</span>: <span class="str">"restauration-$1"</span>
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ILM ==================== -->
+  <section class="section" id="section-ilm">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.1);color:var(--yellow);">♻️</div>
+      <div>
+        <div class="section-title">ILM — Index Lifecycle Management</div>
+        <div class="section-subtitle">Gestion automatisée du cycle de vie des index</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_ilm/policy/{policy}</span>
+        <span class="endpoint-desc">Créer une politique de cycle de vie</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Définit les phases <strong>hot → warm → cold → delete</strong> avec des critères de transition automatique.</p>
+        <div class="code-header"><span>Politique cycle de vie armes</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_ilm/policy/politique-armes</span>
+{
+  <span class="key">"policy"</span>: {
+    <span class="key">"phases"</span>: {
+      <span class="key">"hot"</span>: {
+        <span class="key">"actions"</span>: {
+          <span class="key">"rollover"</span>: { <span class="key">"max_size"</span>: <span class="str">"50gb"</span>, <span class="key">"max_age"</span>: <span class="str">"30d"</span> }
+        }
+      },
+      <span class="key">"warm"</span>: {
+        <span class="key">"min_age"</span>: <span class="str">"30d"</span>,
+        <span class="key">"actions"</span>: { <span class="key">"shrink"</span>: { <span class="key">"number_of_shards"</span>: <span class="num">1</span> } }
+      },
+      <span class="key">"delete"</span>: {
+        <span class="key">"min_age"</span>: <span class="str">"365d"</span>,
+        <span class="key">"actions"</span>: { <span class="key">"delete"</span>: {} }
+      }
+    }
+  }
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TASKS ==================== -->
+  <section class="section" id="section-tasks">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,212,255,0.1);color:var(--accent);">📋</div>
+      <div>
+        <div class="section-title">Task Management</div>
+        <div class="section-subtitle">Surveiller et annuler les tâches longues</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_tasks</span>
+        <span class="endpoint-desc">Lister toutes les tâches en cours</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/_tasks?actions=indices:data/write/bulk&detailed=true</span></pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-delete">DELETE</span>
+        <span class="endpoint-path">/_tasks/{task_id}/_cancel</span>
+        <span class="endpoint-desc">Annuler une tâche</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemple</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">POST</span> <span class="url">/_tasks/oTUltX4IQMOUUVeiohTt8A:12345/_cancel</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CAT ==================== -->
+  <section class="section" id="section-cat">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.1);color:var(--green);">🐱</div>
+      <div>
+        <div class="section-title">CAT API — Compact and Aligned Text</div>
+        <div class="section-subtitle">Réponses lisibles pour les terminaux et outils DevOps</div>
+      </div>
+    </div>
+
+    <div class="info-box info">
+      <div class="info-icon">💡</div>
+      <div>Les APIs CAT retournent des données en format texte tabulaire — pratique pour le monitoring CLI, scripts bash, et dashboards ops.</div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_cat/indices</span>
+        <span class="endpoint-desc">Lister tous les index</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Avec colonnes personnalisées</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/_cat/indices/armes-*?v&h=index,health,docs.count,store.size&s=docs.count:desc</span></pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_cat/nodes, /_cat/shards, /_cat/health</span>
+        <span class="endpoint-desc">Autres CAT endpoints utiles</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Exemples utiles</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/_cat/nodes?v&h=name,heap.percent,cpu,load_1m</span>
+<span class="method-c">GET</span> <span class="url">/_cat/shards/armes-fr?v</span>
+<span class="method-c">GET</span> <span class="url">/_cat/health?v</span>
+<span class="method-c">GET</span> <span class="url">/_cat/pending_tasks?v</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== WATCHER ==================== -->
+  <section class="section" id="section-watcher">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(255,107,53,0.1);color:var(--accent2);">👁️</div>
+      <div>
+        <div class="section-title">Watcher</div>
+        <div class="section-subtitle">Alertes automatisées basées sur des conditions</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_watcher/watch/{watch_id}</span>
+        <span class="endpoint-desc">Créer une alerte (watch)</span>
+      </div>
+      <div class="endpoint-body">
+        <p>Une watch comprend : <strong>trigger</strong> (quand), <strong>input</strong> (données), <strong>condition</strong> (filtre), <strong>actions</strong> (email, webhook, index).</p>
+        <div class="code-header"><span>Alerte nouvelles armes indexées</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_watcher/watch/alerte-nouvelles-armes</span>
+{
+  <span class="key">"trigger"</span>: {
+    <span class="key">"schedule"</span>: { <span class="key">"interval"</span>: <span class="str">"1h"</span> }
+  },
+  <span class="key">"input"</span>: {
+    <span class="key">"search"</span>: {
+      <span class="key">"request"</span>: {
+        <span class="key">"indices"</span>: [<span class="str">"armes-fr"</span>],
+        <span class="key">"body"</span>: {
+          <span class="key">"query"</span>: {
+            <span class="key">"range"</span>: { <span class="key">"ingested_at"</span>: { <span class="key">"gte"</span>: <span class="str">"now-1h"</span> } }
+          }
+        }
+      }
+    }
+  },
+  <span class="key">"condition"</span>: {
+    <span class="key">"compare"</span>: { <span class="key">"ctx.payload.hits.total.value"</span>: { <span class="key">"gt"</span>: <span class="num">0</span> } }
+  },
+  <span class="key">"actions"</span>: {
+    <span class="key">"notifier_equipe"</span>: {
+      <span class="key">"webhook"</span>: {
+        <span class="key">"method"</span>: <span class="str">"POST"</span>,
+        <span class="key">"url"</span>: <span class="str">"https://hooks.slack.com/services/XXX"</span>,
+        <span class="key">"body"</span>: <span class="str">"{{ctx.payload.hits.total.value}} nouvelles armes indexées"</span>
+      }
+    }
+  }
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TRANSFORM ==================== -->
+  <section class="section" id="section-transform">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,212,255,0.1);color:var(--accent);">🔄</div>
+      <div>
+        <div class="section-title">Transform API</div>
+        <div class="section-subtitle">Agrégation continue de données vers un nouvel index</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_transform/{transform_id}</span>
+        <span class="endpoint-desc">Créer une transformation</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Statistiques par type d'arme</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_transform/stats-par-type-arme</span>
+{
+  <span class="key">"source"</span>: { <span class="key">"index"</span>: [<span class="str">"armes-fr"</span>] },
+  <span class="key">"dest"</span>: { <span class="key">"index"</span>: <span class="str">"armes-stats-aggregees"</span> },
+  <span class="key">"pivot"</span>: {
+    <span class="key">"group_by"</span>: {
+      <span class="key">"type"</span>: { <span class="key">"terms"</span>: { <span class="key">"field"</span>: <span class="str">"type.keyword"</span> } }
+    },
+    <span class="key">"aggregations"</span>: {
+      <span class="key">"total"</span>: { <span class="key">"value_count"</span>: { <span class="key">"field"</span>: <span class="str">"_id"</span> } },
+      <span class="key">"annee_moy"</span>: { <span class="key">"avg"</span>: { <span class="key">"field"</span>: <span class="str">"annee"</span> } }
+    }
+  },
+  <span class="key">"sync"</span>: {
+    <span class="key">"time"</span>: { <span class="key">"field"</span>: <span class="str">"ingested_at"</span>, <span class="key">"delay"</span>: <span class="str">"60s"</span> }
+  }
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SYNONYMS ==================== -->
+  <section class="section" id="section-synonyms">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(16,185,129,0.1);color:var(--green);">🔤</div>
+      <div>
+        <div class="section-title">Synonyms API</div>
+        <div class="section-subtitle">Gérer les synonymes de recherche dynamiquement</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_synonyms/{synonyms_set}</span>
+        <span class="endpoint-desc">Créer un jeu de synonymes</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Synonymes armes militaires</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_synonyms/synonymes-armes-fr</span>
+{
+  <span class="key">"synonyms_set"</span>: [
+    { <span class="key">"id"</span>: <span class="str">"fusil"</span>, <span class="key">"synonyms"</span>: <span class="str">"fusil, carabine, rifle"</span> },
+    { <span class="key">"id"</span>: <span class="str">"pistolet"</span>, <span class="key">"synonyms"</span>: <span class="str">"pistolet, arme de poing, revolver"</span> },
+    { <span class="key">"id"</span>: <span class="str">"otan"</span>, <span class="key">"synonyms"</span>: <span class="str">"OTAN, NATO, Alliance atlantique"</span> }
+  ]
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SCRIPT ==================== -->
+  <section class="section" id="section-script">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.1);color:var(--yellow);">📜</div>
+      <div>
+        <div class="section-title">Script API</div>
+        <div class="section-subtitle">Scripts Painless pour les transformations et scores</div>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-put">PUT</span>
+        <span class="endpoint-path">/_scripts/{id}</span>
+        <span class="endpoint-desc">Stocker un script réutilisable</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Script calcul score arme</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">PUT</span> <span class="url">/_scripts/score-modernite-arme</span>
+{
+  <span class="key">"script"</span>: {
+    <span class="key">"lang"</span>: <span class="str">"painless"</span>,
+    <span class="key">"source"</span>: <span class="str">"""
+      int annee = doc['annee'].value;
+      double score = (annee - 1900) / 1.24;
+      if (doc['en_service'].value) score *= 1.2;
+      return Math.min(score, 100);
+    """</span>
+  }
+}</pre>
+      </div>
+    </div>
+
+    <div class="endpoint-card">
+      <div class="endpoint-header" onclick="toggleEndpoint(this)">
+        <span class="method-badge method-get">GET</span>
+        <span class="endpoint-path">/_search (avec script_score)</span>
+        <span class="endpoint-desc">Utiliser un script dans une recherche</span>
+      </div>
+      <div class="endpoint-body">
+        <div class="code-header"><span>Tri par score calculé</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+        <pre><span class="method-c">GET</span> <span class="url">/armes-fr/_search</span>
+{
+  <span class="key">"query"</span>: {
+    <span class="key">"script_score"</span>: {
+      <span class="key">"query"</span>: { <span class="key">"match_all"</span>: {} },
+      <span class="key">"script"</span>: {
+        <span class="key">"id"</span>: <span class="str">"score-modernite-arme"</span>
+      }
+    }
+  }
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CAS D'USAGE : ARMURERIE FR ==================== -->
+  <section class="section" id="section-usecase">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(124,58,237,0.15));color:var(--accent);">🏋️</div>
+      <div>
+        <div class="section-title">Cas d'usage complet — Registre Armes FR</div>
+        <div class="section-subtitle">Implémentation d'un registre national d'armes avec Elasticsearch</div>
+      </div>
+    </div>
+
+    <div class="info-box success">
+      <div class="info-icon">🎯</div>
+      <div>Ce cas pratique illustre l'utilisation combinée des principales API Elasticsearch pour construire un <strong>registre d'inventaire d'armes françaises</strong> : indexation, recherche avancée, agrégations, et alertes.</div>
+    </div>
+
+    <div class="usecase-card">
+      <div class="usecase-title">🏗️ Architecture du projet</div>
+      <div class="usecase-desc">Un registre national d'armes nécessite : stockage typé, recherche multi-critères, statistiques par catégorie, cycle de vie des données, et alertes sur nouvelles entrées.</div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Créer l'index avec mapping précis</h4>
+          <p>Définir les types de champs pour optimiser la recherche et le filtrage.</p>
+          <div class="code-header"><span>Création index armes-fr</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+          <pre><span class="method-c">PUT</span> <span class="url">/armes-fr</span>
+{
+  <span class="key">"settings"</span>: {
+    <span class="key">"number_of_shards"</span>: <span class="num">3</span>,
+    <span class="key">"number_of_replicas"</span>: <span class="num">1</span>
+  },
+  <span class="key">"mappings"</span>: {
+    <span class="key">"properties"</span>: {
+      <span class="key">"nom"</span>:         { <span class="key">"type"</span>: <span class="str">"text"</span>,    <span class="key">"fields"</span>: { <span class="key">"keyword"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> } } },
+      <span class="key">"calibre"</span>:      { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"type"</span>:          { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"pays_origine"</span>: { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"fabricant"</span>:    { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"annee"</span>:         { <span class="key">"type"</span>: <span class="str">"integer"</span> },
+      <span class="key">"en_service"</span>:   { <span class="key">"type"</span>: <span class="str">"boolean"</span> },
+      <span class="key">"classifie"</span>:    { <span class="key">"type"</span>: <span class="str">"boolean"</span> },
+      <span class="key">"portee_m"</span>:     { <span class="key">"type"</span>: <span class="str">"integer"</span> },
+      <span class="key">"poids_kg"</span>:     { <span class="key">"type"</span>: <span class="str">"float"</span> },
+      <span class="key">"description"</span>:  { <span class="key">"type"</span>: <span class="str">"text"</span>,    <span class="key">"analyzer"</span>: <span class="str">"french"</span> },
+      <span class="key">"tags"</span>:          { <span class="key">"type"</span>: <span class="str">"keyword"</span> },
+      <span class="key">"ingested_at"</span>:  { <span class="key">"type"</span>: <span class="str">"date"</span> }
+    }
+  }
+}</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Indexation en masse via Bulk API</h4>
+          <p>Charger l'inventaire initial en une seule requête optimisée.</p>
+          <div class="code-header"><span>Bulk indexation 4 armes</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+          <pre><span class="method-c">POST</span> <span class="url">/armes-fr/_bulk</span>
+{ <span class="key">"index"</span>: { <span class="key">"_id"</span>: <span class="str">"famas-f1"</span> } }
+{ <span class="key">"nom"</span>: <span class="str">"FAMAS F1"</span>, <span class="key">"calibre"</span>: <span class="str">"5.56x45mm"</span>, <span class="key">"type"</span>: <span class="str">"fusil_assaut"</span>, <span class="key">"pays_origine"</span>: <span class="str">"France"</span>, <span class="key">"annee"</span>: <span class="num">1978</span>, <span class="key">"en_service"</span>: <span class="kw">false</span>, <span class="key">"portee_m"</span>: <span class="num">300</span>, <span class="key">"poids_kg"</span>: <span class="num">3.61</span>, <span class="key">"tags"</span>: [<span class="str">"bullpup"</span>, <span class="str">"armée-de-terre"</span>], <span class="key">"ingested_at"</span>: <span class="str">"2024-01-15T10:00:00Z"</span> }
+{ <span class="key">"index"</span>: { <span class="key">"_id"</span>: <span class="str">"hk416-a5"</span> } }
+{ <span class="key">"nom"</span>: <span class="str">"HK416 A5"</span>, <span class="key">"calibre"</span>: <span class="str">"5.56x45mm"</span>, <span class="key">"type"</span>: <span class="str">"fusil_assaut"</span>, <span class="key">"pays_origine"</span>: <span class="str">"Allemagne"</span>, <span class="key">"annee"</span>: <span class="num">2020</span>, <span class="key">"en_service"</span>: <span class="kw">true</span>, <span class="key">"portee_m"</span>: <span class="num">300</span>, <span class="key">"poids_kg"</span>: <span class="num">3.3</span>, <span class="key">"tags"</span>: [<span class="str">"GIGN"</span>, <span class="str">"forces-spéciales"</span>], <span class="key">"ingested_at"</span>: <span class="str">"2024-01-15T10:00:00Z"</span> }
+{ <span class="key">"index"</span>: { <span class="key">"_id"</span>: <span class="str">"pgm-hecate-ii"</span> } }
+{ <span class="key">"nom"</span>: <span class="str">"PGM Hecate II"</span>, <span class="key">"calibre"</span>: <span class="str">"12.7x99mm"</span>, <span class="key">"type"</span>: <span class="str">"sniper"</span>, <span class="key">"pays_origine"</span>: <span class="str">"France"</span>, <span class="key">"annee"</span>: <span class="num">1993</span>, <span class="key">"en_service"</span>: <span class="kw">true</span>, <span class="key">"portee_m"</span>: <span class="num">1800</span>, <span class="key">"poids_kg"</span>: <span class="num">13.8</span>, <span class="key">"tags"</span>: [<span class="str">"anti-matériel"</span>, <span class="str">"légion"</span>], <span class="key">"ingested_at"</span>: <span class="str">"2024-01-15T10:00:00Z"</span> }
+{ <span class="key">"index"</span>: { <span class="key">"_id"</span>: <span class="str">"pamas-g1"</span> } }
+{ <span class="key">"nom"</span>: <span class="str">"PAMAS G1"</span>, <span class="key">"calibre"</span>: <span class="str">"9x19mm"</span>, <span class="key">"type"</span>: <span class="str">"pistolet"</span>, <span class="key">"pays_origine"</span>: <span class="str">"Italie"</span>, <span class="key">"annee"</span>: <span class="num">1990</span>, <span class="key">"en_service"</span>: <span class="kw">true</span>, <span class="key">"portee_m"</span>: <span class="num">50</span>, <span class="key">"poids_kg"</span>: <span class="num">0.95</span>, <span class="key">"tags"</span>: [<span class="str">"arme-de-poing"</span>, <span class="str">"gendarmerie"</span>], <span class="key">"ingested_at"</span>: <span class="str">"2024-01-15T10:00:00Z"</span> }</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Recherche multi-critères avec agrégations</h4>
+          <p>Requête typique d'un opérateur cherchant une arme en service avec statistiques.</p>
+          <div class="code-header"><span>Recherche + stats par type</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+          <pre><span class="method-c">GET</span> <span class="url">/armes-fr/_search</span>
+{
+  <span class="key">"query"</span>: {
+    <span class="key">"bool"</span>: {
+      <span class="key">"must"</span>: [
+        { <span class="key">"multi_match"</span>: {
+          <span class="key">"query"</span>: <span class="str">"fusil assaut moderne"</span>,
+          <span class="key">"fields"</span>: [<span class="str">"nom^3"</span>, <span class="str">"description"</span>, <span class="str">"tags"</span>]
+        }}
+      ],
+      <span class="key">"filter"</span>: [
+        { <span class="key">"term"</span>: { <span class="key">"en_service"</span>: <span class="kw">true</span> } },
+        { <span class="key">"term"</span>: { <span class="key">"classifie"</span>: <span class="kw">false</span> } },
+        { <span class="key">"range"</span>: { <span class="key">"annee"</span>: { <span class="key">"gte"</span>: <span class="num">2000</span> } } }
+      ]
+    }
+  },
+  <span class="key">"sort"</span>: [
+    { <span class="key">"_score"</span>: { <span class="key">"order"</span>: <span class="str">"desc"</span> } },
+    { <span class="key">"portee_m"</span>: { <span class="key">"order"</span>: <span class="str">"desc"</span> } }
+  ],
+  <span class="key">"aggs"</span>: {
+    <span class="key">"par_type"</span>: {
+      <span class="key">"terms"</span>: { <span class="key">"field"</span>: <span class="str">"type"</span>, <span class="key">"size"</span>: <span class="num">10</span> },
+      <span class="key">"aggs"</span>: {
+        <span class="key">"portee_max"</span>: { <span class="key">"max"</span>: { <span class="key">"field"</span>: <span class="str">"portee_m"</span> } },
+        <span class="key">"poids_moy"</span>: { <span class="key">"avg"</span>: { <span class="key">"field"</span>: <span class="str">"poids_kg"</span> } }
+      }
+    },
+    <span class="key">"par_pays"</span>: {
+      <span class="key">"terms"</span>: { <span class="key">"field"</span>: <span class="str">"pays_origine"</span> }
+    },
+    <span class="key">"timeline"</span>: {
+      <span class="key">"histogram"</span>: { <span class="key">"field"</span>: <span class="str">"annee"</span>, <span class="key">"interval"</span>: <span class="num">10</span> }
+    }
+  },
+  <span class="key">"size"</span>: <span class="num">20</span>
+}</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Requête ES|QL pour rapport analytique</h4>
+          <p>Générer un rapport de synthèse sur les armes françaises en service.</p>
+          <div class="code-header"><span>Rapport ES|QL</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+          <pre><span class="method-c">POST</span> <span class="url">/_query</span>
+{
+  <span class="key">"query"</span>: <span class="str">"""
+    FROM armes-fr
+    | WHERE en_service == true AND classifie == false
+    | EVAL categorie = CASE(
+        portee_m > 1000, "longue portée",
+        portee_m > 200,  "portée intermédiaire",
+        "courte portée"
+      )
+    | STATS
+        total     = COUNT(*),
+        poids_moy = AVG(poids_kg),
+        portee_max = MAX(portee_m)
+      BY categorie, type
+    | SORT total DESC
+  """</span>
+}</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Alerte Watcher sur nouvelles entrées</h4>
+          <p>Notifier automatiquement l'équipe quand une nouvelle arme est ajoutée au registre.</p>
+          <div class="code-header"><span>Watcher alerte registre</span><button class="copy-btn" onclick="copyCode(this)">copier</button></div>
+          <pre><span class="method-c">PUT</span> <span class="url">/_watcher/watch/nouvelle-arme-enregistree</span>
+{
+  <span class="key">"trigger"</span>: { <span class="key">"schedule"</span>: { <span class="key">"interval"</span>: <span class="str">"15m"</span> } },
+  <span class="key">"input"</span>: {
+    <span class="key">"search"</span>: {
+      <span class="key">"request"</span>: {
+        <span class="key">"indices"</span>: [<span class="str">"armes-fr"</span>],
+        <span class="key">"body"</span>: {
+          <span class="key">"query"</span>: { <span class="key">"range"</span>: { <span class="key">"ingested_at"</span>: { <span class="key">"gte"</span>: <span class="str">"now-15m"</span> } } }
+        }
+      }
+    }
+  },
+  <span class="key">"condition"</span>: {
+    <span class="key">"compare"</span>: { <span class="key">"ctx.payload.hits.total.value"</span>: { <span class="key">"gt"</span>: <span class="num">0</span> } }
+  },
+  <span class="key">"actions"</span>: {
+    <span class="key">"log_index"</span>: {
+      <span class="key">"index"</span>: {
+        <span class="key">"index"</span>: <span class="str">"armes-audit-log"</span>,
+        <span class="key">"doc_id"</span>: <span class="str">"{{ctx.execution_time}}"</span>,
+        <span class="key">"body"</span>: {
+          <span class="key">"message"</span>: <span class="str">"{{ctx.payload.hits.total.value}} nouvelles armes"</span>,
+          <span class="key">"timestamp"</span>: <span class="str">"{{ctx.execution_time}}"</span>
+        }
+      }
+    }
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box success">
+      <div class="info-icon">✅</div>
+      <div>
+        <strong>Récapitulatif APIs utilisées :</strong>
+        <span class="tag tag-blue">Index API</span>
+        <span class="tag tag-blue">Bulk API</span>
+        <span class="tag tag-green">Search API</span>
+        <span class="tag tag-green">ES|QL</span>
+        <span class="tag tag-purple">Watcher</span>
+        <span class="tag tag-orange">ILM</span>
+        <span class="tag tag-blue">Security</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+function showSection(id) {
+  // Masquer toutes les sections
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+
+  // Afficher la section cible
+  const target = document.getElementById('section-' + id);
+  if (target) {
+    target.classList.add('active');
+
+    // Mettre à jour le lien actif dans la sidebar
+    const links = document.querySelectorAll('.sidebar-link');
+    links.forEach(link => {
+      if (link.getAttribute('onclick') === `showSection('${id}')`) {
+        link.classList.add('active');
+      }
+    });
+
+    // Mettre à jour le breadcrumb
+    document.getElementById('breadcrumb-current').textContent = id.replace(/-/g, '-');
+
+    // Scroll to top
+    document.querySelector('.main').scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+}
+
+function toggleEndpoint(header) {
+  const body = header.nextElementSibling;
+  if (body && body.classList.contains('endpoint-body')) {
+    const isVisible = body.style.display !== 'none';
+    body.style.display = isVisible ? 'none' : 'block';
+  }
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-header').nextElementSibling;
+  if (pre) {
+    navigator.clipboard.writeText(pre.textContent).then(() => {
+      btn.textContent = '✓ copié';
+      btn.style.color = 'var(--green)';
+      setTimeout(() => {
+        btn.textContent = 'copier';
+        btn.style.color = '';
+      }, 2000);
+    });
+  }
+}
+
+// Ouvrir tous les endpoint-body par défaut
+document.querySelectorAll('.endpoint-body').forEach(body => {
+  body.style.display = 'block';
+});
+</script>
+
+</body>
+</html>
