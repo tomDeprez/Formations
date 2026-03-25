@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES|QL — Maîtrise Complète</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f8fc;--surface:#fff;--sf2:#f0f2f9;--border:#e2e5f0;--border2:#c8cde0;
+  --ink:#1a1d2e;--ink2:#4a4f6a;--muted:#8890b0;--muted2:#b8bdd0;
+  --teal:#0d9488;--teal2:#0f766e;--teal3:#99f6e4;
+  --ok:#15803d;--warn:#b45309;--danger:#be185d;--blue:#1d4ed8;
+  --lv1:#0284c7;--lv2:#16a34a;--lv3:#d97706;--lv4:#9333ea;--lv5:#be185d;--lv6:#0f766e;--lv7:#1d4ed8;--lv8:#7c3aed;--lv9:#be123c;--lv10:#065f46;
+  --sb-w:265px;--top-h:56px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ══ TOPBAR ══ */
+.topbar{position:sticky;top:0;z-index:300;height:var(--top-h);background:var(--surface);border-bottom:2px solid var(--teal);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;box-shadow:0 2px 12px rgba(13,148,136,.1)}
+.logo{display:flex;align-items:center;gap:.5rem}
+.logo-icon{width:32px;height:32px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Fira Code',monospace;font-size:.75rem;font-weight:500;flex-shrink:0}
+.logo-text{font-size:.9rem;font-weight:800}.logo-text span{color:var(--teal)}
+.topbar-nav{display:flex;gap:.2rem;margin-left:auto;overflow-x:auto}
+.tnav{font-size:.68rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);padding:.32rem .72rem;cursor:pointer;border-radius:20px;transition:all .15s;white-space:nowrap;background:none;border:none;font-family:'Syne',sans-serif}
+.tnav:hover{color:var(--ink2);background:var(--sf2)}
+.tnav.active{color:var(--teal);background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.2)}
+.hamburger{display:none;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.3rem;padding:.2rem}
+
+/* ══ LAYOUT ══ */
+.layout{display:grid;grid-template-columns:var(--sb-w) 1fr;min-height:calc(100vh - var(--top-h));align-items:start}
+
+/* ══ SIDEBAR ══ */
+.sidebar{position:sticky;top:var(--top-h);height:calc(100vh - var(--top-h));overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:1.25rem 0 2rem;transition:transform .25s ease}
+.sb-lbl{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);padding:.8rem 1.1rem .25rem}
+.sblink{display:flex;align-items:center;gap:.5rem;padding:.4rem 1.1rem;font-size:.77rem;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;width:100%;text-align:left;border-left:3px solid transparent;transition:all .12s;font-family:'Syne',sans-serif}
+.sblink:hover{color:var(--ink2);border-left-color:var(--border2);background:var(--sf2)}
+.sblink.active{color:var(--teal);border-left-color:var(--teal);background:rgba(13,148,136,.06)}
+.sblink .lvdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sblink .check{margin-left:auto;color:var(--ok);font-size:.75rem}
+.sb-divider{height:1px;background:var(--border);margin:.65rem 1.1rem}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:250}
+.sb-overlay.show{display:block}
+
+/* ══ MAIN ══ */
+.main{padding:2.5rem 2.5rem 5rem;min-width:0}
+.section{display:none}.section.active{display:block}
+
+/* ══ PAGE HERO ══ */
+.page-hero{background:linear-gradient(135deg,#f0fdfa 0%,#f7f8fc 50%,#eff6ff 100%);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden}
+.page-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:200px;height:200px;background:radial-gradient(circle,rgba(13,148,136,.08) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.22rem .65rem;border-radius:20px;margin-bottom:.75rem}
+.hero-title{font-size:clamp(1.6rem,3.5vw,2.1rem);font-weight:800;line-height:1.1;margin-bottom:.5rem}
+.hero-sub{font-size:.88rem;color:var(--ink2);line-height:1.75;max-width:620px;font-weight:400}
+
+/* ══ LEVEL BADGE ══ */
+.level-badge{display:inline-flex;align-items:center;gap:.4rem;font-family:'Fira Code',monospace;font-size:.65rem;font-weight:500;padding:.22rem .65rem;border-radius:4px;margin-bottom:.75rem}
+
+/* ══ HEADINGS ══ */
+h2{font-size:1.08rem;font-weight:800;color:var(--ink);margin:2.25rem 0 .6rem;display:flex;align-items:center;gap:.65rem}
+.h2-n{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:.68rem;font-weight:600;flex-shrink:0;color:#fff}
+h3{font-size:.84rem;font-weight:700;color:var(--ink2);margin:1.5rem 0 .4rem;text-transform:uppercase;letter-spacing:.07em}
+p{font-size:.87rem;color:var(--ink2);line-height:1.8;margin-bottom:.85rem;font-weight:400}
+hr.sep{border:none;border-top:1px solid var(--border);margin:2rem 0}
+code{font-family:'Fira Code',monospace;font-size:.82em;background:rgba(13,148,136,.07);color:var(--teal2);padding:.1em .38em;border-radius:4px;border:1px solid rgba(13,148,136,.15)}
+strong{font-weight:700;color:var(--ink)}
+ul,ol{padding-left:1.4rem;margin-bottom:.85rem}
+li{font-size:.87rem;color:var(--ink2);line-height:1.8;margin-bottom:.15rem}
+
+/* ══ CODE BLOCKS ══ */
+.cw{margin:.9rem 0}
+.ctop{background:var(--sf2);border:1px solid var(--border);border-bottom:none;border-radius:6px 6px 0 0;padding:.4rem 1rem;display:flex;align-items:center;justify-content:space-between;font-family:'Fira Code',monospace;font-size:.62rem;color:var(--muted)}
+.clang{font-size:.58rem;padding:.1rem .45rem;border-radius:3px;font-family:'Fira Code',monospace;font-weight:500}
+.cl-esql{background:rgba(13,148,136,.1);color:var(--teal2);border:1px solid rgba(13,148,136,.25)}
+.cl-bash{background:rgba(22,163,74,.1);color:var(--ok);border:1px solid rgba(22,163,74,.25)}
+.cl-json{background:rgba(217,119,6,.1);color:var(--warn);border:1px solid rgba(217,119,6,.25)}
+.copy-b{background:none;border:1px solid var(--border);color:var(--muted2);font-family:'Fira Code',monospace;font-size:.58rem;padding:.1rem .4rem;border-radius:3px;cursor:pointer;transition:all .15s}
+.copy-b:hover{color:var(--ink);border-color:var(--border2)}.copy-b.ok{color:var(--ok);border-color:var(--ok)}
+pre{background:#1a1d2e;border:1px solid var(--border);border-radius:0 0 6px 6px;padding:1rem 1.15rem;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.77rem;line-height:1.85;color:#c8cce0}
+pre.alone{border-radius:6px}
+.ck{color:#7ecad4}.cs{color:#a8cc8c}.cn{color:#f0a070}.co{color:#e06c75}.cc{color:#4a5a72;font-style:italic}.cp{color:#ce93d8}.cf{color:#ffb74d}.cg{color:#81c784}.cw2{color:#fff;font-weight:500}
+
+/* ══ CALLOUTS ══ */
+.box{border-radius:7px;padding:.85rem 1rem;margin:.9rem 0;font-size:.84rem;display:flex;gap:.7rem;align-items:flex-start}
+.box-i{font-size:1rem;flex-shrink:0;margin-top:.1rem}
+.box-b p{margin:0;color:inherit;font-size:.83rem;line-height:1.65}.box-b strong{font-weight:700;display:block;margin-bottom:.2rem;color:inherit}
+.box.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.box.tip{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d}
+.box.warn{background:#fffbeb;border:1px solid #fde68a;color:#78350f}
+.box.teal{background:#f0fdfa;border:1px solid #99f6e4;color:#134e4a}
+.box.purple{background:#faf5ff;border:1px solid #e9d5ff;color:#581c87}
+
+/* ══ KPATH ══ */
+.kpath{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;font-family:'Fira Code',monospace;font-size:.72rem;background:var(--sf2);border:1px solid var(--border);padding:.4rem .9rem;border-radius:5px;margin:.85rem 0}
+.kpath .seg{color:var(--ink2);font-weight:600}.kpath .cur{color:var(--teal);font-weight:700}.kpath .arr{color:var(--muted2)}
+
+/* ══ TABLES ══ */
+.tbl-wrap{overflow-x:auto;margin:.9rem 0}
+table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+th{background:var(--sf2);padding:.5rem .85rem;text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:.5rem .85rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(13,148,136,.02)}
+
+/* ══ BADGES ══ */
+.badge{display:inline-block;font-family:'Fira Code',monospace;font-size:.62rem;font-weight:500;padding:.12rem .5rem;border-radius:4px}
+.b-ok{background:#f0fdf4;color:var(--ok);border:1px solid #bbf7d0}
+.b-warn{background:#fffbeb;color:var(--warn);border:1px solid #fde68a}
+.b-danger{background:#fff1f2;color:var(--danger);border:1px solid #fecdd3}
+.b-teal{background:rgba(13,148,136,.1);color:var(--teal2);border:1px solid rgba(13,148,136,.25)}
+.b-purple{background:rgba(147,51,234,.1);color:#7e22ce;border:1px solid rgba(147,51,234,.25)}
+
+/* ══ EXERCISE CARD ══ */
+.ex-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:1.5rem 0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.ex-card-header{padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:.9rem}
+.ex-num{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0}
+.ex-meta{flex:1}
+.ex-meta h3{font-size:.95rem;font-weight:800;color:var(--ink);margin:0 0 .2rem;text-transform:none;letter-spacing:0}
+.ex-meta p{font-size:.82rem;color:var(--ink2);margin:0}
+.ex-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.4rem}
+.ex-tag{font-family:'Fira Code',monospace;font-size:.58rem;padding:.1rem .38rem;border-radius:3px;font-weight:500}
+.ex-body{padding:1.1rem 1.25rem}
+
+/* ══ CONCEPT BLOCK ══ */
+.concept{background:rgba(13,148,136,.04);border:1px solid rgba(13,148,136,.15);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.25rem 0}
+.concept-title{font-size:.78rem;font-weight:700;color:var(--teal2);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem;text-transform:uppercase;letter-spacing:.06em}
+.concept-body{font-size:.84rem;color:var(--ink2);line-height:1.7}
+
+/* ══ PIPE DIAGRAM ══ */
+.pipe-flow{display:flex;align-items:center;flex-wrap:wrap;gap:.3rem;margin:1rem 0;background:var(--sf2);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
+.pipe-step{background:var(--surface);border:1.5px solid var(--border);border-radius:6px;padding:.4rem .75rem;font-family:'Fira Code',monospace;font-size:.72rem;font-weight:500;white-space:nowrap}
+.pipe-step.source{border-color:var(--teal);color:var(--teal2);background:rgba(13,148,136,.05)}
+.pipe-step.filter{border-color:var(--lv1);color:var(--lv1);background:rgba(2,132,199,.05)}
+.pipe-step.agg{border-color:var(--lv4);color:#7e22ce;background:rgba(124,58,237,.05)}
+.pipe-step.sort{border-color:var(--warn);color:var(--warn);background:rgba(217,119,6,.05)}
+.pipe-step.limit{border-color:var(--ok);color:var(--ok);background:rgba(21,128,61,.05)}
+.pipe-arrow{color:var(--teal);font-size:1rem;font-weight:700}
+.pipe-label{font-size:.6rem;color:var(--muted);display:block;text-align:center;margin-top:.2rem}
+
+/* ══ RESULT TABLE (mock) ══ */
+.result-mock{background:#1a1d2e;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:.75rem 0}
+.rm-header{background:#252842;display:grid;padding:.4rem .85rem;font-family:'Fira Code',monospace;font-size:.68rem;color:#7ecad4;font-weight:500}
+.rm-row{display:grid;padding:.35rem .85rem;border-top:1px solid #2a2d42;font-family:'Fira Code',monospace;font-size:.7rem;color:#c8cce0}
+.rm-row:nth-child(even){background:rgba(255,255,255,.02)}
+.rm-val-str{color:#a8cc8c}.rm-val-num{color:#f0a070}.rm-val-null{color:#4a5a72;font-style:italic}
+
+/* ══ OPERATOR REF ══ */
+.op-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem;margin:.9rem 0}
+.op-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.75rem .9rem;transition:border-color .15s}
+.op-card:hover{border-color:var(--border2)}
+.op-name{font-family:'Fira Code',monospace;font-size:.78rem;font-weight:500;color:var(--teal2);margin-bottom:.2rem}
+.op-desc{font-size:.77rem;color:var(--ink2);line-height:1.4}
+.op-ex{font-family:'Fira Code',monospace;font-size:.68rem;color:var(--warn);margin-top:.2rem}
+
+/* ══ ANSWER REVEAL ══ */
+.qblock{background:var(--sf2);border:1px solid var(--border);border-radius:8px;padding:.95rem 1.1rem;margin:.75rem 0}
+.qblock-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem;margin-bottom:.55rem}
+.qblock-q{font-size:.88rem;font-weight:700;color:var(--ink);flex:1;line-height:1.5}
+.qblock-hint{font-size:.8rem;color:var(--muted);font-style:italic;margin-bottom:.5rem}
+.reveal-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Fira Code',monospace;font-size:.65rem;padding:.25rem .7rem;border-radius:4px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:.3rem;white-space:nowrap;flex-shrink:0}
+.reveal-btn:hover{color:var(--teal);border-color:rgba(13,148,136,.3);background:rgba(13,148,136,.04)}
+.reveal-btn.open{color:var(--ok);border-color:var(--ok)}
+.answer-block{display:none;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+.answer-block.show{display:block}
+.answer-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);margin-bottom:.4rem;display:flex;align-items:center;gap:.35rem}
+
+/* ══ PROGRESS ══ */
+.progress-row{display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem}
+.pb-track{background:var(--border);border-radius:100px;height:6px;overflow:hidden;margin-bottom:.85rem}
+.pb-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--teal),#14b8a6);transition:width .4s ease}
+
+/* ══ WALKTHROUGH ══ */
+.walkthrough{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.25rem 0}
+.wt-step{display:grid;grid-template-columns:52px 1fr;border-bottom:1px solid var(--border);transition:background .15s}
+.wt-step:last-child{border-bottom:none}.wt-step:hover{background:rgba(13,148,136,.015)}
+.wt-num{background:var(--sf2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.9rem .5rem .5rem;gap:.3rem}
+.wt-circle{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-family:'Fira Code',monospace;font-size:.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wt-line{width:2px;flex:1;background:var(--border);min-height:8px;margin-top:4px}
+.wt-step:last-child .wt-line{display:none}
+.wt-body{padding:.9rem 1.1rem}.wt-body h4{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.35rem}
+.wt-body p{margin-bottom:.4rem;font-size:.84rem}
+
+/* ══ DATASET CARDS ══ */
+.ds-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem;margin:1rem 0}
+.ds-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;border-top:3px solid}
+.ds-index{font-family:'Fira Code',monospace;font-size:.78rem;font-weight:500;margin-bottom:.25rem}
+.ds-count{font-size:1.5rem;font-weight:800}
+.ds-sub{font-size:.72rem;color:var(--muted);margin-bottom:.35rem}
+.ds-desc{font-size:.76rem;color:var(--ink2);line-height:1.5}
+.ds-fields{display:flex;flex-wrap:wrap;gap:.2rem;margin-top:.55rem}
+.ds-field{font-family:'Fira Code',monospace;font-size:.57rem;background:var(--sf2);border:1px solid var(--border);color:var(--ink2);padding:.07rem .35rem;border-radius:2px}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:960px){
+  .topbar-nav{display:none}.hamburger{display:block}
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:var(--top-h);left:0;width:var(--sb-w);height:calc(100vh - var(--top-h));z-index:260;transform:translateX(-100%);box-shadow:6px 0 24px rgba(0,0,0,.12)}
+  .sidebar.open{transform:translateX(0)}
+  .main{padding:1.5rem 1.1rem 4rem}
+  .ds-grid{grid-template-columns:1fr}.op-grid{grid-template-columns:1fr}
+}
+@media(max-width:550px){pre{font-size:.72rem}.hero-title{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-icon">|&gt;</div>
+    <div class="logo-text">ES<span>|QL</span> Mastery</div>
+  </div>
+  <nav class="topbar-nav">
+    <button class="tnav active" data-page="start">Démarrer</button>
+    <button class="tnav" data-page="lv1">Niveau 1</button>
+    <button class="tnav" data-page="lv2">Niveau 2</button>
+    <button class="tnav" data-page="lv3">Niveau 3</button>
+    <button class="tnav" data-page="lv4">Niveau 4</button>
+    <button class="tnav" data-page="lv5">Niveau 5</button>
+    <button class="tnav" data-page="lv6">Niveau 6</button>
+    <button class="tnav" data-page="lv7">Niveau 7</button>
+    <button class="tnav" data-page="lv8">Niveau 8</button>
+    <button class="tnav" data-page="lv9">Niveau 9</button>
+    <button class="tnav" data-page="lv10">Niveau 10</button>
+    <button class="tnav" data-page="ref">Référence</button>
+  </nav>
+  <button class="hamburger" id="ham">☰</button>
+</header>
+
+<div class="sb-overlay" id="overlay"></div>
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-lbl">Démarrage</div>
+  <button class="sblink active" data-page="start" data-anchor=""><span class="lvdot" style="background:var(--teal)"></span>Introduction & Dataset</button>
+  <button class="sblink" data-page="start" data-anchor="import"><span class="lvdot" style="background:var(--teal)"></span>Importer les données</button>
+  <button class="sblink" data-page="start" data-anchor="activer"><span class="lvdot" style="background:var(--teal)"></span>Activer ES|QL</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Exercices progressifs</div>
+
+  <button class="sblink" data-page="lv1" data-anchor=""><span class="lvdot" style="background:var(--lv1)"></span>N1 — FROM & LIMIT</button>
+  <button class="sblink" data-page="lv2" data-anchor=""><span class="lvdot" style="background:var(--lv2)"></span>N2 — WHERE & Filtres</button>
+  <button class="sblink" data-page="lv3" data-anchor=""><span class="lvdot" style="background:var(--lv3)"></span>N3 — KEEP, DROP, RENAME</button>
+  <button class="sblink" data-page="lv4" data-anchor=""><span class="lvdot" style="background:var(--lv4)"></span>N4 — SORT & ORDER</button>
+  <button class="sblink" data-page="lv5" data-anchor=""><span class="lvdot" style="background:var(--lv5)"></span>N5 — STATS & COUNT</button>
+  <button class="sblink" data-page="lv6" data-anchor=""><span class="lvdot" style="background:var(--lv6)"></span>N6 — EVAL & Calculs</button>
+  <button class="sblink" data-page="lv7" data-anchor=""><span class="lvdot" style="background:var(--lv7)"></span>N7 — CASE & Conditions</button>
+  <button class="sblink" data-page="lv8" data-anchor=""><span class="lvdot" style="background:var(--lv8)"></span>N8 — Fonctions avancées</button>
+  <button class="sblink" data-page="lv9" data-anchor=""><span class="lvdot" style="background:var(--lv9)"></span>N9 — GROK & DISSECT</button>
+  <button class="sblink" data-page="lv10" data-anchor=""><span class="lvdot" style="background:var(--lv10)"></span>N10 — Pipeline maître</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Référence rapide</div>
+  <button class="sblink" data-page="ref" data-anchor=""><span class="lvdot" style="background:var(--muted2)"></span>Tous les opérateurs</button>
+  <button class="sblink" data-page="ref" data-anchor="ref-fn"><span class="lvdot" style="background:var(--muted2)"></span>Toutes les fonctions</button>
+  <button class="sblink" data-page="ref" data-anchor="ref-types"><span class="lvdot" style="background:var(--muted2)"></span>Types de données</button>
+</aside>
+
+<main class="main" id="main">
+
+<!-- ═══════════════════ START ═══════════════════ -->
+<div class="section active" id="sec-start">
+  <div class="page-hero">
+    <div class="hero-tag" style="color:var(--teal2);background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.2)">⚡ ES|QL — Mastery Guide</div>
+    <h1 class="hero-title">Maîtriser ES|QL<br>de zéro à expert</h1>
+    <p class="hero-sub">10 niveaux progressifs avec des exercices sur 4 jeux de données réels. Chaque niveau introduit de nouveaux concepts, des exercices guidés et des défis bonus.</p>
+  </div>
+
+  <div class="progress-row"><span>Progression globale</span><span id="global-pct">0 / 10 niveaux</span></div>
+  <div class="pb-track"><div class="pb-fill" id="global-bar" style="width:0%"></div></div>
+
+  <h2><span class="h2-n" style="background:var(--teal)">1</span> Les 4 jeux de données</h2>
+  <div class="ds-grid">
+    <div class="ds-card" style="border-top-color:var(--lv1)">
+      <div class="ds-index" style="color:var(--lv1)">📦 esql-products</div>
+      <div class="ds-count">43</div>
+      <div class="ds-sub">produits</div>
+      <div class="ds-desc">Catalogue e-commerce : électronique, vêtements, sport, alimentation. Prix, coût, stock, notes, marges.</div>
+      <div class="ds-fields">
+        <span class="ds-field">product.id</span><span class="ds-field">product.name</span><span class="ds-field">product.category</span>
+        <span class="ds-field">product.price</span><span class="ds-field">product.cost</span><span class="ds-field">product.margin_pct</span>
+        <span class="ds-field">product.stock</span><span class="ds-field">product.rating</span><span class="ds-field">product.brand</span>
+      </div>
+    </div>
+    <div class="ds-card" style="border-top-color:var(--lv2)">
+      <div class="ds-index" style="color:var(--lv2)">🛒 esql-orders</div>
+      <div class="ds-count">1 421</div>
+      <div class="ds-sub">commandes (30 jours)</div>
+      <div class="ds-desc">Commandes clients de 8 pays européens. Montants, produits achetés, modes de paiement, statuts.</div>
+      <div class="ds-fields">
+        <span class="ds-field">order.id</span><span class="ds-field">order.total_eur</span><span class="ds-field">order.status</span>
+        <span class="ds-field">order.date</span><span class="ds-field">customer.country</span><span class="ds-field">order.payment_method</span>
+        <span class="ds-field">order.items_count</span><span class="ds-field">order.shipping_eur</span>
+      </div>
+    </div>
+    <div class="ds-card" style="border-top-color:var(--lv4)">
+      <div class="ds-index" style="color:var(--lv4)">🖥️ esql-logs</div>
+      <div class="ds-count">12 538</div>
+      <div class="ds-sub">logs serveur (30 jours)</div>
+      <div class="ds-desc">Logs d'une plateforme e-commerce : API gateway, auth, paiement. Niveaux DEBUG/INFO/WARN/ERROR/CRITICAL.</div>
+      <div class="ds-fields">
+        <span class="ds-field">log.level</span><span class="ds-field">log.service</span><span class="ds-field">log.message</span>
+        <span class="ds-field">http.status_code</span><span class="ds-field">http.duration_ms</span><span class="ds-field">server.host</span>
+        <span class="ds-field">client.ip</span><span class="ds-field">http.endpoint</span>
+      </div>
+    </div>
+    <div class="ds-card" style="border-top-color:var(--lv5)">
+      <div class="ds-index" style="color:var(--lv5)">👥 esql-employees</div>
+      <div class="ds-count">120</div>
+      <div class="ds-sub">employés</div>
+      <div class="ds-desc">RH d'une entreprise tech. Salaires, départements, ancienneté, scores de performance, télétravail.</div>
+      <div class="ds-fields">
+        <span class="ds-field">employee.department</span><span class="ds-field">employee.salary_eur</span><span class="ds-field">employee.position</span>
+        <span class="ds-field">employee.hire_year</span><span class="ds-field">employee.performance_score</span><span class="ds-field">employee.is_manager</span>
+        <span class="ds-field">employee.remote_days_per_week</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="import">
+  <h2><span class="h2-n" style="background:var(--teal)">2</span> Importer le dataset</h2>
+
+  <div class="box info">
+    <div class="box-i">📁</div>
+    <div class="box-b"><strong>Où placer le fichier <code>esql-dataset.ndjson</code> ?</strong><p>Le fichier doit être accessible depuis la machine qui fait l'import. Voici selon votre setup :</p></div>
+  </div>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Setup</th><th>Où mettre le fichier</th><th>Commande depuis</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Tout en local</strong> — ES + Kibana sur votre PC</td>
+        <td>N'importe où sur votre PC<br><code>~/Downloads/</code> par exemple</td>
+        <td>Votre terminal local<br><code>cd ~/Downloads</code> puis curl</td>
+      </tr>
+      <tr>
+        <td><strong>ES sur serveur distant</strong> — VPS/cloud</td>
+        <td>Sur votre PC local — curl parle directement à ES via HTTP</td>
+        <td>Terminal local, curl pointe vers <code>http://IP_SERVEUR:9200</code></td>
+      </tr>
+      <tr>
+        <td><strong>Docker</strong> — ES dans un container</td>
+        <td>Sur votre PC (hôte Docker)</td>
+        <td>Terminal hôte, ES exposé sur <code>localhost:9200</code></td>
+      </tr>
+      <tr>
+        <td><strong>Elastic Cloud</strong> — cloud.elastic.co</td>
+        <td>Sur votre PC local</td>
+        <td>Terminal local, URL = votre Cloud endpoint</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <h3>Méthode 1 — curl (recommandé)</h3>
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Ouvrir un terminal et aller dans le dossier du fichier</h4>
+        <div class="cw"><div class="ctop"><span>Terminal</span><span class="clang cl-bash">BASH</span></div>
+<pre><span class="cc"># Exemple : fichier dans ~/Downloads</span>
+cd ~/Downloads
+
+<span class="cc"># Exemple : Bureau Mac</span>
+cd ~/Desktop
+
+<span class="cc"># Vérifier que le fichier est là</span>
+ls -lh esql-dataset.ndjson
+<span class="cc"># doit afficher : -rw-r--r-- ... 6.1M ... esql-dataset.ndjson</span></pre></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Lancer l'import</h4>
+        <div class="cw"><div class="ctop"><span>curl — import Bulk API</span><span class="clang cl-bash">BASH</span></div>
+<pre><span class="cc"># Installation locale sans sécurité (dev)</span>
+curl -X POST "http://localhost:9200/_bulk" \
+  -H "Content-Type: application/x-ndjson" \
+  --data-binary "@esql-dataset.ndjson"
+
+<span class="cc"># ES 8.x avec auth</span>
+curl -u elastic:VOTRE_PASSWORD \
+  -X POST "http://localhost:9200/_bulk" \
+  -H "Content-Type: application/x-ndjson" \
+  --data-binary "@esql-dataset.ndjson"
+
+<span class="cc"># Elastic Cloud</span>
+curl -u elastic:VOTRE_PASSWORD \
+  -X POST "https://VOTRE_ENDPOINT.es.io:443/_bulk" \
+  -H "Content-Type: application/x-ndjson" \
+  --data-binary "@esql-dataset.ndjson"</pre></div>
+        <div class="box warn">
+          <div class="box-i">⚠️</div>
+          <div class="box-b"><strong>Le <code>@</code> devant le nom de fichier est obligatoire</strong><p>Il indique à curl de lire le contenu du fichier. Sans <code>@</code>, curl enverrait la chaîne littérale au lieu du fichier.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body">
+        <h4>Vérifier l'import</h4>
+        <div class="cw"><div class="ctop"><span>Vérification</span><span class="clang cl-bash">BASH</span></div>
+<pre><span class="cc"># Compter les documents importés (doit retourner 14122)</span>
+curl "http://localhost:9200/esql-*/_count"
+
+<span class="cc"># Voir les index créés avec leur taille</span>
+curl "http://localhost:9200/_cat/indices/esql-*?v&h=index,docs.count,store.size"
+<span class="cc"># esql-employees  120    ...</span>
+<span class="cc"># esql-logs       12538  ...</span>
+<span class="cc"># esql-orders     1421   ...</span>
+<span class="cc"># esql-products   43     ...</span></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Méthode 2 — Logstash</h3>
+  <div class="box info">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>Quand utiliser Logstash ?</strong><p>Quand vous voulez <strong>transformer les données pendant l'import</strong> (enrichir avec GeoIP, Grok, renommer des champs) ou importer un CSV/JSON brut. Pour ce dataset déjà formaté, <strong>curl reste plus simple</strong>.</p></div>
+  </div>
+
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Placer le fichier dans un dossier lisible par Logstash</h4>
+        <div class="cw"><div class="ctop"><span>Terminal</span><span class="clang cl-bash">BASH</span></div>
+<pre><span class="cc"># Linux / Mac</span>
+cp esql-dataset.ndjson /tmp/esql-dataset.ndjson
+chmod 644 /tmp/esql-dataset.ndjson
+
+<span class="cc"># Docker — monter le fichier dans le container</span>
+docker run --rm \
+  -v /chemin/local/esql-dataset.ndjson:/data/esql-dataset.ndjson \
+  logstash:8.x ...</pre></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Créer le fichier pipeline <code>import-esql.conf</code></h4>
+        <div class="cw"><div class="ctop"><span>import-esql.conf</span><span class="clang cl-bash">LOGSTASH</span></div>
+<pre>input {
+  file {
+    path           =&gt; <span class="cs">"/tmp/esql-dataset.ndjson"</span>
+    start_position =&gt; <span class="cs">"beginning"</span>   <span class="cc"># lire depuis le début</span>
+    sincedb_path   =&gt; <span class="cs">"/dev/null"</span>    <span class="cc"># ne pas mémoriser la position</span>
+    codec          =&gt; <span class="cs">"json"</span>         <span class="cc"># chaque ligne est du JSON</span>
+  }
+}
+
+filter {
+  <span class="cc"># Sauter les lignes de métadonnées Bulk (contiennent {"index":...})</span>
+  if [index] {
+    drop { }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts =&gt; [<span class="cs">"http://localhost:9200"</span>]
+    index =&gt; <span class="cs">"%{[_index]}"</span>   <span class="cc"># utilise le champ _index du document</span>
+    <span class="cc"># user     =&gt; "elastic"     # décommenter si auth activée</span>
+    <span class="cc"># password =&gt; "PASSWORD"</span>
+  }
+  stdout { codec =&gt; dots }   <span class="cc"># affiche un point par document importé</span>
+}</pre></div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body">
+        <h4>Lancer Logstash avec ce pipeline</h4>
+        <div class="cw"><div class="ctop"><span>Lancer l'import</span><span class="clang cl-bash">BASH</span></div>
+<pre><span class="cc"># Linux standard</span>
+/usr/share/logstash/bin/logstash -f import-esql.conf
+
+<span class="cc"># macOS avec Homebrew</span>
+logstash -f import-esql.conf
+
+<span class="cc"># Docker one-shot</span>
+docker run --rm \
+  -v $(pwd)/import-esql.conf:/usr/share/logstash/pipeline/logstash.conf \
+  -v /tmp/esql-dataset.ndjson:/tmp/esql-dataset.ndjson \
+  docker.elastic.co/logstash/logstash:8.11.0</pre></div>
+        <div class="box tip">
+          <div class="box-i">💡</div>
+          <div class="box-b"><strong>Quand s'arrêter ?</strong><p>L'input <code>file</code> reste en écoute de nouveaux ajouts. Quand les dots s'arrêtent, appuyez sur <kbd style="background:var(--sf2);border:1px solid var(--border);border-radius:3px;padding:.1rem .4rem;font-family:'Fira Code',monospace;font-size:.8rem">Ctrl+C</kbd>. Vérifiez avec curl que les 14 122 docs sont bien présents.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Méthode 3 — Kibana File Upload (sans terminal)</h3>
+  <div class="kpath"><span class="seg">☰ Menu</span><span class="arr">›</span><span class="seg">Analytics</span><span class="arr">›</span><span class="cur">Machine Learning → Data Visualizer → File</span></div>
+  <p>Glissez-déposez le fichier NDJSON dans l'interface Kibana. Limite : 100 Mo. Notre dataset de 6 Mo passe facilement.</p>
+
+  <div class="box tip">
+    <div class="box-i">✅</div>
+    <div class="box-b"><strong>Récap — quelle méthode choisir ?</strong><p><strong>curl</strong> → Le plus rapide, 1 commande, idéal ici<br><strong>Logstash</strong> → Pour transformer/enrichir les données à l'import<br><strong>Kibana File Upload</strong> → Zéro terminal, idéal pour débutants</p></div>
+  </div>
+
+  <hr class="sep" id="activer">
+  <h2><span class="h2-n" style="background:var(--teal)">3</span> Activer ES|QL dans Kibana</h2>
+  <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Analytics</span><span class="arr">›</span><span class="cur">Discover</span><span class="arr">›</span><span class="seg">Sélectionner "ES|QL" dans le menu de langue</span></div>
+  <div class="box teal">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>Deux façons d'utiliser ES|QL</strong><p>1. <strong>Discover</strong> (barre de langue → ES|QL) — résultats tabulaires, facile pour explorer<br>2. <strong>Dev Tools Console</strong> → <code>POST /_query</code> — pour des pipelines complexes et l'automatisation</p></div>
+  </div>
+  <div class="cw"><div class="ctop"><span>Via l'API REST (Dev Tools Console)</span><span class="clang cl-json">API</span></div>
+<pre><span class="co">POST</span> <span class="cs">/_query</span>
+{
+  <span class="ck">"query"</span>: <span class="cs">"""
+    FROM esql-products
+    | LIMIT 5
+  """</span>
+}</pre></div>
+
+  <h2><span class="h2-n" style="background:var(--teal)">4</span> La syntaxe pipe en un clin d'œil</h2>
+  <div class="pipe-flow">
+    <div><div class="pipe-step source">FROM esql-products</div><div class="pipe-label">Source</div></div>
+    <div class="pipe-arrow">|</div>
+    <div><div class="pipe-step filter">WHERE price > 100</div><div class="pipe-label">Filtre</div></div>
+    <div class="pipe-arrow">|</div>
+    <div><div class="pipe-step agg">STATS avg = AVG(price)</div><div class="pipe-label">Agrégation</div></div>
+    <div class="pipe-arrow">|</div>
+    <div><div class="pipe-step sort">SORT avg DESC</div><div class="pipe-label">Tri</div></div>
+    <div class="pipe-arrow">|</div>
+    <div><div class="pipe-step limit">LIMIT 10</div><div class="pipe-label">Limite</div></div>
+  </div>
+  <p>Chaque <strong>|</strong> passe le résultat au pipe suivant. L'ordre est <strong>toujours FROM → pipes</strong>. Chaque pipe transforme ou filtre les données précédentes.</p>
+
+  <div class="box warn">
+    <div class="box-i">⚠️</div>
+    <div class="box-b"><strong>Règle d'or ES|QL</strong><p>ES|QL opère sur des <strong>lignes de données</strong>, pas des documents imbriqués. Les champs avec des <strong>points</strong> (<code>product.price</code>) sont des chemins vers des valeurs scalaires. Les tableaux (<code>order.items</code>) nécessitent <code>MV_EXPAND</code> pour être traités ligne par ligne.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 1 ═══════════════════ -->
+<div class="section" id="sec-lv1">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(2,132,199,.1);color:var(--lv1);border:1px solid rgba(2,132,199,.25)">⬡ NIVEAU 1 — Débutant</div>
+    <h1 class="hero-title">FROM & LIMIT<br>Vos premières requêtes</h1>
+    <p class="hero-sub">Apprendre à lire des données depuis un index, sélectionner un sous-ensemble de résultats et comprendre la structure de base d'ES|QL.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-title">📖 Concepts clés</div>
+    <div class="concept-body">
+      <strong>FROM</strong> — obligatoire, toujours en premier. Spécifie l'index source. Supporte les wildcards (<code>esql-*</code>).<br>
+      <strong>LIMIT</strong> — optionnel, limite le nombre de lignes retournées. Sans LIMIT, ES|QL retourne 1000 lignes maximum par défaut.<br>
+      <strong>METADATA</strong> — ajoute des champs système comme <code>_id</code> et <code>_index</code> à votre résultat.
+    </div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>Syntaxe FROM</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// Un seul index</span>
+<span class="cp">FROM</span> esql-products
+
+<span class="cc">// Plusieurs index</span>
+<span class="cp">FROM</span> esql-products, esql-orders
+
+<span class="cc">// Pattern wildcard</span>
+<span class="cp">FROM</span> esql-*
+
+<span class="cc">// Avec métadonnées système</span>
+<span class="cp">FROM</span> esql-products METADATA _id, _index
+
+<span class="cc">// FROM + LIMIT (le plus courant pour explorer)</span>
+<span class="cp">FROM</span> esql-products
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">5</span></pre></div>
+
+  <div class="box teal">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>Conseil : toujours commencer par LIMIT</strong><p>Quand vous explorez un nouvel index, ajoutez toujours <code>| LIMIT 10</code> pour voir la structure des données sans charger tout l'index. Examinez les noms des champs et leurs valeurs avant d'écrire votre vraie requête.</p></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv1)">1.1</div>
+      <div class="ex-meta">
+        <h3>Explorer le catalogue produits</h3>
+        <p>Familiarisez-vous avec l'index <code>esql-products</code>.</p>
+        <div class="ex-tags"><span class="ex-tag b-teal">FROM</span><span class="ex-tag b-teal">LIMIT</span><span class="badge b-ok" style="font-size:.6rem">facile</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Affichez les 10 premiers produits du catalogue.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">10</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Listez les 3 premières commandes de la table <code>esql-orders</code>.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">3</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q3 — Requête sur TOUS les index esql- en même temps. Combien de colonnes voyez-vous ?</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-*
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">5</span>
+<span class="cc">// Vous verrez toutes les colonnes de tous les index — beaucoup de nulls normaux</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🌟 Bonus — Affichez 1 seul document avec ses métadonnées <code>_id</code> et <code>_index</code>.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products METADATA _id, _index
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">1</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 2 ═══════════════════ -->
+<div class="section" id="sec-lv2">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(22,163,74,.1);color:var(--lv2);border:1px solid rgba(22,163,74,.25)">⬡ NIVEAU 2 — Débutant</div>
+    <h1 class="hero-title">WHERE — Filtrer<br>vos résultats</h1>
+    <p class="hero-sub">Apprendre à filtrer les données avec des conditions simples et composées : égalité, comparaison, LIKE, IN, IS NULL, AND, OR, NOT.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-title">📖 Opérateurs WHERE</div>
+    <div class="concept-body">
+      <strong>==, !=</strong> — égalité/différence exacte &nbsp;|&nbsp; <strong>&gt;, &lt;, &gt;=, &lt;=</strong> — comparaison numérique<br>
+      <strong>LIKE "pattern"</strong> — wildcard <code>*</code> (n chars) et <code>?</code> (1 char) &nbsp;|&nbsp; <strong>RLIKE "regex"</strong> — expression régulière<br>
+      <strong>IN (v1, v2, ...)</strong> — appartient à la liste &nbsp;|&nbsp; <strong>IS NULL / IS NOT NULL</strong> — champ absent/présent<br>
+      <strong>AND, OR, NOT</strong> — logique booléenne, groupement avec parenthèses
+    </div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>WHERE — Exemples de base</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// Égalité</span>
+<span class="cp">FROM</span> esql-products | <span class="cp">WHERE</span> <span class="ck">product.category</span> == <span class="cs">"Électronique"</span>
+
+<span class="cc">// Comparaison numérique</span>
+<span class="cp">FROM</span> esql-products | <span class="cp">WHERE</span> <span class="ck">product.price</span> > <span class="cn">500</span>
+
+<span class="cc">// Plage</span>
+<span class="cp">FROM</span> esql-products | <span class="cp">WHERE</span> <span class="ck">product.price</span> >= <span class="cn">100</span> <span class="co">AND</span> <span class="ck">product.price</span> <= <span class="cn">500</span>
+
+<span class="cc">// LIKE — wildcard</span>
+<span class="cp">FROM</span> esql-products | <span class="cp">WHERE</span> <span class="ck">product.name</span> <span class="co">LIKE</span> <span class="cs">"*Pro*"</span>
+
+<span class="cc">// IN — liste</span>
+<span class="cp">FROM</span> esql-orders | <span class="cp">WHERE</span> <span class="ck">customer.country</span> <span class="co">IN</span> (<span class="cs">"France"</span>, <span class="cs">"Belgique"</span>)
+
+<span class="cc">// IS NULL</span>
+<span class="cp">FROM</span> esql-products | <span class="cp">WHERE</span> <span class="ck">product.brand</span> <span class="co">IS NULL</span>
+
+<span class="cc">// NOT</span>
+<span class="cp">FROM</span> esql-orders | <span class="cp">WHERE</span> <span class="ck">order.status</span> != <span class="cs">"cancelled"</span>
+
+<span class="cc">// Combinaison complexe</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">WHERE</span> <span class="ck">product.category</span> == <span class="cs">"Électronique"</span>
+      <span class="co">AND</span> <span class="ck">product.price</span> > <span class="cn">300</span>
+      <span class="co">AND NOT</span> <span class="ck">product.name</span> <span class="co">LIKE</span> <span class="cs">"*Samsung*"</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span></pre></div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv2)">2.1</div>
+      <div class="ex-meta">
+        <h3>Filtrer les produits</h3>
+        <p>Utilisez WHERE sur l'index <code>esql-products</code>.</p>
+        <div class="ex-tags"><span class="ex-tag b-teal">WHERE</span><span class="ex-tag b-teal">AND/OR</span><span class="badge b-ok" style="font-size:.6rem">facile</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Trouvez tous les produits de la catégorie "Sport".</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products
+  | <span class="cp">WHERE</span> <span class="ck">product.category</span> == <span class="cs">"Sport"</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Affichez les produits avec une note ≥ 4.5 ET un stock > 100.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products
+  | <span class="cp">WHERE</span> <span class="ck">product.rating</span> >= <span class="cn">4.5</span> <span class="co">AND</span> <span class="ck">product.stock</span> > <span class="cn">100</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q3 — Trouvez tous les produits dont le nom contient "Pro" ou "Air".</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products
+  | <span class="cp">WHERE</span> <span class="ck">product.name</span> <span class="co">LIKE</span> <span class="cs">"*Pro*"</span> <span class="co">OR</span> <span class="ck">product.name</span> <span class="co">LIKE</span> <span class="cs">"*Air*"</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q4 — Affichez les commandes des pays Allemagne, Italie et Portugal en statut "completed".</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  | <span class="cp">WHERE</span> <span class="ck">customer.country</span> <span class="co">IN</span> (<span class="cs">"Allemagne"</span>, <span class="cs">"Italie"</span>, <span class="cs">"Portugal"</span>)
+      <span class="co">AND</span> <span class="ck">order.status</span> == <span class="cs">"completed"</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🌟 Bonus — Trouvez les logs ERROR ou CRITICAL sur le service "payment-service" avec une durée > 5 secondes.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-logs
+  | <span class="cp">WHERE</span> <span class="ck">log.level</span> <span class="co">IN</span> (<span class="cs">"ERROR"</span>, <span class="cs">"CRITICAL"</span>)
+      <span class="co">AND</span> <span class="ck">log.service</span> == <span class="cs">"payment-service"</span>
+      <span class="co">AND</span> <span class="ck">http.duration_ms</span> > <span class="cn">5000</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 3 ═══════════════════ -->
+<div class="section" id="sec-lv3">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(217,119,6,.1);color:var(--lv3);border:1px solid rgba(217,119,6,.25)">⬡ NIVEAU 3 — Débutant+</div>
+    <h1 class="hero-title">KEEP, DROP, RENAME<br>Gérer les colonnes</h1>
+    <p class="hero-sub">Sélectionner uniquement les colonnes nécessaires, en supprimer, les renommer pour des résultats propres et lisibles.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-title">📖 Concepts clés</div>
+    <div class="concept-body">
+      <strong>KEEP</strong> — conserve uniquement les colonnes listées (comme SELECT en SQL)<br>
+      <strong>DROP</strong> — supprime les colonnes listées, garde toutes les autres<br>
+      <strong>RENAME a AS b</strong> — renomme une colonne (plusieurs possibles : <code>RENAME a AS b, c AS d</code>)<br>
+      Les wildcards fonctionnent dans KEEP et DROP : <code>KEEP product.*</code>
+    </div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>KEEP, DROP, RENAME — exemples</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// KEEP — sélectionner des colonnes spécifiques</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.category</span>, <span class="ck">product.price</span>
+  | <span class="cp">LIMIT</span> <span class="cn">5</span>
+
+<span class="cc">// KEEP avec wildcard</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">KEEP</span> <span class="ck">product.*</span>   <span class="cc">// tous les champs "product."</span>
+  | <span class="cp">LIMIT</span> <span class="cn">5</span>
+
+<span class="cc">// DROP — supprimer des colonnes</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">DROP</span> <span class="ck">product.cost</span>, <span class="ck">product.weight_g</span>, <span class="ck">@timestamp</span>
+  | <span class="cp">LIMIT</span> <span class="cn">5</span>
+
+<span class="cc">// RENAME — renommer pour plus de clarté</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">RENAME</span> <span class="ck">product.name</span> <span class="co">AS</span> <span class="cg">nom_produit</span>,
+           <span class="ck">product.price</span> <span class="co">AS</span> <span class="cg">prix_eur</span>,
+           <span class="ck">product.category</span> <span class="co">AS</span> <span class="cg">categorie</span>
+  | <span class="cp">KEEP</span> <span class="cg">nom_produit</span>, <span class="cg">categorie</span>, <span class="cg">prix_eur</span>
+  | <span class="cp">LIMIT</span> <span class="cn">5</span></pre></div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv3)">3.1</div>
+      <div class="ex-meta">
+        <h3>Nettoyer et formater les résultats</h3>
+        <div class="ex-tags"><span class="ex-tag b-teal">KEEP</span><span class="ex-tag b-teal">DROP</span><span class="ex-tag b-teal">RENAME</span><span class="badge b-ok" style="font-size:.6rem">facile</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Affichez uniquement le nom, la marque, le prix et la note des produits Électronique.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products
+  | <span class="cp">WHERE</span> <span class="ck">product.category</span> == <span class="cs">"Électronique"</span>
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.brand</span>, <span class="ck">product.price</span>, <span class="ck">product.rating</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Sur les commandes, supprimez les colonnes techniques (<code>@timestamp</code>, <code>order.items</code>) et renommez <code>order.total_eur</code> en <code>montant</code> et <code>customer.country</code> en <code>pays</code>.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  | <span class="cp">DROP</span> <span class="ck">@timestamp</span>, <span class="ck">order.items</span>
+  | <span class="cp">RENAME</span> <span class="ck">order.total_eur</span> <span class="co">AS</span> <span class="cg">montant</span>,
+           <span class="ck">customer.country</span> <span class="co">AS</span> <span class="cg">pays</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🌟 Bonus — Créez un rapport lisible des employés avec uniquement prénom, nom, département, poste et salaire — colonnes en français.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-employees
+  | <span class="cp">RENAME</span>
+      <span class="ck">employee.first_name</span>  <span class="co">AS</span> <span class="cg">prenom</span>,
+      <span class="ck">employee.last_name</span>   <span class="co">AS</span> <span class="cg">nom</span>,
+      <span class="ck">employee.department</span>  <span class="co">AS</span> <span class="cg">departement</span>,
+      <span class="ck">employee.position</span>    <span class="co">AS</span> <span class="cg">poste</span>,
+      <span class="ck">employee.salary_eur</span>  <span class="co">AS</span> <span class="cg">salaire</span>
+  | <span class="cp">KEEP</span> <span class="cg">prenom</span>, <span class="cg">nom</span>, <span class="cg">departement</span>, <span class="cg">poste</span>, <span class="cg">salaire</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 4 ═══════════════════ -->
+<div class="section" id="sec-lv4">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(147,51,234,.1);color:var(--lv4);border:1px solid rgba(147,51,234,.25)">⬡ NIVEAU 4 — Intermédiaire</div>
+    <h1 class="hero-title">SORT — Trier<br>vos résultats</h1>
+    <p class="hero-sub">Trier sur un ou plusieurs champs, dans l'ordre croissant ou décroissant, gérer les valeurs nulles dans le tri.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-title">📖 Concepts clés</div>
+    <div class="concept-body">
+      <strong>SORT field ASC</strong> — croissant (défaut si non précisé)<br>
+      <strong>SORT field DESC</strong> — décroissant<br>
+      <strong>SORT a ASC, b DESC</strong> — tri multiple (priorité à gauche)<br>
+      <strong>NULLS FIRST / NULLS LAST</strong> — contrôle la position des valeurs nulles dans le tri
+    </div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>SORT — exemples</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// Tri simple croissant</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">SORT</span> <span class="ck">product.price</span> <span class="co">ASC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">5</span>
+
+<span class="cc">// Tri décroissant — les plus chers en premier</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">SORT</span> <span class="ck">product.price</span> <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">5</span>
+
+<span class="cc">// Tri multiple : par catégorie puis par prix décroissant</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">SORT</span> <span class="ck">product.category</span> <span class="co">ASC</span>, <span class="ck">product.price</span> <span class="co">DESC</span>
+  | <span class="cp">KEEP</span> <span class="ck">product.category</span>, <span class="ck">product.name</span>, <span class="ck">product.price</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span>
+
+<span class="cc">// NULLS LAST — mettre les null à la fin</span>
+<span class="cp">FROM</span> esql-employees
+  | <span class="cp">SORT</span> <span class="ck">employee.salary_eur</span> <span class="co">DESC</span> NULLS LAST
+  | <span class="cp">LIMIT</span> <span class="cn">10</span>
+
+<span class="cc">// Top 3 produits les mieux notés par catégorie</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">SORT</span> <span class="ck">product.rating</span> <span class="co">DESC</span>
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.category</span>, <span class="ck">product.rating</span>
+  | <span class="cp">LIMIT</span> <span class="cn">3</span></pre></div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv4)">4.1</div>
+      <div class="ex-meta"><h3>Trier des données métier</h3>
+        <div class="ex-tags"><span class="ex-tag b-teal">SORT</span><span class="badge b-warn" style="font-size:.6rem">intermédiaire</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Affichez le Top 5 des commandes les plus chères toutes catégories confondues.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  | <span class="cp">SORT</span> <span class="ck">order.total_eur</span> <span class="co">DESC</span>
+  | <span class="cp">KEEP</span> <span class="ck">order.id</span>, <span class="ck">order.total_eur</span>, <span class="ck">customer.country</span>, <span class="ck">order.status</span>
+  | <span class="cp">LIMIT</span> <span class="cn">5</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Classez les employés par département (A→Z) puis par salaire décroissant au sein du même département.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-employees
+  | <span class="cp">SORT</span> <span class="ck">employee.department</span> <span class="co">ASC</span>, <span class="ck">employee.salary_eur</span> <span class="co">DESC</span>
+  | <span class="cp">KEEP</span> <span class="ck">employee.department</span>, <span class="ck">employee.first_name</span>,
+         <span class="ck">employee.last_name</span>, <span class="ck">employee.salary_eur</span>
+  | <span class="cp">LIMIT</span> <span class="cn">30</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🌟 Bonus — Trouvez les 10 logs avec la plus longue durée de réponse (les goulots d'étranglement).</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-logs
+  | <span class="cp">SORT</span> <span class="ck">http.duration_ms</span> <span class="co">DESC</span>
+  | <span class="cp">KEEP</span> <span class="ck">log.service</span>, <span class="ck">http.endpoint</span>,
+         <span class="ck">http.duration_ms</span>, <span class="ck">log.level</span>, <span class="ck">server.host</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 5 ═══════════════════ -->
+<div class="section" id="sec-lv5">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(190,24,93,.1);color:var(--lv5);border:1px solid rgba(190,24,93,.25)">⬡ NIVEAU 5 — Intermédiaire</div>
+    <h1 class="hero-title">STATS — Agréger<br>et analyser</h1>
+    <p class="hero-sub">Le pipe le plus puissant. Calculer des statistiques : comptes, moyennes, sommes, min/max, et grouper par valeurs.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-title">📖 Fonctions d'agrégation STATS</div>
+    <div class="concept-body">
+      <strong>COUNT(*)</strong> — nombre de lignes &nbsp;|&nbsp; <strong>COUNT(field)</strong> — non-null &nbsp;|&nbsp; <strong>COUNT_DISTINCT(field)</strong> — valeurs uniques<br>
+      <strong>SUM(field)</strong> — somme &nbsp;|&nbsp; <strong>AVG(field)</strong> — moyenne &nbsp;|&nbsp; <strong>MIN/MAX(field)</strong> — extremes<br>
+      <strong>MEDIAN(field)</strong> — médiane &nbsp;|&nbsp; <strong>PERCENTILE(field, n)</strong> — ex: PERCENTILE(price, 95)<br>
+      <strong>VALUES(field)</strong> — liste toutes les valeurs distinctes du groupe<br>
+      <strong>BY field1, field2</strong> — grouper (facultatif — sans BY → agrégation globale)
+    </div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>STATS — du simple au complexe</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// Compter tous les produits</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">STATS</span> <span class="cg">total</span> = <span class="cf">COUNT</span>(*)
+
+<span class="cc">// Compter + moyenne par catégorie</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">STATS</span>
+      <span class="cg">nb_produits</span>  = <span class="cf">COUNT</span>(*),
+      <span class="cg">prix_moyen</span>   = <span class="cf">AVG</span>(<span class="ck">product.price</span>),
+      <span class="cg">prix_max</span>     = <span class="cf">MAX</span>(<span class="ck">product.price</span>),
+      <span class="cg">stock_total</span>  = <span class="cf">SUM</span>(<span class="ck">product.stock</span>)
+      <span class="co">BY</span> <span class="ck">product.category</span>
+  | <span class="cp">SORT</span> <span class="cg">prix_moyen</span> <span class="co">DESC</span>
+
+<span class="cc">// Nombre de clients uniques par pays</span>
+<span class="cp">FROM</span> esql-orders
+  | <span class="cp">STATS</span>
+      <span class="cg">nb_commandes</span>      = <span class="cf">COUNT</span>(*),
+      <span class="cg">clients_uniques</span>   = <span class="cf">COUNT_DISTINCT</span>(<span class="ck">customer.id</span>),
+      <span class="cg">ca_total</span>          = <span class="cf">SUM</span>(<span class="ck">order.total_eur</span>),
+      <span class="cg">panier_moyen</span>      = <span class="cf">AVG</span>(<span class="ck">order.total_eur</span>)
+      <span class="co">BY</span> <span class="ck">customer.country</span>
+  | <span class="cp">SORT</span> <span class="cg">ca_total</span> <span class="co">DESC</span>
+
+<span class="cc">// Taux d'erreur par service</span>
+<span class="cp">FROM</span> esql-logs
+  | <span class="cp">STATS</span>
+      <span class="cg">nb_total</span>  = <span class="cf">COUNT</span>(*),
+      <span class="cg">nb_errors</span> = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(<span class="ck">log.level</span> <span class="co">IN</span> (<span class="cs">"ERROR"</span>, <span class="cs">"CRITICAL"</span>), <span class="cn">1</span>, <span class="co">null</span>)),
+      <span class="cg">duree_moy</span> = <span class="cf">AVG</span>(<span class="ck">http.duration_ms</span>)
+      <span class="co">BY</span> <span class="ck">log.service</span>
+  | <span class="cp">SORT</span> <span class="cg">nb_errors</span> <span class="co">DESC</span></pre></div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv5)">5.1</div>
+      <div class="ex-meta"><h3>Analytics e-commerce</h3>
+        <div class="ex-tags"><span class="ex-tag b-teal">STATS</span><span class="ex-tag b-teal">BY</span><span class="badge b-warn" style="font-size:.6rem">intermédiaire</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Calculez le CA total, le nombre de commandes et le panier moyen par mode de paiement.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  | <span class="cp">WHERE</span> <span class="ck">order.status</span> == <span class="cs">"completed"</span>
+  | <span class="cp">STATS</span>
+      nb_commandes  = <span class="cf">COUNT</span>(*),
+      ca_total      = <span class="cf">SUM</span>(<span class="ck">order.total_eur</span>),
+      panier_moyen  = <span class="cf">AVG</span>(<span class="ck">order.total_eur</span>),
+      panier_max    = <span class="cf">MAX</span>(<span class="ck">order.total_eur</span>)
+      <span class="co">BY</span> <span class="ck">order.payment_method</span>
+  | <span class="cp">SORT</span> ca_total <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Quel département a le salaire moyen le plus élevé ? Affichez aussi le min, max et le nombre d'employés.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-employees
+  | <span class="cp">STATS</span>
+      nb_employes   = <span class="cf">COUNT</span>(*),
+      salaire_moy   = <span class="cf">AVG</span>(<span class="ck">employee.salary_eur</span>),
+      salaire_min   = <span class="cf">MIN</span>(<span class="ck">employee.salary_eur</span>),
+      salaire_max   = <span class="cf">MAX</span>(<span class="ck">employee.salary_eur</span>)
+      <span class="co">BY</span> <span class="ck">employee.department</span>
+  | <span class="cp">SORT</span> salaire_moy <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q3 — Pour chaque niveau de log, comptez les occurrences et la durée médiane de réponse.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-logs
+  | <span class="cp">STATS</span>
+      nb          = <span class="cf">COUNT</span>(*),
+      duree_med   = <span class="cf">MEDIAN</span>(<span class="ck">http.duration_ms</span>),
+      duree_p99   = <span class="cf">PERCENTILE</span>(<span class="ck">http.duration_ms</span>, <span class="cn">99</span>)
+      <span class="co">BY</span> <span class="ck">log.level</span>
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🌟 Bonus — Groupez par pays ET par statut de commande. Quels pays ont le plus de commandes annulées ?</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> <span class="ck">customer.country</span>, <span class="ck">order.status</span>
+  | <span class="cp">WHERE</span> <span class="ck">order.status</span> == <span class="cs">"cancelled"</span>
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 6 ═══════════════════ -->
+<div class="section" id="sec-lv6">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(15,118,110,.1);color:var(--lv6);border:1px solid rgba(15,118,110,.25)">⬡ NIVEAU 6 — Avancé</div>
+    <h1 class="hero-title">EVAL — Créer<br>des colonnes calculées</h1>
+    <p class="hero-sub">Créer de nouveaux champs à partir de calculs, de fonctions mathématiques, de manipulations de chaînes et de dates.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-title">📖 Concepts clés EVAL</div>
+    <div class="concept-body">
+      <strong>EVAL</strong> crée ou remplace une colonne avec une expression.<br>
+      Opérateurs : <code>+, -, *, /</code> — math standard<br>
+      <strong>ROUND(n, decimales)</strong> — arrondi &nbsp;|&nbsp; <strong>ABS(n)</strong> — valeur absolue &nbsp;|&nbsp; <strong>FLOOR/CEIL(n)</strong><br>
+      <strong>LENGTH(str)</strong> — longueur &nbsp;|&nbsp; <strong>UPPER/LOWER(str)</strong> &nbsp;|&nbsp; <strong>CONCAT(a, b)</strong> — concaténer<br>
+      <strong>DATE_TRUNC(1 day, field)</strong> — tronquer une date &nbsp;|&nbsp; <strong>DATE_EXTRACT("HOUR_OF_DAY", field)</strong><br>
+      On peut chaîner plusieurs EVAL ou les combiner dans un seul.
+    </div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>EVAL — exemples progressifs</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// Calcul de marge en valeur absolue</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">EVAL</span>
+      <span class="cg">marge_eur</span>  = <span class="ck">product.price</span> - <span class="ck">product.cost</span>,
+      <span class="cg">marge_pct</span>  = <span class="cf">ROUND</span>((<span class="ck">product.price</span> - <span class="ck">product.cost</span>) / <span class="ck">product.price</span> * <span class="cn">100</span>, <span class="cn">1</span>)
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.price</span>, <span class="cg">marge_eur</span>, <span class="cg">marge_pct</span>
+  | <span class="cp">SORT</span> <span class="cg">marge_pct</span> <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span>
+
+<span class="cc">// Valeur totale du stock</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">EVAL</span> <span class="cg">valeur_stock</span> = <span class="cf">ROUND</span>(<span class="ck">product.cost</span> * <span class="ck">product.stock</span>, <span class="cn">2</span>)
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.stock</span>, <span class="ck">product.cost</span>, <span class="cg">valeur_stock</span>
+  | <span class="cp">SORT</span> <span class="cg">valeur_stock</span> <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span>
+
+<span class="cc">// Manipulation de chaînes</span>
+<span class="cp">FROM</span> esql-employees
+  | <span class="cp">EVAL</span>
+      <span class="cg">nom_complet</span>    = <span class="cf">CONCAT</span>(<span class="ck">employee.first_name</span>, <span class="cs">" "</span>, <span class="ck">employee.last_name</span>),
+      <span class="cg">anciennete_ans</span> = <span class="cn">2024</span> - <span class="ck">employee.hire_year</span>,
+      <span class="cg">salaire_mensuel</span>= <span class="cf">ROUND</span>(<span class="ck">employee.salary_eur</span> / <span class="cn">12</span>, <span class="cn">0</span>)
+  | <span class="cp">KEEP</span> <span class="cg">nom_complet</span>, <span class="ck">employee.department</span>,
+         <span class="cg">anciennete_ans</span>, <span class="cg">salaire_mensuel</span>
+  | <span class="cp">SORT</span> <span class="cg">anciennete_ans</span> <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span>
+
+<span class="cc">// Extraction d'heure depuis timestamp</span>
+<span class="cp">FROM</span> esql-orders
+  | <span class="cp">EVAL</span>
+      <span class="cg">heure_commande</span> = <span class="cf">DATE_EXTRACT</span>(<span class="cs">"HOUR_OF_DAY"</span>, <span class="ck">order.date</span>),
+      <span class="cg">jour_semaine</span>   = <span class="cf">DATE_EXTRACT</span>(<span class="cs">"DAY_OF_WEEK"</span>, <span class="ck">order.date</span>)
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> <span class="cg">heure_commande</span>
+  | <span class="cp">SORT</span> <span class="cg">heure_commande</span> <span class="co">ASC</span></pre></div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv6)">6.1</div>
+      <div class="ex-meta"><h3>Colonnes calculées avancées</h3>
+        <div class="ex-tags"><span class="ex-tag b-teal">EVAL</span><span class="ex-tag b-teal">ROUND</span><span class="ex-tag b-teal">CONCAT</span><span class="badge b-warn" style="font-size:.6rem">avancé</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Calculez le prix TTC (TVA 20%) de chaque produit. Affichez nom, prix HT et prix TTC arrondi à 2 décimales.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products
+  | <span class="cp">EVAL</span>
+      prix_ht  = <span class="ck">product.price</span>,
+      prix_ttc = <span class="cf">ROUND</span>(<span class="ck">product.price</span> * <span class="cn">1.20</span>, <span class="cn">2</span>)
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.category</span>, prix_ht, prix_ttc
+  | <span class="cp">SORT</span> prix_ttc <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">15</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Calculez l'ancienneté de chaque employé (2024 - hire_year) et son salaire au quotidien. Affichez nom complet, ancienneté et salaire/jour.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-employees
+  | <span class="cp">EVAL</span>
+      nom_complet     = <span class="cf">CONCAT</span>(<span class="ck">employee.first_name</span>, <span class="cs">" "</span>, <span class="ck">employee.last_name</span>),
+      anciennete      = <span class="cn">2024</span> - <span class="ck">employee.hire_year</span>,
+      salaire_jour    = <span class="cf">ROUND</span>(<span class="ck">employee.salary_eur</span> / <span class="cn">260</span>, <span class="cn">2</span>)
+  | <span class="cp">KEEP</span> nom_complet, <span class="ck">employee.department</span>, anciennete, salaire_jour
+  | <span class="cp">SORT</span> anciennete <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">15</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🌟 Bonus — Analysez les commandes par heure de la journée : combien de commandes par heure et quel CA moyen ? Trouvez l'heure de pointe.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  | <span class="cp">EVAL</span> heure = <span class="cf">DATE_EXTRACT</span>(<span class="cs">"HOUR_OF_DAY"</span>, <span class="ck">order.date</span>)
+  | <span class="cp">STATS</span>
+      nb_commandes = <span class="cf">COUNT</span>(*),
+      ca_moyen     = <span class="cf">ROUND</span>(<span class="cf">AVG</span>(<span class="ck">order.total_eur</span>), <span class="cn">2</span>)
+      <span class="co">BY</span> heure
+  | <span class="cp">SORT</span> nb_commandes <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">24</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 7 ═══════════════════ -->
+<div class="section" id="sec-lv7">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(29,78,216,.1);color:var(--lv7);border:1px solid rgba(29,78,216,.25)">⬡ NIVEAU 7 — Avancé</div>
+    <h1 class="hero-title">CASE — Logique<br>conditionnelle</h1>
+    <p class="hero-sub">CASE permet d'ajouter de la logique conditionnelle puissante — classification, étiquetage, scoring — directement dans votre requête ES|QL.</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-title">📖 Syntaxe CASE</div>
+    <div class="concept-body">
+      <code>CASE(condition1, valeur1, condition2, valeur2, ..., valeur_defaut)</code><br>
+      La première condition vraie gagne. La dernière valeur sans condition est le défaut (sinon null).<br>
+      CASE peut être utilisé dans <strong>EVAL</strong> et dans <strong>STATS</strong> (pour compter sous conditions).
+    </div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>CASE — du simple au complexe</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// Classification prix</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">EVAL</span> gamme = <span class="cf">CASE</span>(
+      <span class="ck">product.price</span> < <span class="cn">50</span>,   <span class="cs">"Entrée de gamme"</span>,
+      <span class="ck">product.price</span> < <span class="cn">200</span>,  <span class="cs">"Milieu de gamme"</span>,
+      <span class="ck">product.price</span> < <span class="cn">500</span>,  <span class="cs">"Premium"</span>,
+      <span class="cs">"Luxe"</span>
+    )
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.price</span>, gamme
+  | <span class="cp">SORT</span> <span class="ck">product.price</span> <span class="co">ASC</span>
+
+<span class="cc">// Score de performance log</span>
+<span class="cp">FROM</span> esql-logs
+  | <span class="cp">EVAL</span> sla_status = <span class="cf">CASE</span>(
+      <span class="ck">http.duration_ms</span> <= <span class="cn">200</span>,   <span class="cs">"✅ Rapide"</span>,
+      <span class="ck">http.duration_ms</span> <= <span class="cn">1000</span>,  <span class="cs">"⚠️ Acceptable"</span>,
+      <span class="ck">http.duration_ms</span> <= <span class="cn">5000</span>,  <span class="cs">"🔴 Lent"</span>,
+      <span class="cs">"💀 Critique"</span>
+    )
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> sla_status
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span>
+
+<span class="cc">// CASE dans STATS — compter selon condition</span>
+<span class="cp">FROM</span> esql-orders
+  | <span class="cp">STATS</span>
+      total           = <span class="cf">COUNT</span>(*),
+      nb_gros_paniers = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(<span class="ck">order.total_eur</span> > <span class="cn">200</span>, <span class="cn">1</span>, <span class="co">null</span>)),
+      nb_petit_frais  = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(<span class="ck">order.shipping_eur</span> == <span class="cn">0</span>, <span class="cn">1</span>, <span class="co">null</span>))
+      <span class="co">BY</span> <span class="ck">customer.country</span>
+  | <span class="cp">SORT</span> total <span class="co">DESC</span></pre></div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv7)">7.1</div>
+      <div class="ex-meta"><h3>Scoring et classification</h3>
+        <div class="ex-tags"><span class="ex-tag b-teal">CASE</span><span class="ex-tag b-teal">EVAL</span><span class="badge b-warn" style="font-size:.6rem">avancé</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Classifiez chaque employé en "Junior" (&lt;2 ans), "Intermédiaire" (2-5 ans), "Senior" (5-10 ans), "Expert" (>10 ans) selon leur ancienneté.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-employees
+  | <span class="cp">EVAL</span>
+      anciennete = <span class="cn">2024</span> - <span class="ck">employee.hire_year</span>,
+      niveau = <span class="cf">CASE</span>(
+        <span class="cn">2024</span> - <span class="ck">employee.hire_year</span> < <span class="cn">2</span>,  <span class="cs">"Junior"</span>,
+        <span class="cn">2024</span> - <span class="ck">employee.hire_year</span> < <span class="cn">5</span>,  <span class="cs">"Intermédiaire"</span>,
+        <span class="cn">2024</span> - <span class="ck">employee.hire_year</span> < <span class="cn">10</span>, <span class="cs">"Senior"</span>,
+        <span class="cs">"Expert"</span>
+      )
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*), salaire_moy = <span class="cf">AVG</span>(<span class="ck">employee.salary_eur</span>) <span class="co">BY</span> niveau
+  | <span class="cp">SORT</span> salaire_moy <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Attribuez un label de priorité aux logs : "P0-Critique", "P1-Élevée", "P2-Moyenne", "P3-Basse" selon leur niveau. Comptez chaque priorité par service.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-logs
+  | <span class="cp">EVAL</span> priorite = <span class="cf">CASE</span>(
+      <span class="ck">log.level</span> == <span class="cs">"CRITICAL"</span>, <span class="cs">"P0-Critique"</span>,
+      <span class="ck">log.level</span> == <span class="cs">"ERROR"</span>,    <span class="cs">"P1-Élevée"</span>,
+      <span class="ck">log.level</span> == <span class="cs">"WARN"</span>,     <span class="cs">"P2-Moyenne"</span>,
+      <span class="cs">"P3-Basse"</span>
+    )
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> priorite, <span class="ck">log.service</span>
+  | <span class="cp">SORT</span> priorite <span class="co">ASC</span>, nb <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🌟 Bonus — Créez un "score produit" combinant note (50%) et marge (50%) normalisés. Affichez le top 10.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products
+  | <span class="cp">EVAL</span>
+      note_norm   = <span class="ck">product.rating</span> / <span class="cn">5.0</span> * <span class="cn">50</span>,
+      marge_norm  = <span class="ck">product.margin_pct</span> / <span class="cn">100.0</span> * <span class="cn">50</span>,
+      score       = <span class="cf">ROUND</span>((<span class="ck">product.rating</span> / <span class="cn">5.0</span> * <span class="cn">50</span>) + (<span class="ck">product.margin_pct</span> / <span class="cn">100.0</span> * <span class="cn">50</span>), <span class="cn">1</span>),
+      segment = <span class="cf">CASE</span>(
+        score >= <span class="cn">75</span>, <span class="cs">"⭐ Star"</span>,
+        score >= <span class="cn">60</span>, <span class="cs">"✅ Bon"</span>,
+        score >= <span class="cn">45</span>, <span class="cs">"⚠️ Moyen"</span>,
+        <span class="cs">"❌ Faible"</span>
+      )
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.category</span>, score, segment
+  | <span class="cp">SORT</span> score <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 8 ═══════════════════ -->
+<div class="section" id="sec-lv8">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(124,58,237,.1);color:#7e22ce;border:1px solid rgba(124,58,237,.25)">⬡ NIVEAU 8 — Expert</div>
+    <h1 class="hero-title">Fonctions avancées<br>Dates, MV, String</h1>
+    <p class="hero-sub">Maîtriser les fonctions date (DATE_TRUNC, DATE_DIFF), les champs multi-valués (MV_EXPAND, MV_COUNT), et les manipulations de chaînes avancées.</p>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>Fonctions avancées — panorama</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// ─── DATES ───────────────────────────────────────────────────</span>
+<span class="cc">// Tronquer à l'heure — timeline horaire des commandes</span>
+<span class="cp">FROM</span> esql-orders
+  | <span class="cp">EVAL</span> heure = <span class="cf">DATE_TRUNC</span>(<span class="cn">1</span> hour, <span class="ck">order.date</span>)
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*), ca = <span class="cf">SUM</span>(<span class="ck">order.total_eur</span>) <span class="co">BY</span> heure
+  | <span class="cp">SORT</span> heure <span class="co">ASC</span>
+
+<span class="cc">// Tronquer au jour</span>
+<span class="cp">FROM</span> esql-orders
+  | <span class="cp">EVAL</span> jour = <span class="cf">DATE_TRUNC</span>(<span class="cn">1</span> day, <span class="ck">order.date</span>)
+  | <span class="cp">STATS</span> ca_jour = <span class="cf">SUM</span>(<span class="ck">order.total_eur</span>) <span class="co">BY</span> jour
+  | <span class="cp">SORT</span> jour <span class="co">ASC</span>
+
+<span class="cc">// ─── CHAMPS MULTI-VALUÉS ────────────────────────────────────</span>
+<span class="cc">// MV_COUNT — combien de tags a chaque produit ?</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">EVAL</span> nb_tags = <span class="cf">MV_COUNT</span>(<span class="ck">product.tags</span>)
+  | <span class="cp">KEEP</span> <span class="ck">product.name</span>, <span class="ck">product.tags</span>, nb_tags
+  | <span class="cp">SORT</span> nb_tags <span class="co">DESC</span>
+
+<span class="cc">// MV_EXPAND — une ligne par tag</span>
+<span class="cp">FROM</span> esql-products
+  | <span class="cp">MV_EXPAND</span> <span class="ck">product.tags</span>
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> <span class="ck">product.tags</span>
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span>
+
+<span class="cc">// ─── CHAÎNES ────────────────────────────────────────────────</span>
+<span class="cc">// SPLIT — séparer une chaîne en tableau</span>
+<span class="cp">FROM</span> esql-employees
+  | <span class="cp">EVAL</span> initiales = <span class="cf">CONCAT</span>(
+      <span class="cf">SUBSTRING</span>(<span class="ck">employee.first_name</span>, <span class="cn">0</span>, <span class="cn">1</span>), <span class="cs">"."</span>,
+      <span class="cf">SUBSTRING</span>(<span class="ck">employee.last_name</span>, <span class="cn">0</span>, <span class="cn">1</span>), <span class="cs">"."</span>
+    )
+  | <span class="cp">KEEP</span> initiales, <span class="ck">employee.department</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span></pre></div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv8)" style="background:#7e22ce">8.1</div>
+      <div class="ex-meta"><h3>Analyse temporelle et MV</h3>
+        <div class="ex-tags"><span class="ex-tag b-teal">DATE_TRUNC</span><span class="ex-tag b-teal">MV_EXPAND</span><span class="badge b-danger" style="font-size:.6rem">expert</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Calculez le CA quotidien sur les 30 jours de données. Affichez jour et montant total.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  | <span class="cp">WHERE</span> <span class="ck">order.status</span> == <span class="cs">"completed"</span>
+  | <span class="cp">EVAL</span> jour = <span class="cf">DATE_TRUNC</span>(<span class="cn">1</span> day, <span class="ck">order.date</span>)
+  | <span class="cp">STATS</span>
+      nb_commandes = <span class="cf">COUNT</span>(*),
+      ca_jour      = <span class="cf">ROUND</span>(<span class="cf">SUM</span>(<span class="ck">order.total_eur</span>), <span class="cn">2</span>)
+      <span class="co">BY</span> jour
+  | <span class="cp">SORT</span> jour <span class="co">ASC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Comptez combien de produits portent chaque tag. Quel tag est le plus commun ?</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-products
+  | <span class="cp">MV_EXPAND</span> <span class="ck">product.tags</span>
+  | <span class="cp">STATS</span> nb_produits = <span class="cf">COUNT</span>(*) <span class="co">BY</span> <span class="ck">product.tags</span>
+  | <span class="cp">SORT</span> nb_produits <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🌟 Bonus — Calculez la durée p95 et p99 par endpoint et par heure. Identifiez les endpoints les plus lents à heure de pointe.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-logs
+  | <span class="cp">EVAL</span> heure = <span class="cf">DATE_EXTRACT</span>(<span class="cs">"HOUR_OF_DAY"</span>, <span class="ck">@timestamp</span>)
+  | <span class="cp">STATS</span>
+      p95 = <span class="cf">PERCENTILE</span>(<span class="ck">http.duration_ms</span>, <span class="cn">95</span>),
+      p99 = <span class="cf">PERCENTILE</span>(<span class="ck">http.duration_ms</span>, <span class="cn">99</span>),
+      nb  = <span class="cf">COUNT</span>(*)
+      <span class="co">BY</span> <span class="ck">http.endpoint</span>, heure
+  | <span class="cp">WHERE</span> nb > <span class="cn">5</span>
+  | <span class="cp">SORT</span> p99 <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 9 ═══════════════════ -->
+<div class="section" id="sec-lv9">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(190,18,60,.1);color:var(--lv9);border:1px solid rgba(190,18,60,.25)">⬡ NIVEAU 9 — Expert</div>
+    <h1 class="hero-title">GROK & DISSECT<br>Parser du texte brut</h1>
+    <p class="hero-sub">Parser des champs texte non structurés directement dans ES|QL avec GROK (regex patterns) et DISSECT (délimiteurs fixes).</p>
+  </div>
+
+  <div class="concept">
+    <div class="concept-title">📖 GROK vs DISSECT</div>
+    <div class="concept-body">
+      <strong>DISSECT</strong> — parsing par délimiteurs fixes. Rapide, simple. Idéal quand le format est prévisible.<br>
+      <code>DISSECT field "%{a} %{b} %{c}"</code><br><br>
+      <strong>GROK</strong> — parsing avec patterns nommés ES|QL (sous-ensemble des patterns Logstash).<br>
+      <code>GROK field "%{IP:src_ip} - %{WORD:method}"</code><br>
+      Patterns : <code>%{IP}</code>, <code>%{WORD}</code>, <code>%{NUMBER}</code>, <code>%{GREEDYDATA}</code>, <code>%{NOTSPACE}</code>
+    </div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>GROK & DISSECT — exemples</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// ─── DISSECT — format fixe ────────────────────────────────</span>
+<span class="cc">// Parser "service: message" depuis log.message</span>
+<span class="cp">FROM</span> esql-logs
+  | <span class="cp">WHERE</span> <span class="ck">log.message</span> <span class="co">LIKE</span> <span class="cs">"*:*"</span>
+  | <span class="cp">DISSECT</span> <span class="ck">log.message</span> <span class="cs">"%{mot_cle}: %{detail}"</span>
+  | <span class="cp">KEEP</span> <span class="ck">log.level</span>, mot_cle, detail
+  | <span class="cp">LIMIT</span> <span class="cn">10</span>
+
+<span class="cc">// ─── GROK — patterns nommés ──────────────────────────────</span>
+<span class="cc">// Parser l'IP client depuis un champ texte</span>
+<span class="cp">FROM</span> esql-logs
+  | <span class="cp">GROK</span> <span class="ck">client.ip</span> <span class="cs">"%{IP:extracted_ip}"</span>
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> extracted_ip
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span>
+
+<span class="cc">// GROK sur log.message — extraire type d'erreur</span>
+<span class="cp">FROM</span> esql-logs
+  | <span class="cp">WHERE</span> <span class="ck">log.level</span> <span class="co">IN</span> (<span class="cs">"ERROR"</span>, <span class="cs">"CRITICAL"</span>)
+  | <span class="cp">GROK</span> <span class="ck">log.message</span> <span class="cs">"%{GREEDYDATA:type_erreur}: %{GREEDYDATA:detail}"</span>
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> type_erreur
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span>
+
+<span class="cc">// DISSECT + STATS — analyser les patterns de messages</span>
+<span class="cp">FROM</span> esql-logs
+  | <span class="cp">WHERE</span> <span class="ck">log.level</span> == <span class="cs">"ERROR"</span>
+  | <span class="cp">EVAL</span> premier_mot = <span class="cf">SUBSTRING</span>(<span class="ck">log.message</span>, <span class="cn">0</span>,
+                       <span class="cf">LENGTH</span>(<span class="ck">log.message</span>))
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> <span class="ck">log.message</span>
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">15</span></pre></div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv9)">9.1</div>
+      <div class="ex-meta"><h3>Parsing de logs texte</h3>
+        <div class="ex-tags"><span class="ex-tag b-teal">GROK</span><span class="ex-tag b-teal">DISSECT</span><span class="badge b-danger" style="font-size:.6rem">expert</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q1 — Utilisez GROK pour extraire les IPs sources des logs et comptez les requêtes par sous-réseau /24.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-logs
+  | <span class="cp">GROK</span> <span class="ck">client.ip</span> <span class="cs">"%{NUMBER:a}\.%{NUMBER:b}\.%{NUMBER:c}\.%{NUMBER:d}"</span>
+  | <span class="cp">EVAL</span> subnet = <span class="cf">CONCAT</span>(a, <span class="cs">"."</span>, b, <span class="cs">"."</span>, c, <span class="cs">".0/24"</span>)
+  | <span class="cp">STATS</span> nb = <span class="cf">COUNT</span>(*) <span class="co">BY</span> subnet
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">15</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Q2 — Classez les messages d'erreur par type (les 10 messages d'erreur les plus fréquents). Quel est le problème le plus récurrent ?</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution</div>
+          <div class="cw"><div class="ctop"><span>ES|QL</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-logs
+  | <span class="cp">WHERE</span> <span class="ck">log.level</span> <span class="co">IN</span> (<span class="cs">"ERROR"</span>, <span class="cs">"CRITICAL"</span>, <span class="cs">"WARN"</span>)
+  | <span class="cp">STATS</span>
+      nb            = <span class="cf">COUNT</span>(*),
+      services      = <span class="cf">VALUES</span>(<span class="ck">log.service</span>),
+      duree_moy     = <span class="cf">AVG</span>(<span class="ck">http.duration_ms</span>)
+      <span class="co">BY</span> <span class="ck">log.message</span>
+  | <span class="cp">SORT</span> nb <span class="co">DESC</span>
+  | <span class="cp">LIMIT</span> <span class="cn">10</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NIVEAU 10 ═══════════════════ -->
+<div class="section" id="sec-lv10">
+  <div class="page-hero">
+    <div class="level-badge" style="background:rgba(6,95,70,.12);color:var(--lv10);border:1px solid rgba(6,95,70,.25)">⬡ NIVEAU 10 — Maître</div>
+    <h1 class="hero-title">Pipeline maître<br>Tout combiné</h1>
+    <p class="hero-sub">Des requêtes de niveau production qui combinent FROM, WHERE, EVAL, STATS, SORT, CASE, GROK, MV_EXPAND et des fonctions avancées en un seul pipeline.</p>
+  </div>
+
+  <div class="box purple">
+    <div class="box-i">🎓</div>
+    <div class="box-b"><strong>Félicitations d'arriver ici !</strong><p>Ce niveau combine tout ce que vous avez appris. Chaque requête résout un vrai problème analytique de production. Essayez de les écrire vous-même avant de regarder la solution.</p></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-card-header">
+      <div class="ex-num" style="background:var(--lv10)">10.1</div>
+      <div class="ex-meta">
+        <h3>Rapport de performance complet</h3>
+        <p>Analyse complète de la performance API par service et endpoint</p>
+        <div class="ex-tags"><span class="ex-tag b-teal">Pipeline complet</span><span class="badge b-danger" style="font-size:.6rem">maître</span></div>
+      </div>
+    </div>
+    <div class="ex-body">
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Défi 1 — Rapport SLA : pour chaque service, calculez le taux d'erreur (%), la durée médiane, le p99, et classifiez le service avec un statut ("🟢 OK", "🟡 Dégradé", "🔴 KO") selon le taux d'erreur.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution complète</div>
+          <div class="cw"><div class="ctop"><span>ES|QL — Rapport SLA complet</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-logs
+  | <span class="cp">STATS</span>
+      nb_total    = <span class="cf">COUNT</span>(*),
+      nb_errors   = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(<span class="ck">log.level</span> <span class="co">IN</span> (<span class="cs">"ERROR"</span>,<span class="cs">"CRITICAL"</span>), <span class="cn">1</span>, <span class="co">null</span>)),
+      nb_warn     = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(<span class="ck">log.level</span> == <span class="cs">"WARN"</span>, <span class="cn">1</span>, <span class="co">null</span>)),
+      duree_med   = <span class="cf">MEDIAN</span>(<span class="ck">http.duration_ms</span>),
+      duree_p99   = <span class="cf">PERCENTILE</span>(<span class="ck">http.duration_ms</span>, <span class="cn">99</span>),
+      duree_max   = <span class="cf">MAX</span>(<span class="ck">http.duration_ms</span>)
+      <span class="co">BY</span> <span class="ck">log.service</span>
+  | <span class="cp">EVAL</span>
+      taux_erreur = <span class="cf">ROUND</span>(nb_errors / nb_total * <span class="cn">100.0</span>, <span class="cn">1</span>),
+      statut = <span class="cf">CASE</span>(
+        nb_errors / nb_total * <span class="cn">100.0</span> > <span class="cn">10</span>, <span class="cs">"🔴 KO"</span>,
+        nb_errors / nb_total * <span class="cn">100.0</span> > <span class="cn">3</span>,  <span class="cs">"🟡 Dégradé"</span>,
+        <span class="cs">"🟢 OK"</span>
+      ),
+      sla_duree = <span class="cf">CASE</span>(
+        duree_p99 > <span class="cn">5000</span>, <span class="cs">"🔴 P99 > 5s"</span>,
+        duree_p99 > <span class="cn">1000</span>, <span class="cs">"🟡 P99 > 1s"</span>,
+        <span class="cs">"🟢 P99 OK"</span>
+      )
+  | <span class="cp">KEEP</span>
+      <span class="ck">log.service</span>, statut, sla_duree,
+      taux_erreur, nb_total, nb_errors,
+      duree_med, duree_p99
+  | <span class="cp">SORT</span> taux_erreur <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">Défi 2 — Tableau de bord RH : salaire moyen/min/max, % de managers, score de perf moyen, télétravail moyen par département. Ajoutez un label "Bon" / "Moyen" / "À améliorer" selon le score de perf.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution complète</div>
+          <div class="cw"><div class="ctop"><span>ES|QL — Dashboard RH complet</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-employees
+  | <span class="cp">STATS</span>
+      nb_employes   = <span class="cf">COUNT</span>(*),
+      nb_managers   = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(<span class="ck">employee.is_manager</span> == <span class="co">true</span>, <span class="cn">1</span>, <span class="co">null</span>)),
+      salaire_moy   = <span class="cf">ROUND</span>(<span class="cf">AVG</span>(<span class="ck">employee.salary_eur</span>), <span class="cn">0</span>),
+      salaire_min   = <span class="cf">MIN</span>(<span class="ck">employee.salary_eur</span>),
+      salaire_max   = <span class="cf">MAX</span>(<span class="ck">employee.salary_eur</span>),
+      perf_moy      = <span class="cf">ROUND</span>(<span class="cf">AVG</span>(<span class="ck">employee.performance_score</span>), <span class="cn">2</span>),
+      remote_moy    = <span class="cf">ROUND</span>(<span class="cf">AVG</span>(<span class="ck">employee.remote_days_per_week</span>), <span class="cn">1</span>),
+      anciennete_moy= <span class="cf">ROUND</span>(<span class="cf">AVG</span>(<span class="cn">2024</span> - <span class="ck">employee.hire_year</span>), <span class="cn">1</span>)
+      <span class="co">BY</span> <span class="ck">employee.department</span>
+  | <span class="cp">EVAL</span>
+      pct_managers = <span class="cf">ROUND</span>(nb_managers / nb_employes * <span class="cn">100</span>, <span class="cn">0</span>),
+      label_perf = <span class="cf">CASE</span>(
+        perf_moy >= <span class="cn">4.0</span>, <span class="cs">"⭐ Excellent"</span>,
+        perf_moy >= <span class="cn">3.0</span>, <span class="cs">"✅ Bon"</span>,
+        perf_moy >= <span class="cn">2.0</span>, <span class="cs">"⚠️ Moyen"</span>,
+        <span class="cs">"❌ À améliorer"</span>
+      )
+  | <span class="cp">KEEP</span>
+      <span class="ck">employee.department</span>, nb_employes, pct_managers,
+      salaire_moy, salaire_min, salaire_max,
+      perf_moy, label_perf, remote_moy, anciennete_moy
+  | <span class="cp">SORT</span> perf_moy <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+      <div class="qblock">
+        <div class="qblock-header"><div class="qblock-q">🏆 Défi ULTIME — Rapport e-commerce complet sur les 30 jours : CA total, nb commandes, panier moyen, taux d'annulation par pays, avec classification "Marché A/B/C" selon le CA, et une ligne "TOTAL" agrégé à la fin.</div><button class="reveal-btn" onclick="toggleAnswer(this)">▶ Réponse</button></div>
+        <div class="answer-block"><div class="answer-label">✅ Solution — Rapport e-commerce complet</div>
+          <div class="cw"><div class="ctop"><span>ES|QL — Rapport complet par pays</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> esql-orders
+  | <span class="cp">EVAL</span>
+      est_annulee   = <span class="ck">order.status</span> == <span class="cs">"cancelled"</span>,
+      est_completee = <span class="ck">order.status</span> == <span class="cs">"completed"</span>
+  | <span class="cp">STATS</span>
+      nb_total        = <span class="cf">COUNT</span>(*),
+      nb_completees   = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(est_completee, <span class="cn">1</span>, <span class="co">null</span>)),
+      nb_annulees     = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(est_annulee, <span class="cn">1</span>, <span class="co">null</span>)),
+      ca_total        = <span class="cf">ROUND</span>(<span class="cf">SUM</span>(<span class="cf">CASE</span>(est_completee, <span class="ck">order.total_eur</span>, <span class="co">null</span>)), <span class="cn">2</span>),
+      panier_moyen    = <span class="cf">ROUND</span>(<span class="cf">AVG</span>(<span class="cf">CASE</span>(est_completee, <span class="ck">order.total_eur</span>, <span class="co">null</span>)), <span class="cn">2</span>),
+      clients_uniques = <span class="cf">COUNT_DISTINCT</span>(<span class="ck">customer.id</span>)
+      <span class="co">BY</span> <span class="ck">customer.country</span>
+  | <span class="cp">EVAL</span>
+      taux_annul  = <span class="cf">ROUND</span>(nb_annulees / nb_total * <span class="cn">100</span>, <span class="cn">1</span>),
+      ca_par_client = <span class="cf">ROUND</span>(ca_total / clients_uniques, <span class="cn">2</span>),
+      marche = <span class="cf">CASE</span>(
+        ca_total > <span class="cn">20000</span>, <span class="cs">"🥇 Marché A"</span>,
+        ca_total > <span class="cn">10000</span>, <span class="cs">"🥈 Marché B"</span>,
+        <span class="cs">"🥉 Marché C"</span>
+      )
+  | <span class="cp">KEEP</span>
+      <span class="ck">customer.country</span>, marche,
+      nb_total, nb_completees, taux_annul,
+      ca_total, panier_moyen, ca_par_client, clients_uniques
+  | <span class="cp">SORT</span> ca_total <span class="co">DESC</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ RÉFÉRENCE ═══════════════════ -->
+<div class="section" id="sec-ref">
+  <div class="page-hero">
+    <div class="hero-tag" style="color:var(--teal2);background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.2)">📖 Référence rapide</div>
+    <h1 class="hero-title">Tous les opérateurs<br>et fonctions ES|QL</h1>
+    <p class="hero-sub">Reference card complète — gardez-la ouverte pendant que vous écrivez vos requêtes.</p>
+  </div>
+
+  <h2><span class="h2-n" style="background:var(--teal)">1</span> Tous les opérateurs pipe</h2>
+  <div class="op-grid">
+    <div class="op-card"><div class="op-name">FROM index</div><div class="op-desc">Source obligatoire. Wildcards supportés.</div><div class="op-ex">FROM esql-*, FROM a, b</div></div>
+    <div class="op-card"><div class="op-name">WHERE condition</div><div class="op-desc">Filtre les lignes. Conditions booléennes.</div><div class="op-ex">WHERE price > 100 AND cat == "X"</div></div>
+    <div class="op-card"><div class="op-name">STATS … BY</div><div class="op-desc">Agrégations avec regroupement optionnel.</div><div class="op-ex">STATS n=COUNT(*) BY country</div></div>
+    <div class="op-card"><div class="op-name">SORT field [ASC|DESC]</div><div class="op-desc">Tri sur un ou plusieurs champs.</div><div class="op-ex">SORT price DESC, name ASC</div></div>
+    <div class="op-card"><div class="op-name">LIMIT n</div><div class="op-desc">Nombre max de résultats retournés.</div><div class="op-ex">LIMIT 100</div></div>
+    <div class="op-card"><div class="op-name">KEEP fields</div><div class="op-desc">Sélectionner des colonnes (comme SELECT).</div><div class="op-ex">KEEP name, price, category</div></div>
+    <div class="op-card"><div class="op-name">DROP fields</div><div class="op-desc">Supprimer des colonnes.</div><div class="op-ex">DROP @timestamp, _id</div></div>
+    <div class="op-card"><div class="op-name">RENAME a AS b</div><div class="op-desc">Renommer une colonne.</div><div class="op-ex">RENAME price AS prix_eur</div></div>
+    <div class="op-card"><div class="op-name">EVAL expression</div><div class="op-desc">Créer ou modifier des colonnes calculées.</div><div class="op-ex">EVAL marge = price - cost</div></div>
+    <div class="op-card"><div class="op-name">GROK field "pattern"</div><div class="op-desc">Parser du texte avec des patterns nommés.</div><div class="op-ex">GROK ip "%{IP:src}"</div></div>
+    <div class="op-card"><div class="op-name">DISSECT field "fmt"</div><div class="op-desc">Parser du texte avec délimiteurs fixes.</div><div class="op-ex">DISSECT msg "%{a}: %{b}"</div></div>
+    <div class="op-card"><div class="op-name">MV_EXPAND field</div><div class="op-desc">Éclater un champ multi-valué en lignes.</div><div class="op-ex">MV_EXPAND tags</div></div>
+    <div class="op-card"><div class="op-name">ENRICH policy ON field</div><div class="op-desc">Enrichir avec des données d'une politique.</div><div class="op-ex">ENRICH geo ON source.ip</div></div>
+  </div>
+
+  <hr class="sep" id="ref-fn">
+  <h2><span class="h2-n" style="background:var(--teal)">2</span> Fonctions complètes</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Fonction</th><th>Usage</th><th>Exemple</th></tr></thead>
+    <tbody>
+      <tr><td colspan="3" style="background:var(--sf2);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">AGRÉGATS (dans STATS)</td></tr>
+      <tr><td><code>COUNT(*)</code></td><td>Toutes les lignes</td><td><code>STATS n = COUNT(*)</code></td></tr>
+      <tr><td><code>COUNT(field)</code></td><td>Valeurs non-null</td><td><code>STATS n = COUNT(price)</code></td></tr>
+      <tr><td><code>COUNT_DISTINCT(f)</code></td><td>Valeurs uniques (approx.)</td><td><code>STATS u = COUNT_DISTINCT(country)</code></td></tr>
+      <tr><td><code>SUM(field)</code></td><td>Somme</td><td><code>STATS total = SUM(amount)</code></td></tr>
+      <tr><td><code>AVG(field)</code></td><td>Moyenne</td><td><code>STATS avg = AVG(price)</code></td></tr>
+      <tr><td><code>MIN(f) / MAX(f)</code></td><td>Minimum / Maximum</td><td><code>STATS mn = MIN(price)</code></td></tr>
+      <tr><td><code>MEDIAN(field)</code></td><td>Médiane (p50)</td><td><code>STATS m = MEDIAN(duration)</code></td></tr>
+      <tr><td><code>PERCENTILE(f, n)</code></td><td>Percentile n (0-100)</td><td><code>STATS p99 = PERCENTILE(d, 99)</code></td></tr>
+      <tr><td><code>VALUES(field)</code></td><td>Toutes les valeurs du groupe</td><td><code>STATS v = VALUES(service)</code></td></tr>
+      <tr><td><code>TOP(f, n, order)</code></td><td>Top N valeurs</td><td><code>STATS t = TOP(price, 3, "desc")</code></td></tr>
+      <tr><td colspan="3" style="background:var(--sf2);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">MATHÉMATIQUES (dans EVAL)</td></tr>
+      <tr><td><code>ROUND(n, d)</code></td><td>Arrondir à d décimales</td><td><code>EVAL r = ROUND(price, 2)</code></td></tr>
+      <tr><td><code>FLOOR(n)</code></td><td>Arrondi inférieur</td><td><code>EVAL f = FLOOR(3.7)</code></td></tr>
+      <tr><td><code>CEIL(n)</code></td><td>Arrondi supérieur</td><td><code>EVAL c = CEIL(3.2)</code></td></tr>
+      <tr><td><code>ABS(n)</code></td><td>Valeur absolue</td><td><code>EVAL a = ABS(-5)</code></td></tr>
+      <tr><td><code>POW(base, exp)</code></td><td>Puissance</td><td><code>EVAL p = POW(2, 10)</code></td></tr>
+      <tr><td><code>SQRT(n)</code></td><td>Racine carrée</td><td><code>EVAL s = SQRT(25)</code></td></tr>
+      <tr><td colspan="3" style="background:var(--sf2);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">CHAÎNES (dans EVAL)</td></tr>
+      <tr><td><code>LENGTH(str)</code></td><td>Longueur</td><td><code>EVAL l = LENGTH(name)</code></td></tr>
+      <tr><td><code>UPPER(str) / LOWER</code></td><td>Casse</td><td><code>EVAL u = UPPER(country)</code></td></tr>
+      <tr><td><code>CONCAT(a, b, ...)</code></td><td>Concaténer</td><td><code>EVAL n = CONCAT(first, " ", last)</code></td></tr>
+      <tr><td><code>SUBSTRING(s, i, n)</code></td><td>Extraire (index 0)</td><td><code>EVAL init = SUBSTRING(name, 0, 1)</code></td></tr>
+      <tr><td><code>TRIM(str)</code></td><td>Supprimer espaces</td><td><code>EVAL t = TRIM(name)</code></td></tr>
+      <tr><td><code>REPLACE(s, old, new)</code></td><td>Remplacer</td><td><code>EVAL r = REPLACE(s, "-", "_")</code></td></tr>
+      <tr><td><code>SPLIT(str, delim)</code></td><td>Séparer en tableau</td><td><code>EVAL parts = SPLIT(path, "/")</code></td></tr>
+      <tr><td colspan="3" style="background:var(--sf2);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">DATES (dans EVAL)</td></tr>
+      <tr><td><code>NOW()</code></td><td>Date/heure actuelle</td><td><code>EVAL n = NOW()</code></td></tr>
+      <tr><td><code>DATE_TRUNC(n u, f)</code></td><td>Tronquer (1 day, 1 hour…)</td><td><code>EVAL d = DATE_TRUNC(1 day, ts)</code></td></tr>
+      <tr><td><code>DATE_EXTRACT(part, f)</code></td><td>Extraire une partie</td><td><code>EVAL h = DATE_EXTRACT("HOUR_OF_DAY", ts)</code></td></tr>
+      <tr><td><code>DATE_DIFF(u, a, b)</code></td><td>Différence entre deux dates</td><td><code>EVAL d = DATE_DIFF("day", start, end)</code></td></tr>
+      <tr><td><code>DATE_FORMAT(fmt, f)</code></td><td>Formater une date</td><td><code>EVAL s = DATE_FORMAT("yyyy-MM-dd", ts)</code></td></tr>
+      <tr><td colspan="3" style="background:var(--sf2);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">MULTI-VALUÉS</td></tr>
+      <tr><td><code>MV_COUNT(f)</code></td><td>Nombre de valeurs</td><td><code>EVAL n = MV_COUNT(tags)</code></td></tr>
+      <tr><td><code>MV_MIN(f)/MV_MAX(f)</code></td><td>Min/max du tableau</td><td><code>EVAL m = MV_MIN(scores)</code></td></tr>
+      <tr><td><code>MV_CONCAT(f, sep)</code></td><td>Joindre les valeurs</td><td><code>EVAL s = MV_CONCAT(tags, ", ")</code></td></tr>
+      <tr><td><code>MV_FIRST(f)/MV_LAST(f)</code></td><td>Première/dernière valeur</td><td><code>EVAL f = MV_FIRST(values)</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <hr class="sep" id="ref-types">
+  <h2><span class="h2-n" style="background:var(--teal)">3</span> Types de données</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Type ES|QL</th><th>Types ES équivalents</th><th>Opérations</th></tr></thead>
+    <tbody>
+      <tr><td><code>keyword</code></td><td>keyword, constant_keyword</td><td>==, !=, IN, LIKE, IS NULL</td></tr>
+      <tr><td><code>text</code></td><td>text</td><td>LIKE, MATCH (full-text)</td></tr>
+      <tr><td><code>integer / long</code></td><td>integer, long, short, byte</td><td>==, !=, &gt;, &lt;, +, -, *, /</td></tr>
+      <tr><td><code>double</code></td><td>float, double, half_float</td><td>Idem + ROUND, FLOOR, CEIL</td></tr>
+      <tr><td><code>boolean</code></td><td>boolean</td><td>== true / == false</td></tr>
+      <tr><td><code>date</code></td><td>date</td><td>DATE_TRUNC, DATE_EXTRACT, &gt;, &lt;</td></tr>
+      <tr><td><code>ip</code></td><td>ip</td><td>==, IN, CIDR_MATCH</td></tr>
+      <tr><td><code>geo_point</code></td><td>geo_point</td><td>ST_DISTANCE, ST_CONTAINS</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2><span class="h2-n" style="background:var(--teal)">4</span> Cheatsheet — Equivalences SQL ↔ ES|QL</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>SQL</th><th>ES|QL équivalent</th></tr></thead>
+    <tbody>
+      <tr><td><code>SELECT a, b FROM t</code></td><td><code>FROM t | KEEP a, b</code></td></tr>
+      <tr><td><code>WHERE x = 1 AND y > 2</code></td><td><code>| WHERE x == 1 AND y > 2</code></td></tr>
+      <tr><td><code>ORDER BY price DESC</code></td><td><code>| SORT price DESC</code></td></tr>
+      <tr><td><code>LIMIT 10</code></td><td><code>| LIMIT 10</code></td></tr>
+      <tr><td><code>GROUP BY country</code></td><td><code>| STATS … BY country</code></td></tr>
+      <tr><td><code>COUNT(*)</code></td><td><code>COUNT(*)</code></td></tr>
+      <tr><td><code>SUM(amount)</code></td><td><code>SUM(amount)</code></td></tr>
+      <tr><td><code>HAVING count > 5</code></td><td><code>| STATS n=COUNT(*) BY x | WHERE n > 5</code></td></tr>
+      <tr><td><code>AS alias</code></td><td><code>RENAME field AS alias</code> ou <code>STATS alias = …</code></td></tr>
+      <tr><td><code>CASE WHEN … END</code></td><td><code>CASE(condition, val, …, default)</code></td></tr>
+      <tr><td><code>CONCAT(a, b)</code></td><td><code>CONCAT(a, b)</code></td></tr>
+      <tr><td><code>UPPER(str)</code></td><td><code>UPPER(str)</code></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+</main>
+</div>
+
+<script>
+const PAGES={start:'sec-start',lv1:'sec-lv1',lv2:'sec-lv2',lv3:'sec-lv3',lv4:'sec-lv4',lv5:'sec-lv5',lv6:'sec-lv6',lv7:'sec-lv7',lv8:'sec-lv8',lv9:'sec-lv9',lv10:'sec-lv10',ref:'sec-ref'};
+const done = new Set();
+
+function goTo(page, anchor){
+  Object.entries(PAGES).forEach(([k,v])=>document.getElementById(v).classList.toggle('active',k===page));
+  document.querySelectorAll('.tnav').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+  document.querySelectorAll('.sblink').forEach(b=>{
+    b.classList.toggle('active',b.dataset.page===page&&(b.dataset.anchor||'')===(anchor||''));
+  });
+  if(anchor){
+    setTimeout(()=>{
+      const el=document.getElementById(anchor);
+      if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-70,behavior:'smooth'});
+    },35);
+  }else window.scrollTo({top:0,behavior:'smooth'});
+  closeSidebar();
+}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>goTo(b.dataset.page,b.dataset.anchor||'')));
+
+function toggleAnswer(btn){
+  // Le bouton est dans .qblock-header, .answer-block est sibling de .qblock-header
+  const qblock = btn.closest('.qblock');
+  if(!qblock) return;
+  const ans = qblock.querySelector('.answer-block');
+  if(!ans) return;
+  const open = ans.classList.contains('show');
+  ans.classList.toggle('show', !open);
+  btn.classList.toggle('open', !open);
+  btn.innerHTML = open ? '▶ Réponse' : '▼ Masquer';
+  if(!open){
+    const section = btn.closest('.section');
+    if(section){
+      const lvl = Object.entries(PAGES).find(([k,v]) => v === section.id)?.[0];
+      if(lvl && !done.has(lvl)){ done.add(lvl); updateProgress(); }
+    }
+  }
+}
+
+function updateProgress(){
+  const lvls=['lv1','lv2','lv3','lv4','lv5','lv6','lv7','lv8','lv9','lv10'];
+  const n=lvls.filter(l=>done.has(l)).length;
+  document.getElementById('global-bar').style.width=(n/10*100)+'%';
+  document.getElementById('global-pct').textContent=n+' / 10 niveaux';
+}
+
+document.getElementById('ham').addEventListener('click',()=>{
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+});
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+document.getElementById('overlay').addEventListener('click',closeSidebar);
+
+document.querySelectorAll('.copy-b').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const pre=btn.closest('.ctop')?.nextElementSibling;
+    if(pre)navigator.clipboard.writeText(pre.textContent).then(()=>{
+      btn.textContent='✓';btn.classList.add('ok');
+      setTimeout(()=>{btn.textContent='copier';btn.classList.remove('ok');},2000);
+    });
+  });
+});
+</script>
+</body>
+</html>
