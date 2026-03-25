@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kibana — Alertes Avancées — Documentation Complète</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f7f8fc;--surface:#ffffff;--sf2:#f0f2f9;--border:#e2e5f0;--border2:#c8cde0;
+  --ink:#1a1d2e;--ink2:#4a4f6a;--muted:#8890b0;--muted2:#b8bdd0;
+  --kibana:#006bb4;--kib2:#0082d6;--elastic:#f04e98;
+  --ok:#15803d;--warn:#b45309;--danger:#be185d;--info:#1d4ed8;
+  --c1:#0284c7; /* threshold */
+  --c2:#7c3aed; /* ES|QL */
+  --c3:#15803d; /* metric */
+  --c4:#b45309; /* geo */
+  --c5:#be185d; /* anomaly */
+  --c6:#0f766e; /* watcher */
+  --sb-w:260px;--top-h:56px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ══ TOPBAR ══ */
+.topbar{position:sticky;top:0;z-index:300;height:var(--top-h);background:var(--surface);border-bottom:2px solid var(--kibana);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;box-shadow:0 2px 12px rgba(0,107,180,.08)}
+.logo{display:flex;align-items:center;gap:.5rem}
+.logo-icon{width:30px;height:30px;background:var(--danger);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.9rem;flex-shrink:0}
+.logo-text{font-size:.9rem;font-weight:800}.logo-text span{color:var(--danger)}
+.topbar-nav{display:flex;gap:.2rem;margin-left:auto;flex-wrap:nowrap;overflow-x:auto}
+.tnav{font-size:.68rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);padding:.32rem .75rem;cursor:pointer;border-radius:20px;transition:all .15s;white-space:nowrap;background:none;border:none;font-family:'Syne',sans-serif}
+.tnav:hover{color:var(--ink2);background:var(--sf2)}
+.tnav.active{color:var(--kibana);background:rgba(0,107,180,.08);border:1px solid rgba(0,107,180,.2)}
+.hamburger{display:none;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.3rem;padding:.2rem}
+
+/* ══ LAYOUT ══ */
+.layout{display:grid;grid-template-columns:var(--sb-w) 1fr;min-height:calc(100vh - var(--top-h));align-items:start}
+
+/* ══ SIDEBAR ══ */
+.sidebar{position:sticky;top:var(--top-h);height:calc(100vh - var(--top-h));overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:1.25rem 0 2rem;transition:transform .25s ease}
+.sb-lbl{font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);padding:.8rem 1.1rem .25rem}
+.sblink{display:flex;align-items:center;gap:.5rem;padding:.4rem 1.1rem;font-size:.77rem;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;width:100%;text-align:left;border-left:3px solid transparent;transition:all .12s;font-family:'Syne',sans-serif}
+.sblink:hover{color:var(--ink2);border-left-color:var(--border2);background:var(--sf2)}
+.sblink.active{color:var(--kibana);border-left-color:var(--kibana);background:rgba(0,107,180,.06)}
+.sblink .ico{font-size:.85rem;flex-shrink:0;width:18px;text-align:center}
+.sb-divider{height:1px;background:var(--border);margin:.65rem 1.1rem}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:250}
+.sb-overlay.show{display:block}
+
+/* ══ MAIN ══ */
+.main{padding:2.5rem 2.5rem 5rem;min-width:0}
+.section{display:none}.section.active{display:block}
+
+/* ══ PAGE HERO ══ */
+.page-hero{background:linear-gradient(135deg,#fff1f2 0%,#fff5f5 40%,#f0f7ff 100%);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem;position:relative;overflow:hidden}
+.page-hero::after{content:'';position:absolute;right:-20px;top:-20px;width:200px;height:200px;background:radial-gradient(circle,rgba(190,24,93,.06) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:.22rem .65rem;border-radius:20px;margin-bottom:.75rem}
+.ht-base{color:var(--c1);background:rgba(2,132,199,.08);border:1px solid rgba(2,132,199,.2)}
+.ht-geo{color:var(--c4);background:rgba(180,83,9,.08);border:1px solid rgba(180,83,9,.2)}
+.ht-ml{color:var(--c5);background:rgba(190,24,93,.08);border:1px solid rgba(190,24,93,.2)}
+.ht-watcher{color:var(--c6);background:rgba(15,118,110,.08);border:1px solid rgba(15,118,110,.2)}
+.ht-esql{color:var(--c2);background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2)}
+.ht-intro{color:var(--danger);background:rgba(190,24,93,.06);border:1px solid rgba(190,24,93,.18)}
+.hero-title{font-size:clamp(1.6rem,3.5vw,2.1rem);font-weight:800;line-height:1.1;margin-bottom:.5rem}
+.hero-sub{font-size:.88rem;color:var(--ink2);line-height:1.75;max-width:600px;font-weight:400}
+
+/* ══ HEADINGS ══ */
+h2{font-size:1.08rem;font-weight:800;color:var(--ink);margin:2.25rem 0 .6rem;display:flex;align-items:center;gap:.65rem}
+.h2-n{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fira Code',monospace;font-size:.68rem;font-weight:600;flex-shrink:0;color:#fff}
+h3{font-size:.84rem;font-weight:700;color:var(--ink2);margin:1.5rem 0 .4rem;text-transform:uppercase;letter-spacing:.07em}
+p{font-size:.87rem;color:var(--ink2);line-height:1.8;margin-bottom:.85rem;font-weight:400}
+hr.sep{border:none;border-top:1px solid var(--border);margin:2rem 0}
+code{font-family:'Fira Code',monospace;font-size:.82em;background:rgba(0,107,180,.07);color:var(--kibana);padding:.1em .38em;border-radius:4px;border:1px solid rgba(0,107,180,.15)}
+strong{font-weight:700;color:var(--ink)}
+
+/* ══ CODE BLOCKS ══ */
+.cw{margin:.9rem 0}
+.ctop{background:var(--sf2);border:1px solid var(--border);border-bottom:none;border-radius:6px 6px 0 0;padding:.4rem 1rem;display:flex;align-items:center;justify-content:space-between;font-family:'Fira Code',monospace;font-size:.62rem;color:var(--muted)}
+.clang{font-size:.58rem;padding:.1rem .45rem;border-radius:3px;font-family:'Fira Code',monospace;font-weight:500}
+.cl-kql{background:rgba(2,132,199,.1);color:var(--c1);border:1px solid rgba(2,132,199,.25)}
+.cl-dsl{background:rgba(217,119,6,.1);color:var(--warn);border:1px solid rgba(217,119,6,.25)}
+.cl-bash{background:rgba(22,163,74,.1);color:var(--ok);border:1px solid rgba(22,163,74,.25)}
+.cl-esql{background:rgba(124,58,237,.1);color:var(--c2);border:1px solid rgba(124,58,237,.25)}
+.cl-json{background:rgba(15,118,110,.1);color:var(--c6);border:1px solid rgba(15,118,110,.25)}
+.cl-yaml{background:rgba(180,83,9,.1);color:var(--c4);border:1px solid rgba(180,83,9,.25)}
+.copy-b{background:none;border:1px solid var(--border);color:var(--muted2);font-family:'Fira Code',monospace;font-size:.58rem;padding:.1rem .4rem;border-radius:3px;cursor:pointer;transition:all .15s}
+.copy-b:hover{color:var(--ink);border-color:var(--border2)}.copy-b.ok{color:var(--ok);border-color:var(--ok)}
+pre{background:#1a1d2e;border:1px solid var(--border);border-radius:0 0 6px 6px;padding:1rem 1.15rem;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.77rem;line-height:1.8;color:#c8cce0}
+pre.alone{border-radius:6px}
+.ck{color:#7ecad4}.cs{color:#a8cc8c}.cn{color:#f0a070}.co{color:#e06c75}.cc{color:#4a5a72;font-style:italic}.cp{color:#ce93d8}.cf{color:#ffb74d}.cg{color:#81c784}
+
+/* ══ CALLOUTS ══ */
+.box{border-radius:7px;padding:.85rem 1rem;margin:.9rem 0;font-size:.84rem;display:flex;gap:.7rem;align-items:flex-start}
+.box-i{font-size:1rem;flex-shrink:0;margin-top:.1rem}
+.box-b p{margin:0;color:inherit;font-size:.83rem;line-height:1.6}.box-b strong{font-weight:700;display:block;margin-bottom:.2rem;color:inherit}
+.box.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.box.tip{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d}
+.box.warn{background:#fffbeb;border:1px solid #fde68a;color:#78350f}
+.box.danger{background:#fff1f2;border:1px solid #fecdd3;color:#881337}
+.box.purple{background:#faf5ff;border:1px solid #e9d5ff;color:#581c87}
+
+/* ══ KPATH ══ */
+.kpath{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;font-family:'Fira Code',monospace;font-size:.72rem;background:var(--sf2);border:1px solid var(--border);padding:.4rem .9rem;border-radius:5px;margin:.85rem 0}
+.kpath .seg{color:var(--ink2);font-weight:600}.kpath .cur{color:var(--kibana);font-weight:700}.kpath .arr{color:var(--muted2)}
+
+/* ══ TABLES ══ */
+.tbl-wrap{overflow-x:auto;margin:.9rem 0}
+table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+th{background:var(--sf2);padding:.5rem .85rem;text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:.5rem .85rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}tr:hover td{background:rgba(0,107,180,.02)}
+
+/* ══ BADGES ══ */
+.badge{display:inline-block;font-family:'Fira Code',monospace;font-size:.62rem;font-weight:500;padding:.12rem .5rem;border-radius:4px}
+.b-ok{background:#f0fdf4;color:var(--ok);border:1px solid #bbf7d0}
+.b-warn{background:#fffbeb;color:var(--warn);border:1px solid #fde68a}
+.b-danger{background:#fff1f2;color:var(--danger);border:1px solid #fecdd3}
+.b-blue{background:rgba(2,132,199,.1);color:var(--c1);border:1px solid rgba(2,132,199,.25)}
+.b-purple{background:rgba(124,58,237,.1);color:var(--c2);border:1px solid rgba(124,58,237,.25)}
+.b-geo{background:rgba(180,83,9,.1);color:var(--c4);border:1px solid rgba(180,83,9,.25)}
+.b-ml{background:rgba(190,24,93,.1);color:var(--c5);border:1px solid rgba(190,24,93,.25)}
+.b-watch{background:rgba(15,118,110,.1);color:var(--c6);border:1px solid rgba(15,118,110,.25)}
+
+/* ══ ALERT TYPE CARDS ══ */
+.alert-types{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin:1rem 0}
+.at-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;border-top:3px solid;cursor:pointer;transition:all .15s}
+.at-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.at-card.threshold{border-top-color:var(--c1)}.at-card.esql{border-top-color:var(--c2)}.at-card.metric{border-top-color:var(--c3)}.at-card.geo{border-top-color:var(--c4)}.at-card.ml{border-top-color:var(--c5)}.at-card.watcher{border-top-color:var(--c6)}
+.at-icon{font-size:1.4rem;margin-bottom:.4rem}
+.at-name{font-size:.85rem;font-weight:700;margin-bottom:.2rem}
+.at-desc{font-size:.75rem;color:var(--muted);line-height:1.5}
+.at-when{font-size:.7rem;font-family:'Fira Code',monospace;color:var(--muted2);margin-top:.5rem;border-top:1px solid var(--border);padding-top:.4rem}
+
+/* ══ WALKTHROUGH ══ */
+.walkthrough{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.25rem 0}
+.wt-step{display:grid;grid-template-columns:52px 1fr;border-bottom:1px solid var(--border);transition:background .15s}
+.wt-step:last-child{border-bottom:none}.wt-step:hover{background:rgba(0,107,180,.015)}
+.wt-num{background:var(--sf2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.9rem .5rem .5rem;gap:.3rem}
+.wt-circle{width:26px;height:26px;border-radius:50%;background:var(--kibana);color:#fff;font-family:'Fira Code',monospace;font-size:.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wt-line{width:2px;flex:1;background:var(--border);min-height:8px;margin-top:4px}
+.wt-step:last-child .wt-line{display:none}
+.wt-body{padding:.9rem 1.1rem}.wt-body h4{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.35rem}
+.wt-body p{margin-bottom:.4rem;font-size:.84rem}
+
+/* ══ RULE SECTION CARD ══ */
+.rule-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.5rem 0}
+.rs-header{display:flex;align-items:center;gap:.85rem;padding:1.1rem 1.25rem;border-bottom:1px solid var(--border)}
+.rs-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.rs-title{font-size:.95rem;font-weight:800;color:var(--ink)}
+.rs-sub{font-size:.78rem;color:var(--muted);margin-top:.1rem}
+.rs-body{padding:1.1rem 1.25rem}
+
+/* ══ PARAM BLOCK ══ */
+.param-block{background:var(--sf2);border:1px solid var(--border);border-radius:6px;padding:.85rem 1rem;margin:.65rem 0}
+.pb-label{font-family:'Fira Code',monospace;font-size:.72rem;font-weight:500;color:var(--kibana);margin-bottom:.3rem}
+.pb-desc{font-size:.82rem;color:var(--ink2);line-height:1.6;margin-bottom:.25rem}
+.pb-values{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.35rem}
+.pv{font-family:'Fira Code',monospace;font-size:.68rem;background:var(--surface);border:1px solid var(--border2);color:var(--ink2);padding:.1rem .45rem;border-radius:3px}
+.pv.recommended{background:rgba(21,128,61,.08);color:var(--ok);border-color:rgba(21,128,61,.25)}
+.pv.warn{background:rgba(180,83,9,.08);color:var(--warn);border-color:rgba(180,83,9,.25)}
+
+/* ══ FIELD GRID ══ */
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.75rem 0}
+.fg-item{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:.6rem .85rem}
+.fg-key{font-family:'Fira Code',monospace;font-size:.72rem;color:var(--kibana);font-weight:500;margin-bottom:.15rem}
+.fg-val{font-size:.78rem;color:var(--ink2);line-height:1.45}
+
+/* ══ CONNECTOR CARDS ══ */
+.connector-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:1rem 0}
+.conn-card{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.85rem;text-align:center;transition:all .15s}
+.conn-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.conn-icon{font-size:1.5rem;margin-bottom:.35rem}
+.conn-name{font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:.15rem}
+.conn-desc{font-size:.68rem;color:var(--muted);line-height:1.4}
+
+/* ══ SCENARIO BLOCK ══ */
+.scenario{background:linear-gradient(135deg,#f8f9ff 0%,#f5f0ff 100%);border:1px solid var(--border);border-left:4px solid var(--c5);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1.25rem 0}
+.scenario-title{font-size:.82rem;font-weight:700;color:var(--c5);margin-bottom:.3rem;display:flex;align-items:center;gap:.4rem}
+.scenario-desc{font-size:.83rem;color:var(--ink2);line-height:1.65}
+
+/* ══ PRIORITY MATRIX ══ */
+.matrix{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:.9rem 0}
+.matrix-row{display:grid;grid-template-columns:120px 1fr 1fr;border-bottom:1px solid var(--border)}
+.matrix-row:last-child{border-bottom:none}
+.matrix-row.header{background:var(--sf2)}
+.mc{padding:.5rem .85rem;font-size:.78rem;display:flex;align-items:center}
+.mc.header{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.mc.label{font-weight:700;background:var(--sf2);border-right:1px solid var(--border);font-family:'Fira Code',monospace;font-size:.72rem}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:960px){
+  .topbar-nav{display:none}.hamburger{display:block}
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:fixed;top:var(--top-h);left:0;width:var(--sb-w);height:calc(100vh - var(--top-h));z-index:260;transform:translateX(-100%);box-shadow:6px 0 24px rgba(0,0,0,.12)}
+  .sidebar.open{transform:translateX(0)}
+  .main{padding:1.5rem 1.1rem 4rem}
+  .alert-types{grid-template-columns:1fr 1fr}
+  .connector-grid{grid-template-columns:1fr 1fr}
+  .field-grid{grid-template-columns:1fr}
+}
+@media(max-width:550px){
+  pre{font-size:.72rem}.hero-title{font-size:1.5rem}
+  .alert-types{grid-template-columns:1fr}.matrix-row{grid-template-columns:90px 1fr}
+  .matrix-row>:last-child{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-icon">🚨</div>
+    <div class="logo-text">Kibana <span>Alerting</span></div>
+  </div>
+  <nav class="topbar-nav">
+    <button class="tnav active" data-page="intro">Vue d'ensemble</button>
+    <button class="tnav" data-page="threshold">Threshold</button>
+    <button class="tnav" data-page="esql">ES|QL Rules</button>
+    <button class="tnav" data-page="geo">GeoIP</button>
+    <button class="tnav" data-page="ml">ML Anomaly</button>
+    <button class="tnav" data-page="watcher">Watcher</button>
+    <button class="tnav" data-page="actions">Actions</button>
+    <button class="tnav" data-page="recipes">Recettes</button>
+  </nav>
+  <button class="hamburger" id="ham">☰</button>
+</header>
+
+<div class="sb-overlay" id="overlay"></div>
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+  <div class="sb-lbl">Introduction</div>
+  <button class="sblink active" data-page="intro" data-anchor=""><span class="ico">🏠</span>Vue d'ensemble</button>
+  <button class="sblink" data-page="intro" data-anchor="types"><span class="ico">📦</span>Types d'alertes</button>
+  <button class="sblink" data-page="intro" data-anchor="anatomie"><span class="ico">🔬</span>Anatomie d'une règle</button>
+  <button class="sblink" data-page="intro" data-anchor="lifecycle"><span class="ico">🔄</span>Cycle de vie</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Threshold Rules</div>
+  <button class="sblink" data-page="threshold" data-anchor=""><span class="ico">📊</span>Créer une règle</button>
+  <button class="sblink" data-page="threshold" data-anchor="thr-count"><span class="ico">🔢</span>Count — trop de requêtes</button>
+  <button class="sblink" data-page="threshold" data-anchor="thr-ratio"><span class="ico">📐</span>Ratio — taux d'erreur</button>
+  <button class="sblink" data-page="threshold" data-anchor="thr-term"><span class="ico">🏷️</span>Per-term grouping</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">ES|QL Rules</div>
+  <button class="sblink" data-page="esql" data-anchor=""><span class="ico">⚡</span>ES|QL Alerting</button>
+  <button class="sblink" data-page="esql" data-anchor="esql-brute"><span class="ico">🔑</span>Brute force SSH</button>
+  <button class="sblink" data-page="esql" data-anchor="esql-exfil"><span class="ico">📤</span>Exfiltration data</button>
+  <button class="sblink" data-page="esql" data-anchor="esql-new-ip"><span class="ico">🌍</span>Nouvelle IP inconnue</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">GeoIP & Localisation</div>
+  <button class="sblink" data-page="geo" data-anchor=""><span class="ico">🗺️</span>Pipeline GeoIP</button>
+  <button class="sblink" data-page="geo" data-anchor="geo-country"><span class="ico">🌐</span>Alerte pays interdit</button>
+  <button class="sblink" data-page="geo" data-anchor="geo-impossible"><span class="ico">✈️</span>Impossible travel</button>
+  <button class="sblink" data-page="geo" data-anchor="geo-tor"><span class="ico">🧅</span>Détection Tor/VPN</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">ML Anomaly Detection</div>
+  <button class="sblink" data-page="ml" data-anchor=""><span class="ico">🤖</span>Configurer ML Jobs</button>
+  <button class="sblink" data-page="ml" data-anchor="ml-traffic"><span class="ico">📈</span>Anomalie trafic</span></button>
+  <button class="sblink" data-page="ml" data-anchor="ml-user"><span class="ico">👤</span>Comportement utilisateur</button>
+  <button class="sblink" data-page="ml" data-anchor="ml-alert"><span class="ico">🔔</span>Alertes ML</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Watcher</div>
+  <button class="sblink" data-page="watcher" data-anchor=""><span class="ico">👁️</span>Watcher JSON complet</button>
+  <button class="sblink" data-page="watcher" data-anchor="watcher-chain"><span class="ico">⛓️</span>Chaîne conditions</button>
+  <button class="sblink" data-page="watcher" data-anchor="watcher-agg"><span class="ico">📊</span>Avec agrégations</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Actions & Notifications</div>
+  <button class="sblink" data-page="actions" data-anchor=""><span class="ico">📬</span>Connecteurs</button>
+  <button class="sblink" data-page="actions" data-anchor="act-template"><span class="ico">✏️</span>Templates Mustache</button>
+  <button class="sblink" data-page="actions" data-anchor="act-throttle"><span class="ico">⏱️</span>Throttle & Cooldown</button>
+
+  <div class="sb-divider"></div>
+  <div class="sb-lbl">Recettes avancées</div>
+  <button class="sblink" data-page="recipes" data-anchor=""><span class="ico">👨‍🍳</span>Toutes les recettes</button>
+  <button class="sblink" data-page="recipes" data-anchor="rec-sqli"><span class="ico">💉</span>SQLi détection</button>
+  <button class="sblink" data-page="recipes" data-anchor="rec-baseline"><span class="ico">📏</span>Baseline trafic</button>
+  <button class="sblink" data-page="recipes" data-anchor="rec-correlation"><span class="ico">🔗</span>Corrélation multi-source</button>
+</aside>
+
+<main class="main" id="main">
+
+<!-- ═══════════════════════════════ INTRO ═══════════════════════════════ -->
+<div class="section active" id="sec-intro">
+  <div class="page-hero">
+    <div class="hero-tag ht-intro">🚨 Kibana Alerting — Guide Complet</div>
+    <h1 class="hero-title">Créer des alertes<br>ultra-avancées dans Kibana</h1>
+    <p class="hero-sub">De la règle de seuil basique aux détections ML et GeoIP avancées. Chaque type d'alerte, chaque paramètre, avec des exemples concrets de production.</p>
+  </div>
+
+  <h2><span class="h2-n" style="background:var(--danger)">1</span> Accéder au module Alerting</h2>
+  <div class="kpath"><span class="seg">☰ Menu</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Stack Management → Rules</span></div>
+  <p>Ou via le raccourci :</p>
+  <div class="kpath"><span class="seg">☰ Menu</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Alerts and Insights → Rules</span></div>
+
+  <div class="box info">
+    <div class="box-i">ℹ️</div>
+    <div class="box-b"><strong>Deux systèmes d'alerting dans Kibana</strong><p><strong>Kibana Rules</strong> (Stack Management → Rules) : alertes gérées par Kibana, configurables en UI, avec connecteurs. <strong>Elasticsearch Watcher</strong> (Dev Tools) : alertes JSON bas niveau, plus flexibles, stockées dans ES. On voit les deux.</p></div>
+  </div>
+
+  <hr class="sep" id="types">
+  <h2><span class="h2-n" style="background:var(--danger)">2</span> Types de règles disponibles</h2>
+
+  <div class="alert-types">
+    <div class="at-card threshold" onclick="goTo('threshold','')">
+      <div class="at-icon">📊</div>
+      <div class="at-name" style="color:var(--c1)">Threshold Rule</div>
+      <div class="at-desc">Déclenche quand un comptage dépasse (ou passe sous) un seuil. Simple et efficace.</div>
+      <div class="at-when">💡 Quand : trop d'erreurs 5xx, trop de requêtes/sec</div>
+    </div>
+    <div class="at-card esql" onclick="goTo('esql','')">
+      <div class="at-icon">⚡</div>
+      <div class="at-name" style="color:var(--c2)">ES|QL Rule</div>
+      <div class="at-desc">Requête ES|QL transformée en alerte. Très puissant pour les logiques métier complexes.</div>
+      <div class="at-when">💡 Quand : logique multi-champs, transformations, calculs</div>
+    </div>
+    <div class="at-card metric" onclick="goTo('threshold','thr-ratio')">
+      <div class="at-icon">📐</div>
+      <div class="at-name" style="color:var(--c3)">Metric Threshold</div>
+      <div class="at-desc">Surveille une métrique numérique sur un index. Supporte avg, sum, min, max, count.</div>
+      <div class="at-when">💡 Quand : latence moyenne, CPU, taille des docs</div>
+    </div>
+    <div class="at-card geo" onclick="goTo('geo','')">
+      <div class="at-icon">🗺️</div>
+      <div class="at-name" style="color:var(--c4)">GeoIP + Threshold</div>
+      <div class="at-desc">Combine géolocalisation IP et seuil. Alerte sur des connexions depuis des pays non-autorisés.</div>
+      <div class="at-when">💡 Quand : connexion depuis pays interdit, Tor, impossible travel</div>
+    </div>
+    <div class="at-card ml" onclick="goTo('ml','')">
+      <div class="at-icon">🤖</div>
+      <div class="at-name" style="color:var(--c5)">ML Anomaly Detection</div>
+      <div class="at-desc">Alerte quand le ML détecte une anomalie (pic, creux, comportement inhabituel).</div>
+      <div class="at-when">💡 Quand : volume inhabituel, heure insolite, user anormal</div>
+    </div>
+    <div class="at-card watcher" onclick="goTo('watcher','')">
+      <div class="at-icon">👁️</div>
+      <div class="at-name" style="color:var(--c6)">Elasticsearch Watcher</div>
+      <div class="at-desc">Alertes JSON bas niveau stockées dans ES. Conditions complexes, transformations, chaînes.</div>
+      <div class="at-when">💡 Quand : logique avancée, séquences, enrichissements</div>
+    </div>
+  </div>
+
+  <hr class="sep" id="anatomie">
+  <h2><span class="h2-n" style="background:var(--danger)">3</span> Anatomie d'une règle Kibana</h2>
+  <p>Toute règle Kibana est composée de 4 blocs fondamentaux :</p>
+
+  <div class="field-grid">
+    <div class="fg-item" style="border-top:3px solid var(--c1)">
+      <div class="fg-key" style="color:var(--c1)">1. DEFINE — La requête</div>
+      <div class="fg-val">Que chercher ? Index pattern, requête KQL ou ES|QL, champs à surveiller.</div>
+    </div>
+    <div class="fg-item" style="border-top:3px solid var(--c2)">
+      <div class="fg-key" style="color:var(--c2)">2. WHEN — La condition</div>
+      <div class="fg-val">Quel seuil déclenche l'alerte ? count > 100, avg > 500ms, IS ABOVE / BELOW.</div>
+    </div>
+    <div class="fg-item" style="border-top:3px solid var(--c3)">
+      <div class="fg-key" style="color:var(--c3)">3. SCHEDULE — La fréquence</div>
+      <div class="fg-val">À quelle fréquence évaluer la règle ? Toutes les 1 min, 5 min, 1h. Impact performance.</div>
+    </div>
+    <div class="fg-item" style="border-top:3px solid var(--c5)">
+      <div class="fg-key" style="color:var(--c5)">4. ACTIONS — Les notifications</div>
+      <div class="fg-val">Quoi faire quand ça déclenche ? Email, Slack, PagerDuty, webhook, créer un ticket Jira.</div>
+    </div>
+  </div>
+
+  <hr class="sep" id="lifecycle">
+  <h2><span class="h2-n" style="background:var(--danger)">4</span> Cycle de vie d'une alerte</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>État</th><th>Signification</th><th>Action recommandée</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge b-ok">Active</span></td><td>La condition est dépassée en ce moment</td><td>Investiguer immédiatement</td></tr>
+      <tr><td><span class="badge" style="background:#f5f3ff;color:#6d28d9;border:1px solid #c4b5fd">Flapping</span></td><td>L'alerte passe active/inactive rapidement (signal instable)</td><td>Augmenter le seuil ou la fenêtre temporelle</td></tr>
+      <tr><td><span class="badge b-warn">Recovered</span></td><td>La condition n'est plus remplie</td><td>Vérifier la résolution</td></tr>
+      <tr><td><span class="badge b-blue">OK</span></td><td>Sous le seuil — tout va bien</td><td>—</td></tr>
+      <tr><td><span class="badge b-danger">Error</span></td><td>Erreur d'exécution de la règle</td><td>Vérifier la requête et l'index</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box tip">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>Bonnes pratiques générales</strong><p>• Commencez par des seuils larges et affinez<br>• Configurez toujours une action "Recovered" pour savoir quand ça revient à la normale<br>• Utilisez le "throttle" pour éviter les tempêtes d'alertes<br>• Testez la requête dans Discover avant de créer la règle</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ THRESHOLD ═══════════════════════════════ -->
+<div class="section" id="sec-threshold">
+  <div class="page-hero">
+    <div class="hero-tag ht-base">📊 Threshold Rules</div>
+    <h1 class="hero-title">Règles de seuil —<br>Simple mais puissant</h1>
+    <p class="hero-sub">Le type d'alerte le plus courant. Déclenche quand un compte, une somme ou une moyenne dépasse ou passe sous un seuil défini.</p>
+  </div>
+
+  <h2><span class="h2-n" style="background:var(--c1)">1</span> Créer une Threshold Rule</h2>
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body"><h4>Aller dans Rules</h4><div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Stack Management → Rules → Create rule</span></div></div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body"><h4>Choisir le type</h4><p>Sélectionnez <strong>"Elasticsearch query"</strong> dans la liste des types de règle. C'est le type threshold/query polyvalent.</p></div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div><div class="wt-line"></div></div>
+      <div class="wt-body"><h4>Configurer la requête</h4><p>Renseignez l'<strong>index</strong>, la <strong>requête KQL ou DSL</strong>, et la <strong>fenêtre temporelle</strong> (time window).</p></div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">4</div><div class="wt-line"></div></div>
+      <div class="wt-body"><h4>Configurer la condition</h4><p>Définissez : <strong>quand</strong> déclencher (count is above, avg is above…), avec quelle valeur de seuil.</p></div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">5</div></div>
+      <div class="wt-body"><h4>Configurer le schedule et les actions</h4><p>Fréquence d'évaluation, connecteur de notification, message personnalisé.</p></div>
+    </div>
+  </div>
+
+  <div class="box warn">
+    <div class="box-i">⚠️</div>
+    <div class="box-b"><strong>Paramètre critique : "Time window"</strong><p>La fenêtre temporelle détermine sur quelle période Elasticsearch compte les events. <strong>Trop courte</strong> → faux positifs (pics normaux). <strong>Trop longue</strong> → détection lente. Règle générale : time window = 5 à 10 × le schedule.</p></div>
+  </div>
+
+  <hr class="sep" id="thr-count">
+  <h2><span class="h2-n" style="background:var(--c1)">2</span> Exemple — Trop de requêtes depuis une IP</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Déclencher une alerte quand une IP unique génère plus de <strong>200 requêtes en 5 minutes</strong> — signature de brute force, DDoS ou scan automatisé.</div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:rgba(2,132,199,.1)">📋</div>
+      <div><div class="rs-title">Configuration de la règle</div><div class="rs-sub">Stack Management → Rules → Create rule → Elasticsearch query</div></div>
+    </div>
+    <div class="rs-body">
+      <div class="param-block">
+        <div class="pb-label">Nom de la règle</div>
+        <div class="pb-desc">Un nom clair et parlant — sera visible dans les notifications.</div>
+        <div class="cw"><div class="ctop"><span>Valeur</span><span class="clang cl-kql">TEXTE</span></div><pre>Trop de requêtes depuis une IP — Possible scan/DDoS</pre></div>
+      </div>
+      <div class="param-block">
+        <div class="pb-label">Index / Data View</div>
+        <div class="pb-desc">Pattern d'index Elasticsearch à surveiller.</div>
+        <div class="cw"><div class="ctop"><span>Valeur</span></div><pre>tp-nginx    <span class="cc"># ou votre index de logs nginx</span></pre></div>
+      </div>
+      <div class="param-block">
+        <div class="pb-label">Requête KQL (filtre préalable)</div>
+        <div class="pb-desc">Filtre appliqué <em>avant</em> de compter. Restreint le périmètre analysé.</div>
+        <div class="cw"><div class="ctop"><span>KQL — filtre de base</span><span class="clang cl-kql">KQL</span></div>
+<pre><span class="cc"># Sans filtre : surveiller tous les logs</span>
+<span class="cc"># Avec filtre : ne surveiller que les erreurs 4xx/5xx</span>
+http.response.status_code >= 400</pre></div>
+      </div>
+      <div class="param-block">
+        <div class="pb-label">Condition — WHEN / IS ABOVE</div>
+        <div class="pb-desc">Ce qui déclenche l'alerte. Ici : le <em>count</em> (nombre de documents matchant) dépasse 200.</div>
+        <div class="field-grid">
+          <div class="fg-item"><div class="fg-key">Aggregation type</div><div class="fg-val"><code>Count</code> — nombre de documents</div></div>
+          <div class="fg-item"><div class="fg-key">Threshold value</div><div class="fg-val"><code>200</code> — seuil de déclenchement</div></div>
+          <div class="fg-item"><div class="fg-key">Time window</div><div class="fg-val"><code>5 minutes</code> — fenêtre d'observation</div></div>
+          <div class="fg-item"><div class="fg-key">Group by</div><div class="fg-val"><code>source.ip</code> — une alerte <em>par IP</em></div></div>
+        </div>
+        <div class="box warn" style="margin-top:.5rem">
+          <div class="box-i">⚡</div>
+          <div class="box-b"><strong>L'option "Group by" est clé !</strong><p>Sans group by → une seule alerte "global". Avec <code>group by source.ip</code> → une alerte distincte par IP qui dépasse le seuil. Vous savez exactement quelle IP est responsable.</p></div>
+        </div>
+      </div>
+      <div class="param-block">
+        <div class="pb-label">Schedule (fréquence d'évaluation)</div>
+        <div class="pb-desc">À quelle fréquence la règle est réévaluée.</div>
+        <div class="pb-values">
+          <span class="pv">Every 1 minute</span>
+          <span class="pv recommended">Every 5 minutes ← recommandé</span>
+          <span class="pv warn">Every 1 second ← dangereux (surcharge)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep" id="thr-ratio">
+  <h2><span class="h2-n" style="background:var(--c1)">3</span> Exemple — Taux d'erreur HTTP trop élevé</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Déclencher quand le <strong>pourcentage de réponses 5xx</strong> dépasse 10% du trafic total — indique une panne applicative ou surcharge.</div>
+  </div>
+
+  <div class="box info">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>Utiliser "Elasticsearch query" avec agrégation custom</strong><p>Pour un <em>ratio</em>, on ne peut pas utiliser directement une Threshold Rule simple. On utilisera une <strong>ES|QL Rule</strong> ou une <strong>requête DSL avec script</strong>. Voir la section ES|QL pour l'implémentation recommandée.</p></div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>Approche DSL — agrégation + script</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="cc">// Utilisé comme "custom query" dans une ES|QL Rule ou Watcher</span>
+<span class="co">GET</span> <span class="cs">/tp-nginx/_search</span>
+{
+  <span class="ck">"size"</span>: <span class="cn">0</span>,
+  <span class="ck">"aggs"</span>: {
+    <span class="ck">"total"</span>: { <span class="ck">"value_count"</span>: { <span class="ck">"field"</span>: <span class="cs">"http.response.status_code"</span> } },
+    <span class="ck">"errors_5xx"</span>: {
+      <span class="ck">"filter"</span>: { <span class="ck">"range"</span>: { <span class="ck">"http.response.status_code"</span>: { <span class="ck">"gte"</span>: <span class="cn">500</span> } } }
+    },
+    <span class="ck">"taux_erreur"</span>: {
+      <span class="ck">"bucket_script"</span>: {
+        <span class="ck">"buckets_path"</span>: { <span class="ck">"errors"</span>: <span class="cs">"errors_5xx._count"</span>, <span class="ck">"total"</span>: <span class="cs">"total"</span> },
+        <span class="ck">"script"</span>: <span class="cs">"params.errors / params.total * 100"</span>
+      }
+    }
+  }
+}
+<span class="cc">// Déclencher si taux_erreur.value > 10</span></pre></div>
+
+  <hr class="sep" id="thr-term">
+  <h2><span class="h2-n" style="background:var(--c1)">4</span> Per-term grouping — Une alerte par entité</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Surveiller <strong>chaque serveur individuellement</strong>. Si web-01 a trop d'erreurs mais web-02 va bien → alerte uniquement pour web-01.</div>
+  </div>
+
+  <div class="rule-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:rgba(2,132,199,.1)">🏷️</div>
+      <div><div class="rs-title">Configuration Group by</div><div class="rs-sub">Configuration du regroupement par terme</div></div>
+    </div>
+    <div class="rs-body">
+      <div class="param-block">
+        <div class="pb-label">Group by (split)</div>
+        <div class="pb-desc">Kibana évalue la condition <strong>séparément pour chaque valeur</strong> du champ choisi. Chaque groupe peut être en état Active ou OK indépendamment.</div>
+        <div class="pb-values">
+          <span class="pv recommended">source.ip ← par IP attaquante</span>
+          <span class="pv recommended">host.name ← par serveur</span>
+          <span class="pv">user.name ← par utilisateur</span>
+          <span class="pv">destination.port ← par port cible</span>
+          <span class="pv">http.response.status_code ← par code HTTP</span>
+        </div>
+      </div>
+      <div class="param-block">
+        <div class="pb-label">Top N (nombre de groupes max)</div>
+        <div class="pb-desc">Limite le nombre de termes évalués. Si vous avez 10 000 IPs, évaluer toutes crée une surcharge. Limitez aux top N les plus fréquentes.</div>
+        <div class="pb-values">
+          <span class="pv recommended">Top 100 ← bon compromis</span>
+          <span class="pv">Top 1000 ← pour des cas précis</span>
+          <span class="pv warn">Top 10000 ← surcharge possible</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ ES|QL RULES ═══════════════════════════════ -->
+<div class="section" id="sec-esql">
+  <div class="page-hero">
+    <div class="hero-tag ht-esql">⚡ ES|QL Rules</div>
+    <h1 class="hero-title">ES|QL Rules —<br>La détection la plus puissante</h1>
+    <p class="hero-sub">Écrivez n'importe quelle requête ES|QL et transformez-la en alerte. Idéal pour les logiques complexes que les Threshold Rules ne peuvent pas exprimer.</p>
+  </div>
+
+  <h2><span class="h2-n" style="background:var(--c2)">1</span> Comment fonctionne une ES|QL Rule</h2>
+  <p>Kibana exécute votre requête ES|QL selon le schedule défini. Si la requête retourne <strong>au moins un document</strong> (ou si une colonne numérique dépasse un seuil), l'alerte se déclenche.</p>
+
+  <div class="field-grid">
+    <div class="fg-item" style="border-top:3px solid var(--c2)">
+      <div class="fg-key">Mode "row count"</div>
+      <div class="fg-val">L'alerte déclenche si la requête retourne ≥ 1 ligne. Utilisez <code>LIMIT 1</code> si vous voulez juste "est-ce que ça existe ?".</div>
+    </div>
+    <div class="fg-item" style="border-top:3px solid var(--c2)">
+      <div class="fg-key">Mode "value threshold"</div>
+      <div class="fg-val">Comparez une valeur numérique retournée par ES|QL à un seuil. Ex: <code>STATS n = COUNT(*)</code> → alerte si n > 100.</div>
+    </div>
+  </div>
+
+  <hr class="sep" id="esql-brute">
+  <h2><span class="h2-n" style="background:var(--c2)">2</span> Règle — Détection brute force SSH</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Déclencher quand une IP envoie <strong>plus de 10 tentatives d'auth SSH échouées en 5 minutes</strong>, et envoyer l'IP + le nombre dans la notification.</div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>Requête ES|QL de la règle</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// Copiez cette requête dans la règle ES|QL</span>
+<span class="cp">FROM</span> tp-auth
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">event.outcome</span> == <span class="cs">"failure"</span>
+      <span class="co">AND</span> <span class="ck">destination.port</span> == <span class="cn">22</span>
+      <span class="co">AND</span> <span class="ck">@timestamp</span> >= <span class="cs">"now-5m"</span>
+  <span class="cp">|</span> <span class="cp">STATS</span> nb_echecs = <span class="cf">COUNT</span>(*) <span class="co">BY</span> <span class="ck">source.ip</span>
+  <span class="cp">|</span> <span class="cp">WHERE</span> nb_echecs > <span class="cn">10</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> nb_echecs <span class="co">DESC</span></pre></div>
+
+  <div class="rule-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:rgba(124,58,237,.1)">⚙️</div>
+      <div><div class="rs-title">Paramètres de la règle</div></div>
+    </div>
+    <div class="rs-body">
+      <div class="field-grid">
+        <div class="fg-item"><div class="fg-key">Schedule</div><div class="fg-val">Every <code>1 minute</code></div></div>
+        <div class="fg-item"><div class="fg-key">Condition</div><div class="fg-val">Row count <code>is above 0</code> (si la requête retourne des lignes, il y a du brute force)</div></div>
+        <div class="fg-item"><div class="fg-key">Grouping</div><div class="fg-val">La requête fait déjà le grouping par <code>source.ip</code> — une alerte par IP</div></div>
+        <div class="fg-item"><div class="fg-key">Throttle</div><div class="fg-val"><code>10 minutes</code> — évite d'être spammé à chaque évaluation</div></div>
+      </div>
+
+      <h3>Message de notification avec variables</h3>
+      <div class="cw"><div class="ctop"><span>Template Mustache — Message Slack</span><span class="clang cl-yaml">MUSTACHE</span></div>
+<pre>🚨 *BRUTE FORCE SSH DÉTECTÉ*
+
+IP Source : *{{context.value.source\.ip}}*
+Nb d'échecs : *{{context.value.nb_echecs}}* tentatives en 5 min
+Hôte cible : {{context.value.host\.name}}
+
+Déclenché : {{date}}
+Règle : {{rule.name}}</pre></div>
+    </div>
+  </div>
+
+  <hr class="sep" id="esql-exfil">
+  <h2><span class="h2-n" style="background:var(--c2)">3</span> Règle — Détection d'exfiltration de données</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Alerter quand la somme des données transférées par une IP dépasse <strong>50 Mo en 15 minutes</strong> — signature d'exfiltration.</div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>ES|QL — Détection exfiltration volumétrique</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-nginx
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">@timestamp</span> >= <span class="cs">"now-15m"</span>
+      <span class="co">AND</span> <span class="ck">http.request.method</span> == <span class="cs">"POST"</span>
+  <span class="cp">|</span> <span class="cp">STATS</span>
+      total_bytes = <span class="cf">SUM</span>(<span class="ck">http.response.body.bytes</span>),
+      nb_requetes = <span class="cf">COUNT</span>(*),
+      max_bytes   = <span class="cf">MAX</span>(<span class="ck">http.response.body.bytes</span>)
+      <span class="co">BY</span> <span class="ck">source.ip</span>
+  <span class="cp">|</span> <span class="cp">EVAL</span> total_mb = <span class="cf">ROUND</span>(total_bytes / <span class="cn">1048576</span>, <span class="cn">2</span>)
+  <span class="cp">|</span> <span class="cp">WHERE</span> total_mb > <span class="cn">50</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> total_mb <span class="co">DESC</span></pre></div>
+
+  <div class="box tip">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>Affiner selon votre contexte</strong><p>Adaptez le seuil (<code>50</code> Mo) à votre baseline normale. Si vos uploads légitimes atteignent 200 Mo, montez le seuil ou filtrez par endpoint avec <code>AND url.path != "/api/upload-legitime"</code>.</p></div>
+  </div>
+
+  <hr class="sep" id="esql-new-ip">
+  <h2><span class="h2-n" style="background:var(--c2)">4</span> Règle — Nouvelle IP jamais vue</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Détecter une IP qui se connecte pour la <strong>première fois en dehors des heures ouvrées</strong> (entre 22h et 6h). Signature d'un accès illégitime.</div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>ES|QL — Connexion hors-heures depuis IP inconnue</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-auth
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">event.outcome</span> == <span class="cs">"success"</span>
+      <span class="co">AND</span> <span class="ck">@timestamp</span> >= <span class="cs">"now-1h"</span>
+  <span class="cp">|</span> <span class="cp">EVAL</span>
+      heure    = <span class="cf">DATE_EXTRACT</span>(<span class="cs">"HOUR_OF_DAY"</span>, <span class="ck">@timestamp</span>),
+      est_nuit = <span class="cf">CASE</span>(heure >= <span class="cn">22</span> <span class="co">OR</span> heure < <span class="cn">6</span>, <span class="co">true</span>, <span class="co">false</span>)
+  <span class="cp">|</span> <span class="cp">WHERE</span> est_nuit == <span class="co">true</span>
+  <span class="cp">|</span> <span class="cp">STATS</span>
+      nb_logins   = <span class="cf">COUNT</span>(*),
+      users_uniq  = <span class="cf">COUNT_DISTINCT</span>(<span class="ck">user.name</span>),
+      premiere    = <span class="cf">MIN</span>(<span class="ck">@timestamp</span>)
+      <span class="co">BY</span> <span class="ck">source.ip</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> premiere <span class="co">ASC</span></pre></div>
+</div>
+
+<!-- ═══════════════════════════════ GEO ═══════════════════════════════ -->
+<div class="section" id="sec-geo">
+  <div class="page-hero">
+    <div class="hero-tag ht-geo">🗺️ GeoIP & Localisation</div>
+    <h1 class="hero-title">Alertes GeoIP —<br>Localiser les attaquants</h1>
+    <p class="hero-sub">Enrichissez vos logs avec la géolocalisation IP, puis créez des alertes sur des pays interdits, l'impossible travel, ou des connexions depuis Tor.</p>
+  </div>
+
+  <h2><span class="h2-n" style="background:var(--c4)">1</span> Pipeline GeoIP — Enrichir à l'ingestion</h2>
+  <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Dev Tools → Console</span></div>
+
+  <div class="cw"><div class="ctop"><span>Créer le pipeline d'enrichissement GeoIP</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="co">PUT</span> <span class="cs">/_ingest/pipeline/geoip-enrichment</span>
+{
+  <span class="ck">"description"</span>: <span class="cs">"Enrichit source.ip et destination.ip avec GeoIP"</span>,
+  <span class="ck">"processors"</span>: [
+
+    <span class="cc">// ─ Géolocaliser l'IP source ──────────────────────</span>
+    {
+      <span class="ck">"geoip"</span>: {
+        <span class="ck">"field"</span>: <span class="cs">"source.ip"</span>,
+        <span class="ck">"target_field"</span>: <span class="cs">"source.geo"</span>,
+        <span class="ck">"properties"</span>: [
+          <span class="cs">"country_iso_code"</span>, <span class="cs">"country_name"</span>,
+          <span class="cs">"city_name"</span>, <span class="cs">"region_name"</span>,
+          <span class="cs">"location"</span>,    <span class="cc">// {lat, lon} pour les cartes</span>
+          <span class="cs">"autonomous_system_number"</span>,
+          <span class="cs">"autonomous_system_organization"</span>
+        ],
+        <span class="ck">"ignore_missing"</span>: <span class="co">true</span>,
+        <span class="ck">"ignore_failure"</span>: <span class="co">true</span>
+      }
+    },
+
+    <span class="cc">// ─ Ajouter un tag si IP privée (RFC1918) ────────</span>
+    {
+      <span class="ck">"set"</span>: {
+        <span class="ck">"if"</span>: <span class="cs">"ctx.source?.ip =~ /^(10\\.|172\\.(1[6-9]|2[0-9]|3[01])\\.|192\\.168\\.).*/"</span>,
+        <span class="ck">"field"</span>: <span class="cs">"source.is_private"</span>,
+        <span class="ck">"value"</span>: <span class="co">true</span>
+      }
+    },
+    {
+      <span class="ck">"set"</span>: {
+        <span class="ck">"if"</span>: <span class="cs">"ctx.source?.ip != null &amp;&amp; ctx.source?.is_private == null"</span>,
+        <span class="ck">"field"</span>: <span class="cs">"source.is_private"</span>,
+        <span class="ck">"value"</span>: <span class="co">false</span>
+      }
+    },
+
+    <span class="cc">// ─ Normaliser le code pays en majuscules ────────</span>
+    {
+      <span class="ck">"uppercase"</span>: {
+        <span class="ck">"field"</span>: <span class="cs">"source.geo.country_iso_code"</span>,
+        <span class="ck">"ignore_missing"</span>: <span class="co">true</span>
+      }
+    }
+  ]
+}</pre></div>
+
+  <div class="cw"><div class="ctop"><span>Appliquer le pipeline sur les nouveaux docs</span><span class="clang cl-dsl">DSL</span></div>
+<pre><span class="cc">// Option 1 : Dans logstash.conf</span>
+<span class="co">output</span> {
+  <span class="ck">elasticsearch</span> {
+    <span class="ck">hosts</span> => [<span class="cs">"localhost:9200"</span>]
+    <span class="ck">pipeline</span> => <span class="cs">"geoip-enrichment"</span>
+    <span class="ck">index</span> => <span class="cs">"logs-%{+YYYY.MM.dd}"</span>
+  }
+}
+
+<span class="cc">// Option 2 : Index template pour appliquer automatiquement</span>
+<span class="co">PUT</span> <span class="cs">/_index_template/logs-template</span>
+{
+  <span class="ck">"index_patterns"</span>: [<span class="cs">"logs-*"</span>, <span class="cs">"nginx-*"</span>],
+  <span class="ck">"template"</span>: {
+    <span class="ck">"settings"</span>: {
+      <span class="ck">"default_pipeline"</span>: <span class="cs">"geoip-enrichment"</span>
+    }
+  }
+}
+
+<span class="cc">// Option 3 : Réindexer les données existantes</span>
+<span class="co">POST</span> <span class="cs">/tp-nginx/_update_by_query?pipeline=geoip-enrichment</span>
+{ <span class="ck">"query"</span>: { <span class="ck">"match_all"</span>: {} } }</pre></div>
+
+  <div class="box tip">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>Vérifier que GeoIP fonctionne</strong><p>Après le pipeline, vérifiez avec <code>GET /tp-nginx/_search</code> que les docs ont bien un champ <code>source.geo.country_iso_code</code>. S'il est absent sur les IPs privées, c'est normal (GeoIP ne gère pas le RFC1918).</p></div>
+  </div>
+
+  <hr class="sep" id="geo-country">
+  <h2><span class="h2-n" style="background:var(--c4)">2</span> Alerte — Connexion depuis un pays interdit</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Déclencher immédiatement si une connexion réussie est enregistrée depuis un <strong>pays non autorisé</strong> (ex: Russie, Corée du Nord, Iran).</div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>ES|QL Rule — Pays interdits</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-auth,logs-*
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">event.outcome</span> == <span class="cs">"success"</span>
+      <span class="co">AND</span> <span class="ck">@timestamp</span> >= <span class="cs">"now-5m"</span>
+      <span class="co">AND</span> <span class="ck">source.is_private</span> == <span class="co">false</span>
+
+  <span class="cc">// Liste de pays interdits (ISO 3166-1 alpha-2)</span>
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">source.geo.country_iso_code</span> <span class="co">IN</span> (
+      <span class="cs">"RU"</span>, <span class="cs">"KP"</span>, <span class="cs">"IR"</span>, <span class="cs">"CN"</span>, <span class="cs">"BY"</span>,
+      <span class="cs">"SY"</span>, <span class="cs">"CU"</span>, <span class="cs">"VE"</span>, <span class="cs">"MM"</span>
+    )
+
+  <span class="cp">|</span> <span class="cp">KEEP</span>
+      <span class="ck">@timestamp</span>,
+      <span class="ck">source.ip</span>,
+      <span class="ck">source.geo.country_iso_code</span>,
+      <span class="ck">source.geo.country_name</span>,
+      <span class="ck">source.geo.city_name</span>,
+      <span class="ck">source.geo.location</span>,
+      <span class="ck">user.name</span>,
+      <span class="ck">event.action</span>
+
+  <span class="cp">|</span> <span class="cp">SORT</span> <span class="ck">@timestamp</span> <span class="co">DESC</span></pre></div>
+
+  <div class="cw"><div class="ctop"><span>Template de notification — alerte pays interdit</span><span class="clang cl-yaml">MUSTACHE</span></div>
+<pre>🌍 *CONNEXION DEPUIS PAYS INTERDIT*
+
+👤 Utilisateur  : {{context.value.user\.name}}
+🌐 Pays         : {{context.value.source\.geo\.country_name}} ({{context.value.source\.geo\.country_iso_code}})
+🏙️  Ville        : {{context.value.source\.geo\.city_name}}
+🔴 IP Source    : {{context.value.source\.ip}}
+📍 Coordonnées  : {{context.value.source\.geo\.location}}
+⏰ Timestamp    : {{context.value.@timestamp}}
+🎯 Action       : {{context.value.event\.action}}
+
+→ Investiguer immédiatement dans Kibana Security</pre></div>
+
+  <hr class="sep" id="geo-impossible">
+  <h2><span class="h2-n" style="background:var(--c4)">3</span> Alerte — Impossible Travel</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Détecter qu'un utilisateur s'est connecté depuis Paris à 10h, puis depuis Tokyo à 10h15 — <strong>physiquement impossible</strong>. Indique un compte compromis.</div>
+  </div>
+
+  <div class="box warn">
+    <div class="box-i">⚠️</div>
+    <div class="box-b"><strong>Impossible travel — implémentation</strong><p>Ce pattern nécessite de <strong>calculer la distance géographique</strong> entre deux connexions successives du même utilisateur et de la diviser par le temps écoulé pour obtenir une "vitesse". Si > 1000 km/h → impossible. En ES|QL pur, cela nécessite un <strong>Watcher avec script Painless</strong> ou une <strong>enrichment policy</strong>.</p></div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>Watcher — Impossible Travel avec script Painless</span><span class="clang cl-json">WATCHER JSON</span></div>
+<pre><span class="co">PUT</span> <span class="cs">/_watcher/watch/impossible-travel</span>
+{
+  <span class="ck">"trigger"</span>: { <span class="ck">"schedule"</span>: { <span class="ck">"interval"</span>: <span class="cs">"5m"</span> } },
+  <span class="ck">"input"</span>: {
+    <span class="ck">"search"</span>: {
+      <span class="ck">"request"</span>: {
+        <span class="ck">"indices"</span>: [<span class="cs">"tp-auth"</span>],
+        <span class="ck">"body"</span>: {
+          <span class="ck">"size"</span>: <span class="cn">0</span>,
+          <span class="ck">"query"</span>: {
+            <span class="ck">"bool"</span>: {
+              <span class="ck">"filter"</span>: [
+                { <span class="ck">"term"</span>: { <span class="ck">"event.outcome"</span>: <span class="cs">"success"</span> } },
+                { <span class="ck">"range"</span>: { <span class="ck">"@timestamp"</span>: { <span class="ck">"gte"</span>: <span class="cs">"now-1h"</span> } } },
+                { <span class="ck">"exists"</span>: { <span class="ck">"field"</span>: <span class="cs">"source.geo.location"</span> } }
+              ]
+            }
+          },
+          <span class="ck">"aggs"</span>: {
+            <span class="ck">"par_user"</span>: {
+              <span class="ck">"terms"</span>: { <span class="ck">"field"</span>: <span class="cs">"user.name"</span> },
+              <span class="ck">"aggs"</span>: {
+                <span class="ck">"derniere_connexion"</span>: { <span class="ck">"top_hits"</span>: {
+                  <span class="ck">"size"</span>: <span class="cn">2</span>,
+                  <span class="ck">"sort"</span>: [{ <span class="ck">"@timestamp"</span>: <span class="cs">"desc"</span> }],
+                  <span class="ck">"_source"</span>: [<span class="cs">"source.ip"</span>, <span class="cs">"source.geo.location"</span>,
+                               <span class="cs">"source.geo.country_name"</span>, <span class="cs">"@timestamp"</span>]
+                }}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  <span class="ck">"condition"</span>: {
+    <span class="ck">"script"</span>: {
+      <span class="ck">"lang"</span>: <span class="cs">"painless"</span>,
+      <span class="ck">"source"</span>: <span class="cs">"""
+        for (bucket in ctx.payload.aggregations.par_user.buckets) {
+          def hits = bucket.derniere_connexion.hits.hits;
+          if (hits.length < 2) continue;
+          def loc1 = hits[0]._source['source.geo.location'];
+          def loc2 = hits[1]._source['source.geo.location'];
+          if (loc1 == null || loc2 == null) continue;
+          // Distance approx en km (formule Haversine simplifiée)
+          double lat1 = loc1.lat, lon1 = loc1.lon;
+          double lat2 = loc2.lat, lon2 = loc2.lon;
+          double dlat = Math.toRadians(lat2 - lat1);
+          double dlon = Math.toRadians(lon2 - lon1);
+          double a = Math.sin(dlat/2)*Math.sin(dlat/2) +
+            Math.cos(Math.toRadians(lat1))*Math.cos(Math.toRadians(lat2))*
+            Math.sin(dlon/2)*Math.sin(dlon/2);
+          double dist_km = 2 * 6371 * Math.asin(Math.sqrt(a));
+          // Temps écoulé en heures
+          def t1 = hits[0]._source['@timestamp'];
+          def t2 = hits[1]._source['@timestamp'];
+          // Si distance > 500km → alerte (simplification)
+          if (dist_km > 500) return true;
+        }
+        return false;
+      """</span>
+    }
+  },
+  <span class="ck">"actions"</span>: {
+    <span class="ck">"slack_alert"</span>: {
+      <span class="ck">"slack"</span>: {
+        <span class="ck">"message"</span>: {
+          <span class="ck">"to"</span>: [<span class="cs">"#security-soc"</span>],
+          <span class="ck">"text"</span>: <span class="cs">"✈️ IMPOSSIBLE TRAVEL détecté — compte potentiellement compromis"</span>
+        }
+      }
+    }
+  }
+}</pre></div>
+
+  <hr class="sep" id="geo-tor">
+  <h2><span class="h2-n" style="background:var(--c4)">4</span> Alerte — Connexion depuis Tor ou VPN suspect</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Détecter des connexions depuis des <strong>nœuds de sortie Tor</strong> ou des <strong>fournisseurs de VPN/proxy connus</strong>. Indicateur fort d'anonymisation intentionnelle.</div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>ES|QL — Détection Tor via ASN</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-nginx
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">@timestamp</span> >= <span class="cs">"now-15m"</span>
+      <span class="co">AND</span> <span class="ck">source.is_private</span> == <span class="co">false</span>
+
+  <span class="cc">// ASN des nœuds Tor et fournisseurs anonymisants connus</span>
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">source.geo.autonomous_system_number</span> <span class="co">IN</span> (
+      <span class="cc">// Tor Project Official Exit Nodes (exemples)</span>
+      <span class="cn">4224</span>, <span class="cn">8001</span>, <span class="cn">9001</span>, <span class="cn">14618</span>,
+      <span class="cc">// Mullvad VPN</span>
+      <span class="cn">39351</span>,
+      <span class="cc">// NordVPN</span>
+      <span class="cn">212238</span>,
+      <span class="cc">// ExpressVPN</span>
+      <span class="cn">139895</span>
+    )
+    <span class="co">OR</span> <span class="ck">source.geo.autonomous_system_organization</span> <span class="co">LIKE</span> <span class="cs">"*Tor*"</span>
+    <span class="co">OR</span> <span class="ck">source.geo.autonomous_system_organization</span> <span class="co">LIKE</span> <span class="cs">"*anonymiz*"</span>
+    <span class="co">OR</span> <span class="ck">source.geo.autonomous_system_organization</span> <span class="co">LIKE</span> <span class="cs">"*VPN*"</span>
+
+  <span class="cp">|</span> <span class="cp">STATS</span>
+      nb = <span class="cf">COUNT</span>(*),
+      users = <span class="cf">VALUES</span>(<span class="ck">user.name</span>)
+      <span class="co">BY</span> <span class="ck">source.ip</span>,
+         <span class="ck">source.geo.autonomous_system_organization</span>,
+         <span class="ck">source.geo.country_name</span>
+  <span class="cp">|</span> <span class="cp">SORT</span> nb <span class="co">DESC</span></pre></div>
+
+  <div class="box info">
+    <div class="box-i">💡</div>
+    <div class="box-b"><strong>Enrichissement Threat Intel</strong><p>Pour une détection Tor plus précise, utilisez un <strong>flux de threat intelligence</strong> (liste de nœuds de sortie Tor mis à jour) combiné avec le processeur <code>enrich</code> de Logstash ou une <strong>Enrich Policy</strong> Elasticsearch qui ajoute un flag <code>source.is_tor: true</code> à l'ingestion.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ ML ANOMALY ═══════════════════════════════ -->
+<div class="section" id="sec-ml">
+  <div class="page-hero">
+    <div class="hero-tag ht-ml">🤖 ML Anomaly Detection</div>
+    <h1 class="hero-title">ML Anomaly Rules —<br>Détecter l'inhabituel</h1>
+    <p class="hero-sub">Le Machine Learning de Kibana apprend le comportement "normal" de votre infrastructure et alerte dès qu'il détecte quelque chose d'anormal — sans avoir à définir un seuil fixe.</p>
+  </div>
+
+  <h2><span class="h2-n" style="background:var(--c5)">1</span> Pourquoi ML plutôt qu'un seuil ?</h2>
+
+  <div class="matrix">
+    <div class="matrix-row header"><div class="mc header">Aspect</div><div class="mc header">Threshold Rule</div><div class="mc header">ML Anomaly</div></div>
+    <div class="matrix-row"><div class="mc label">Seuil</div><div class="mc">Fixe, défini manuellement</div><div class="mc"><strong>Adaptatif</strong> — apprend la normale</div></div>
+    <div class="matrix-row"><div class="mc label">Saisonnalité</div><div class="mc">Faux positifs la nuit/week-end</div><div class="mc">Tient compte des cycles</div></div>
+    <div class="matrix-row"><div class="mc label">Nouveauté</div><div class="mc">Ne détecte pas les schémas inconnus</div><div class="mc">Détecte tout comportement inhabituel</div></div>
+    <div class="matrix-row"><div class="mc label">Config</div><div class="mc">Simple, immédiat</div><div class="mc">Nécessite 1-2 semaines d'apprentissage</div></div>
+    <div class="matrix-row"><div class="mc label">Faux positifs</div><div class="mc">Élevés si seuil mal calibré</div><div class="mc">Réduits après apprentissage</div></div>
+  </div>
+
+  <hr class="sep" id="ml-traffic">
+  <h2><span class="h2-n" style="background:var(--c5)">2</span> Créer un ML Job — Anomalie de trafic</h2>
+
+  <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Machine Learning</span><span class="arr">›</span><span class="cur">Anomaly Detection → Create job</span></div>
+
+  <div class="walkthrough">
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">1</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Choisir "Single Metric" ou "Multi-Metric"</h4>
+        <p><strong>Single Metric</strong> : surveille une seule valeur (ex: count global). <strong>Multi-Metric</strong> : surveille plusieurs métriques en simultané (count + bytes + latency). <strong>Population</strong> : compare les entités entre elles (ex: quelle IP est anormale par rapport aux autres).</p>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">2</div><div class="wt-line"></div></div>
+      <div class="wt-body">
+        <h4>Configurer le "Bucket span"</h4>
+        <p>Le bucket span est la granularité temporelle d'analyse. Règle empirique : <strong>≥ 1/12e de la période de détection souhaitée</strong>.</p>
+        <div class="pb-values">
+          <span class="pv">1m — détection en quasi temps réel</span>
+          <span class="pv recommended">15m ← bon compromis</span>
+          <span class="pv recommended">1h ← pour tendances horaires</span>
+          <span class="pv">1d — pour patterns journaliers</span>
+        </div>
+      </div>
+    </div>
+    <div class="wt-step">
+      <div class="wt-num"><div class="wt-circle">3</div></div>
+      <div class="wt-body">
+        <h4>Définir le détecteur</h4>
+        <p>Choisissez la fonction ML et les champs à analyser.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Fonction ML</th><th>Usage</th><th>Exemple</th></tr></thead>
+          <tbody>
+            <tr><td><code>count</code></td><td>Nombre d'événements par bucket</td><td>Pic de requêtes HTTP</td></tr>
+            <tr><td><code>high_count</code></td><td>Uniquement les pics (haut)</td><td>DDoS</td></tr>
+            <tr><td><code>low_count</code></td><td>Uniquement les creux (bas)</td><td>Perte de logs</td></tr>
+            <tr><td><code>mean(field)</code></td><td>Moyenne d'une valeur</td><td>Latence anormale</td></tr>
+            <tr><td><code>sum(field)</code></td><td>Somme d'une valeur</td><td>Volume trafic inhabituel</td></tr>
+            <tr><td><code>rare</code></td><td>Valeur rarement vue</td><td>Nouveau user-agent</td></tr>
+            <tr><td><code>freq_rare</code></td><td>Valeur fréquente qui devient rare</td><td>Process qui disparaît</td></tr>
+            <tr><td><code>info_content</code></td><td>Entropie (contenu informationnel)</td><td>DNS tunneling</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Configuration ML Job — Anomalie de volume nginx</h3>
+  <div class="cw"><div class="ctop"><span>ML Job via API</span><span class="clang cl-json">JSON API</span></div>
+<pre><span class="co">PUT</span> <span class="cs">/_ml/anomaly_detectors/nginx-volume-anomaly</span>
+{
+  <span class="ck">"description"</span>: <span class="cs">"Détecte les anomalies de volume trafic nginx"</span>,
+  <span class="ck">"analysis_config"</span>: {
+    <span class="ck">"bucket_span"</span>: <span class="cs">"15m"</span>,
+    <span class="ck">"detectors"</span>: [
+      {
+        <span class="cc">// Anomalie globale de volume</span>
+        <span class="ck">"function"</span>: <span class="cs">"count"</span>,
+        <span class="ck">"detector_description"</span>: <span class="cs">"Volume requests global"</span>
+      },
+      {
+        <span class="cc">// Anomalie par IP — compare les IPs entre elles</span>
+        <span class="ck">"function"</span>: <span class="cs">"high_count"</span>,
+        <span class="ck">"by_field_name"</span>: <span class="cs">"source.ip"</span>,
+        <span class="ck">"detector_description"</span>: <span class="cs">"Pic par IP source"</span>
+      },
+      {
+        <span class="cc">// Anomalie de taille de réponse</span>
+        <span class="ck">"function"</span>: <span class="cs">"mean"</span>,
+        <span class="ck">"field_name"</span>: <span class="cs">"http.response.body.bytes"</span>,
+        <span class="ck">"detector_description"</span>: <span class="cs">"Taille réponse anormale"</span>
+      }
+    ],
+    <span class="ck">"influencers"</span>: [<span class="cs">"source.ip"</span>, <span class="cs">"host.name"</span>, <span class="cs">"url.path"</span>]
+  },
+  <span class="ck">"data_description"</span>: {
+    <span class="ck">"time_field"</span>: <span class="cs">"@timestamp"</span>,
+    <span class="ck">"time_format"</span>: <span class="cs">"epoch_ms"</span>
+  },
+  <span class="ck">"datafeed_config"</span>: {
+    <span class="ck">"indices"</span>: [<span class="cs">"tp-nginx"</span>],
+    <span class="ck">"query"</span>: { <span class="ck">"match_all"</span>: {} }
+  }
+}</pre></div>
+
+  <hr class="sep" id="ml-user">
+  <h2><span class="h2-n" style="background:var(--c5)">3</span> ML Job — Comportement utilisateur anormal</h2>
+
+  <div class="cw"><div class="ctop"><span>ML Job — User behavior analytics</span><span class="clang cl-json">JSON API</span></div>
+<pre><span class="co">PUT</span> <span class="cs">/_ml/anomaly_detectors/user-behavior-anomaly</span>
+{
+  <span class="ck">"description"</span>: <span class="cs">"Détecte les comportements utilisateurs anormaux"</span>,
+  <span class="ck">"analysis_config"</span>: {
+    <span class="ck">"bucket_span"</span>: <span class="cs">"1h"</span>,
+    <span class="ck">"detectors"</span>: [
+      {
+        <span class="cc">// Utilisateur qui se connecte à une heure inhabituelle</span>
+        <span class="ck">"function"</span>: <span class="cs">"count"</span>,
+        <span class="ck">"by_field_name"</span>: <span class="cs">"user.name"</span>,
+        <span class="ck">"detector_description"</span>: <span class="cs">"Connexion heure inhabituelle par user"</span>
+      },
+      {
+        <span class="cc">// Utilisateur qui génère des erreurs inhabituellement</span>
+        <span class="ck">"function"</span>: <span class="cs">"high_count"</span>,
+        <span class="ck">"by_field_name"</span>: <span class="cs">"user.name"</span>,
+        <span class="ck">"over_field_name"</span>: <span class="cs">"http.response.status_code"</span>,
+        <span class="ck">"detector_description"</span>: <span class="cs">"Taux erreur par user"</span>
+      },
+      {
+        <span class="cc">// Nouveau pays pour un utilisateur</span>
+        <span class="ck">"function"</span>: <span class="cs">"rare"</span>,
+        <span class="ck">"by_field_name"</span>: <span class="cs">"source.geo.country_iso_code"</span>,
+        <span class="ck">"partition_field_name"</span>: <span class="cs">"user.name"</span>,
+        <span class="ck">"detector_description"</span>: <span class="cs">"Nouveau pays pour cet utilisateur"</span>
+      }
+    ],
+    <span class="ck">"influencers"</span>: [<span class="cs">"user.name"</span>, <span class="cs">"source.ip"</span>, <span class="cs">"source.geo.country_iso_code"</span>]
+  },
+  <span class="ck">"data_description"</span>: { <span class="ck">"time_field"</span>: <span class="cs">"@timestamp"</span> },
+  <span class="ck">"datafeed_config"</span>: {
+    <span class="ck">"indices"</span>: [<span class="cs">"tp-auth"</span>],
+    <span class="ck">"query"</span>: { <span class="ck">"term"</span>: { <span class="ck">"event.outcome"</span>: <span class="cs">"success"</span> } }
+  }
+}</pre></div>
+
+  <hr class="sep" id="ml-alert">
+  <h2><span class="h2-n" style="background:var(--c5)">4</span> Créer une alerte sur un ML Job</h2>
+  <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Stack Management</span><span class="arr">›</span><span class="cur">Rules → Create rule → Machine learning</span></div>
+
+  <div class="rule-section">
+    <div class="rs-header">
+      <div class="rs-icon" style="background:rgba(190,24,93,.1)">⚙️</div>
+      <div><div class="rs-title">Paramètres clés d'une ML Alert</div></div>
+    </div>
+    <div class="rs-body">
+      <div class="param-block">
+        <div class="pb-label">Job sélectionné</div>
+        <div class="pb-desc">Choisissez le ML Job à surveiller (créé précédemment).</div>
+      </div>
+      <div class="param-block">
+        <div class="pb-label">Anomaly score threshold</div>
+        <div class="pb-desc">Le score d'anomalie ML va de 0 à 100. Plus il est élevé, plus l'anomalie est significative.</div>
+        <div class="pb-values">
+          <span class="pv">score ≥ 25 — faible anomalie (beaucoup de bruit)</span>
+          <span class="pv recommended">score ≥ 50 ← recommandé production</span>
+          <span class="pv recommended">score ≥ 75 ← haute confiance</span>
+          <span class="pv warn">score = 100 ← extrêmement rare</span>
+        </div>
+      </div>
+      <div class="param-block">
+        <div class="pb-label">Influencers</div>
+        <div class="pb-desc">Kibana inclut dans l'alerte les champs qui ont le plus contribué à l'anomalie. Ex: si <code>source.ip = 185.x.x.x</code> est l'influencer principal, ça apparaît dans la notification.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ WATCHER ═══════════════════════════════ -->
+<div class="section" id="sec-watcher">
+  <div class="page-hero">
+    <div class="hero-tag ht-watcher">👁️ Elasticsearch Watcher</div>
+    <h1 class="hero-title">Watcher — Alertes<br>JSON bas niveau</h1>
+    <p class="hero-sub">Pour les cas les plus complexes. Un Watcher est un document JSON stocké dans ES qui combine trigger, input, condition, transform et actions avec une flexibilité totale.</p>
+  </div>
+
+  <h2><span class="h2-n" style="background:var(--c6)">1</span> Structure complète d'un Watcher</h2>
+
+  <div class="cw"><div class="ctop"><span>Anatomie d'un Watcher</span><span class="clang cl-json">WATCHER JSON</span></div>
+<pre><span class="co">PUT</span> <span class="cs">/_watcher/watch/mon-watcher</span>
+{
+  <span class="cc">// ─ 1. TRIGGER ─ Quand s'exécuter ────────────────</span>
+  <span class="ck">"trigger"</span>: {
+    <span class="ck">"schedule"</span>: {
+      <span class="ck">"interval"</span>: <span class="cs">"5m"</span>
+      <span class="cc">// Ou cron : "cron": "0 */5 * * * ?"</span>
+      <span class="cc">// Ou horaire précis : "hourly": { "minute": [0, 30] }</span>
+    }
+  },
+
+  <span class="cc">// ─ 2. INPUT ─ Récupérer les données ─────────────</span>
+  <span class="ck">"input"</span>: {
+    <span class="ck">"search"</span>: {
+      <span class="ck">"request"</span>: {
+        <span class="ck">"indices"</span>: [<span class="cs">"tp-nginx"</span>],
+        <span class="ck">"body"</span>: {
+          <span class="ck">"query"</span>: {
+            <span class="ck">"range"</span>: { <span class="ck">"@timestamp"</span>: { <span class="ck">"gte"</span>: <span class="cs">"now-5m"</span> } }
+          },
+          <span class="ck">"aggs"</span>: {
+            <span class="ck">"erreurs"</span>: { <span class="ck">"filter"</span>: {
+              <span class="ck">"range"</span>: { <span class="ck">"http.response.status_code"</span>: { <span class="ck">"gte"</span>: <span class="cn">500</span> } }
+            }}
+          }
+        }
+      }
+    }
+  },
+
+  <span class="cc">// ─ 3. CONDITION ─ Évaluer les données ───────────</span>
+  <span class="ck">"condition"</span>: {
+    <span class="ck">"compare"</span>: {
+      <span class="ck">"ctx.payload.aggregations.erreurs.doc_count"</span>: { <span class="ck">"gt"</span>: <span class="cn">10</span> }
+    }
+    <span class="cc">// Ou condition script Painless :</span>
+    <span class="cc">// "script": { "source": "ctx.payload.hits.total.value > 100" }</span>
+  },
+
+  <span class="cc">// ─ 4. TRANSFORM ─ Modifier les données ──────────</span>
+  <span class="ck">"transform"</span>: {
+    <span class="ck">"script"</span>: {
+      <span class="ck">"source"</span>: <span class="cs">"""
+        def count = ctx.payload.aggregations.erreurs.doc_count;
+        def total = ctx.payload.hits.total.value;
+        def taux = total > 0 ? (count * 100 / total) : 0;
+        return ['nb_erreurs': count, 'total': total, 'taux_pct': taux];
+      """</span>
+    }
+  },
+
+  <span class="cc">// ─ 5. ACTIONS ─ Notifier ─────────────────────────</span>
+  <span class="ck">"actions"</span>: {
+    <span class="ck">"send_slack"</span>: {
+      <span class="ck">"throttle_period"</span>: <span class="cs">"10m"</span>,
+      <span class="ck">"slack"</span>: {
+        <span class="ck">"message"</span>: {
+          <span class="ck">"to"</span>: [<span class="cs">"#alerts-prod"</span>],
+          <span class="ck">"text"</span>: <span class="cs">"🔥 {{ctx.payload.nb_erreurs}} erreurs 5xx en 5min ({{ctx.payload.taux_pct}}%)"</span>
+        }
+      }
+    },
+    <span class="ck">"index_alert"</span>: {
+      <span class="cc">// Aussi indexer l'alerte dans ES pour l'audit</span>
+      <span class="ck">"index"</span>: {
+        <span class="ck">"index"</span>: <span class="cs">"alerts-log"</span>,
+        <span class="ck">"doc_id"</span>: <span class="cs">"{{ctx.execution_time}}"</span>
+      }
+    }
+  }
+}</pre></div>
+
+  <hr class="sep" id="watcher-chain">
+  <h2><span class="h2-n" style="background:var(--c6)">2</span> Watcher avec conditions enchaînées</h2>
+
+  <div class="cw"><div class="ctop"><span>Conditions multiples avec script Painless</span><span class="clang cl-json">WATCHER JSON</span></div>
+<pre><span class="co">PUT</span> <span class="cs">/_watcher/watch/multi-condition-alert</span>
+{
+  <span class="ck">"trigger"</span>: { <span class="ck">"schedule"</span>: { <span class="ck">"interval"</span>: <span class="cs">"1m"</span> } },
+  <span class="ck">"input"</span>: {
+    <span class="ck">"chain"</span>: {
+      <span class="ck">"inputs"</span>: [
+        {
+          <span class="cc">// Input 1 : compter les erreurs 5xx</span>
+          <span class="ck">"errors"</span>: { <span class="ck">"search"</span>: { <span class="ck">"request"</span>: {
+            <span class="ck">"indices"</span>: [<span class="cs">"tp-nginx"</span>],
+            <span class="ck">"body"</span>: { <span class="ck">"query"</span>: { <span class="ck">"bool"</span>: { <span class="ck">"filter"</span>: [
+              { <span class="ck">"range"</span>: { <span class="ck">"@timestamp"</span>: { <span class="ck">"gte"</span>: <span class="cs">"now-1m"</span> } } },
+              { <span class="ck">"range"</span>: { <span class="ck">"http.response.status_code"</span>: { <span class="ck">"gte"</span>: <span class="cn">500</span> } } }
+            ]}}}
+          }}}
+        },
+        {
+          <span class="cc">// Input 2 : compter les tentatives auth</span>
+          <span class="ck">"auth"</span>: { <span class="ck">"search"</span>: { <span class="ck">"request"</span>: {
+            <span class="ck">"indices"</span>: [<span class="cs">"tp-auth"</span>],
+            <span class="ck">"body"</span>: { <span class="ck">"query"</span>: { <span class="ck">"bool"</span>: { <span class="ck">"filter"</span>: [
+              { <span class="ck">"range"</span>: { <span class="ck">"@timestamp"</span>: { <span class="ck">"gte"</span>: <span class="cs">"now-1m"</span> } } },
+              { <span class="ck">"term"</span>: { <span class="ck">"event.outcome"</span>: <span class="cs">"failure"</span> } }
+            ]}}}
+          }}}
+        }
+      ]
+    }
+  },
+  <span class="ck">"condition"</span>: {
+    <span class="ck">"script"</span>: {
+      <span class="ck">"source"</span>: <span class="cs">"""
+        int errors = ctx.payload.errors.hits.total.value;
+        int authFails = ctx.payload.auth.hits.total.value;
+        // Déclencher si SOIT trop d'erreurs SOIT trop d'échecs auth
+        return errors > 20 || authFails > 10;
+      """</span>
+    }
+  },
+  <span class="ck">"actions"</span>: {
+    <span class="ck">"alert"</span>: {
+      <span class="ck">"webhook"</span>: {
+        <span class="ck">"method"</span>: <span class="cs">"POST"</span>,
+        <span class="ck">"url"</span>: <span class="cs">"https://hooks.slack.com/services/XXX/YYY/ZZZ"</span>,
+        <span class="ck">"body"</span>: <span class="cs">"{\"text\": \"⚠️ Erreurs: {{ctx.payload.errors.hits.total.value}} | Auth fails: {{ctx.payload.auth.hits.total.value}}\"}"</span>
+      }
+    }
+  }
+}</pre></div>
+
+  <hr class="sep" id="watcher-agg">
+  <h2><span class="h2-n" style="background:var(--c6)">3</span> Watcher avec agrégations avancées</h2>
+
+  <div class="cw"><div class="ctop"><span>Watcher — Top IPs + agrégation + email HTML</span><span class="clang cl-json">WATCHER JSON</span></div>
+<pre><span class="co">PUT</span> <span class="cs">/_watcher/watch/top-ips-hourly</span>
+{
+  <span class="ck">"trigger"</span>: {
+    <span class="ck">"schedule"</span>: { <span class="ck">"hourly"</span>: { <span class="ck">"minute"</span>: [<span class="cn">0</span>] } }
+  },
+  <span class="ck">"input"</span>: {
+    <span class="ck">"search"</span>: {
+      <span class="ck">"request"</span>: {
+        <span class="ck">"indices"</span>: [<span class="cs">"tp-nginx"</span>],
+        <span class="ck">"body"</span>: {
+          <span class="ck">"size"</span>: <span class="cn">0</span>,
+          <span class="ck">"query"</span>: { <span class="ck">"range"</span>: { <span class="ck">"@timestamp"</span>: { <span class="ck">"gte"</span>: <span class="cs">"now-1h"</span> } } },
+          <span class="ck">"aggs"</span>: {
+            <span class="ck">"top_ips"</span>: {
+              <span class="ck">"terms"</span>: { <span class="ck">"field"</span>: <span class="cs">"source.ip"</span>, <span class="ck">"size"</span>: <span class="cn">5</span>,
+                          <span class="ck">"order"</span>: { <span class="ck">"_count"</span>: <span class="cs">"desc"</span> } },
+              <span class="ck">"aggs"</span>: {
+                <span class="ck">"pays"</span>: { <span class="ck">"terms"</span>: { <span class="ck">"field"</span>: <span class="cs">"source.geo.country_name"</span>, <span class="ck">"size"</span>: <span class="cn">1</span> } },
+                <span class="ck">"erreurs"</span>: { <span class="ck">"filter"</span>: { <span class="ck">"range"</span>: {
+                  <span class="ck">"http.response.status_code"</span>: { <span class="ck">"gte"</span>: <span class="cn">400</span> }
+                }}}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  <span class="ck">"condition"</span>: {
+    <span class="ck">"compare"</span>: { <span class="ck">"ctx.payload.hits.total.value"</span>: { <span class="ck">"gt"</span>: <span class="cn">0</span> } }
+  },
+  <span class="ck">"actions"</span>: {
+    <span class="ck">"rapport_email"</span>: {
+      <span class="ck">"email"</span>: {
+        <span class="ck">"to"</span>: [<span class="cs">"soc@example.com"</span>],
+        <span class="ck">"subject"</span>: <span class="cs">"📊 Rapport horaire — Top IPs {{ctx.execution_time}}"</span>,
+        <span class="ck">"body"</span>: {
+          <span class="ck">"html"</span>: <span class="cs">"""
+          &lt;h2&gt;Top 5 IPs — Dernière heure&lt;/h2&gt;
+          &lt;table border="1"&gt;
+          &lt;tr&gt;&lt;th&gt;IP&lt;/th&gt;&lt;th&gt;Requêtes&lt;/th&gt;&lt;th&gt;Pays&lt;/th&gt;&lt;th&gt;Erreurs&lt;/th&gt;&lt;/tr&gt;
+          {{#ctx.payload.aggregations.top_ips.buckets}}
+          &lt;tr&gt;
+            &lt;td&gt;{{key}}&lt;/td&gt;
+            &lt;td&gt;{{doc_count}}&lt;/td&gt;
+            &lt;td&gt;{{pays.buckets.0.key}}&lt;/td&gt;
+            &lt;td&gt;{{erreurs.doc_count}}&lt;/td&gt;
+          &lt;/tr&gt;
+          {{/ctx.payload.aggregations.top_ips.buckets}}
+          &lt;/table&gt;
+          """</span>
+        }
+      }
+    }
+  }
+}</pre></div>
+</div>
+
+<!-- ═══════════════════════════════ ACTIONS ═══════════════════════════════ -->
+<div class="section" id="sec-actions">
+  <div class="page-hero">
+    <div class="hero-tag ht-intro">📬 Actions & Notifications</div>
+    <h1 class="hero-title">Connecteurs &<br>Notifications</h1>
+    <p class="hero-sub">Configurez les destinations des alertes : Slack, email, PagerDuty, webhook, Jira, Teams. Avec des messages personnalisés via Mustache.</p>
+  </div>
+
+  <div class="kpath"><span class="seg">☰</span><span class="arr">›</span><span class="seg">Management</span><span class="arr">›</span><span class="cur">Stack Management → Connectors → Create connector</span></div>
+
+  <h2><span class="h2-n" style="background:var(--danger)">1</span> Connecteurs disponibles</h2>
+  <div class="connector-grid">
+    <div class="conn-card"><div class="conn-icon">💬</div><div class="conn-name">Slack</div><div class="conn-desc">Webhook Slack. Message dans un canal ou DM.</div></div>
+    <div class="conn-card"><div class="conn-icon">📧</div><div class="conn-name">Email</div><div class="conn-desc">SMTP ou services cloud. HTML supporté.</div></div>
+    <div class="conn-card"><div class="conn-icon">🔔</div><div class="conn-name">PagerDuty</div><div class="conn-desc">Routing d'incidents on-call.</div></div>
+    <div class="conn-card"><div class="conn-icon">🌐</div><div class="conn-name">Webhook</div><div class="conn-desc">HTTP POST vers n'importe quelle URL.</div></div>
+    <div class="conn-card"><div class="conn-icon">🎫</div><div class="conn-name">Jira</div><div class="conn-desc">Créer automatiquement un ticket.</div></div>
+    <div class="conn-card"><div class="conn-icon">💼</div><div class="conn-name">MS Teams</div><div class="conn-desc">Message dans un canal Teams.</div></div>
+    <div class="conn-card"><div class="conn-icon">📋</div><div class="conn-name">Opsgenie</div><div class="conn-desc">Gestion d'alertes et astreintes.</div></div>
+    <div class="conn-card"><div class="conn-icon">📑</div><div class="conn-name">ServiceNow</div><div class="conn-desc">Créer un incident ITSM.</div></div>
+  </div>
+
+  <hr class="sep" id="act-template">
+  <h2><span class="h2-n" style="background:var(--danger)">2</span> Templates Mustache — Variables disponibles</h2>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Variable</th><th>Contenu</th><th>Exemple</th></tr></thead>
+    <tbody>
+      <tr><td><code>{{rule.name}}</code></td><td>Nom de la règle déclenchée</td><td><code>Brute Force SSH</code></td></tr>
+      <tr><td><code>{{rule.id}}</code></td><td>ID unique de la règle</td><td><code>abc123</code></td></tr>
+      <tr><td><code>{{date}}</code></td><td>Date/heure du déclenchement</td><td><code>2024-01-15T14:22:01Z</code></td></tr>
+      <tr><td><code>{{context.value}}</code></td><td>Valeur qui a déclenché (threshold)</td><td><code>247</code></td></tr>
+      <tr><td><code>{{context.conditions}}</code></td><td>Description des conditions</td><td><code>count is above 200</code></td></tr>
+      <tr><td><code>{{context.link}}</code></td><td>Lien direct vers Kibana</td><td>URL vers Discover</td></tr>
+      <tr><td><code>{{alert.id}}</code></td><td>ID de l'instance d'alerte</td><td><code>185.220.101.47</code> (si groupé par IP)</td></tr>
+      <tr><td><code>{{state.latestTimestamp}}</code></td><td>Timestamp du dernier event</td><td><code>2024-01-15T14:30:00Z</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Templates par connecteur</h3>
+  <div class="cw"><div class="ctop"><span>Slack — Message riche avec contexte</span><span class="clang cl-yaml">MUSTACHE</span></div>
+<pre>🚨 *{{rule.name}}*
+
+{{#context.conditions}}
+*Condition :* {{.}}
+{{/context.conditions}}
+
+*Valeur déclenchante :* `{{context.value}}`
+*Instance :* `{{alert.id}}`
+*Déclenchée à :* {{date}}
+
+{{#context.link}}🔍 &lt;{{.}}|Voir dans Kibana&gt;{{/context.link}}</pre></div>
+
+  <div class="cw"><div class="ctop"><span>Webhook — JSON structuré pour intégration</span><span class="clang cl-json">JSON</span></div>
+<pre>{
+  "alert_name": "{{rule.name}}",
+  "severity": "HIGH",
+  "triggered_at": "{{date}}",
+  "value": {{context.value}},
+  "entity": "{{alert.id}}",
+  "kibana_url": "{{context.link}}",
+  "rule_id": "{{rule.id}}"
+}</pre></div>
+
+  <hr class="sep" id="act-throttle">
+  <h2><span class="h2-n" style="background:var(--danger)">3</span> Throttle & Cooldown — Éviter le spam</h2>
+
+  <div class="param-block">
+    <div class="pb-label">Notify — Quand notifier</div>
+    <div class="pb-desc">Contrôle à quel moment les actions sont exécutées.</div>
+    <div class="pb-values">
+      <span class="pv recommended">On status changes ← recommandé</span>
+      <span class="pv">Every check (spammy)</span>
+      <span class="pv">Only on first occurrence</span>
+      <span class="pv">Active + Recovered</span>
+    </div>
+    <div style="margin-top:.65rem">
+      <table class="matrix">
+        <div class="matrix-row header"><div class="mc header">Mode</div><div class="mc header">Comportement</div><div class="mc header">Usage</div></div>
+        <div class="matrix-row"><div class="mc label">On status change</div><div class="mc">Notifie quand Active → OK ou OK → Active</div><div class="mc">Production standard</div></div>
+        <div class="matrix-row"><div class="mc label">Every check</div><div class="mc">Notifie à chaque évaluation si Active</div><div class="mc">Debug uniquement</div></div>
+        <div class="matrix-row"><div class="mc label">Throttle period</div><div class="mc">Max 1 notif par X minutes même si Active</div><div class="mc">Alertes haute fréquence</div></div>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ RECIPES ═══════════════════════════════ -->
+<div class="section" id="sec-recipes">
+  <div class="page-hero">
+    <div class="hero-tag ht-intro">👨‍🍳 Recettes avancées</div>
+    <h1 class="hero-title">Recettes — Alertes<br>de production</h1>
+    <p class="hero-sub">Des règles complètes et prêtes à l'emploi pour les cas les plus courants en SOC et monitoring. Copiez, adaptez, déployez.</div>
+  </div>
+
+  <hr class="sep" id="rec-sqli">
+  <h2><span class="h2-n" style="background:var(--danger)">1</span> Recette — Détection SQLi multi-vecteurs</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif complet</div>
+    <div class="scenario-desc">Alerte dès qu'une URL contient des patterns SQLi classiques. Couvre UNION SELECT, OR 1=1, commentaires SQL, time-based blind, stacked queries.</div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>ES|QL Rule — SQLi multi-pattern</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cp">FROM</span> tp-nginx
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">@timestamp</span> >= <span class="cs">"now-5m"</span>
+
+  <span class="cc">// Détection des patterns SQLi dans l'URL</span>
+  <span class="cp">|</span> <span class="cp">WHERE</span>
+      <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*UNION*SELECT*"</span>
+      <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*OR+1%3D1*"</span>
+      <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*OR 1=1*"</span>
+      <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*SLEEP(*"</span>
+      <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*BENCHMARK(*"</span>
+      <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*--*"</span>
+      <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*DROP+TABLE*"</span>
+      <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*INSERT+INTO*"</span>
+      <span class="co">OR</span> <span class="ck">user_agent.original</span> <span class="co">LIKE</span> <span class="cs">"*sqlmap*"</span>
+
+  <span class="cc">// Classifier la sévérité</span>
+  <span class="cp">|</span> <span class="cp">EVAL</span> sqli_type = <span class="cf">CASE</span>(
+      <span class="ck">user_agent.original</span> <span class="co">LIKE</span> <span class="cs">"*sqlmap*"</span>, <span class="cs">"AUTOMATED_TOOL"</span>,
+      <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*UNION*SELECT*"</span>,             <span class="cs">"UNION_BASED"</span>,
+      <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*SLEEP*"</span> <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*BENCHMARK*"</span>, <span class="cs">"TIME_BASED_BLIND"</span>,
+      <span class="cs">"GENERIC"</span>
+    )
+  <span class="cp">|</span> <span class="cp">EVAL</span> succes = <span class="ck">http.response.status_code</span> == <span class="cn">200</span>
+
+  <span class="cp">|</span> <span class="cp">STATS</span>
+      nb_total   = <span class="cf">COUNT</span>(*),
+      nb_succes  = <span class="cf">COUNT_DISTINCT</span>(<span class="ck">url.path</span>),
+      bytes_max  = <span class="cf">MAX</span>(<span class="ck">http.response.body.bytes</span>),
+      types      = <span class="cf">VALUES</span>(sqli_type)
+      <span class="co">BY</span> <span class="ck">source.ip</span>, <span class="ck">source.geo.country_name</span>
+
+  <span class="cp">|</span> <span class="cp">SORT</span> nb_total <span class="co">DESC</span>
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">20</span></pre></div>
+
+  <hr class="sep" id="rec-baseline">
+  <h2><span class="h2-n" style="background:var(--danger)">2</span> Recette — Déviation de la baseline de trafic</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Comparer le trafic actuel à la <strong>même heure la semaine passée</strong>. Si +200% → alerte pic anormal. Si -80% → alerte perte de logs.</div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>Watcher — Déviation baseline semaine</span><span class="clang cl-json">WATCHER JSON</span></div>
+<pre><span class="co">PUT</span> <span class="cs">/_watcher/watch/baseline-deviation</span>
+{
+  <span class="ck">"trigger"</span>: { <span class="ck">"schedule"</span>: { <span class="ck">"interval"</span>: <span class="cs">"15m"</span> } },
+  <span class="ck">"input"</span>: {
+    <span class="ck">"chain"</span>: { <span class="ck">"inputs"</span>: [
+      {
+        <span class="cc">// Trafic actuel (15 dernières minutes)</span>
+        <span class="ck">"current"</span>: { <span class="ck">"search"</span>: { <span class="ck">"request"</span>: {
+          <span class="ck">"indices"</span>: [<span class="cs">"tp-nginx"</span>],
+          <span class="ck">"body"</span>: { <span class="ck">"query"</span>: { <span class="ck">"range"</span>: {
+            <span class="ck">"@timestamp"</span>: { <span class="ck">"gte"</span>: <span class="cs">"now-15m"</span> }
+          }}}
+        }}}
+      },
+      {
+        <span class="cc">// Baseline : même créneau il y a 7 jours</span>
+        <span class="ck">"baseline"</span>: { <span class="ck">"search"</span>: { <span class="ck">"request"</span>: {
+          <span class="ck">"indices"</span>: [<span class="cs">"tp-nginx"</span>],
+          <span class="ck">"body"</span>: { <span class="ck">"query"</span>: { <span class="ck">"range"</span>: {
+            <span class="ck">"@timestamp"</span>: {
+              <span class="ck">"gte"</span>: <span class="cs">"now-7d-15m"</span>,
+              <span class="ck">"lte"</span>: <span class="cs">"now-7d"</span>
+            }
+          }}}
+        }}}
+      }
+    ]}
+  },
+  <span class="ck">"condition"</span>: {
+    <span class="ck">"script"</span>: {
+      <span class="ck">"source"</span>: <span class="cs">"""
+        long current  = ctx.payload.current.hits.total.value;
+        long baseline = ctx.payload.baseline.hits.total.value;
+        if (baseline == 0) return false;
+        double ratio = (double) current / baseline;
+        // Alerte si +200% (DDoS) OU -80% (perte logs)
+        return ratio > 3.0 || ratio < 0.2;
+      """</span>
+    }
+  },
+  <span class="ck">"transform"</span>: {
+    <span class="ck">"script"</span>: <span class="cs">"""
+      long c = ctx.payload.current.hits.total.value;
+      long b = ctx.payload.baseline.hits.total.value;
+      double r = b > 0 ? (double)c/b*100 : 0;
+      return ['current': c, 'baseline': b, 'ratio_pct': Math.round(r)];
+    """</span>
+  },
+  <span class="ck">"actions"</span>: {
+    <span class="ck">"notify"</span>: {
+      <span class="ck">"slack"</span>: {
+        <span class="ck">"message"</span>: {
+          <span class="ck">"to"</span>: [<span class="cs">"#alerts-ops"</span>],
+          <span class="ck">"text"</span>: <span class="cs">"📊 Déviation trafic : {{ctx.payload.current}} req vs {{ctx.payload.baseline}} (baseline) = {{ctx.payload.ratio_pct}}%"</span>
+        }
+      }
+    }
+  }
+}</pre></div>
+
+  <hr class="sep" id="rec-correlation">
+  <h2><span class="h2-n" style="background:var(--danger)">3</span> Recette — Corrélation multi-source (Kill Chain)</h2>
+
+  <div class="scenario">
+    <div class="scenario-title">🎯 Objectif</div>
+    <div class="scenario-desc">Déclencher une alerte <strong>CRITIQUE</strong> quand une IP cumule plusieurs comportements suspects : scan + auth failures + SQLi. Reconstruction de la kill chain en temps réel.</div>
+  </div>
+
+  <div class="cw"><div class="ctop"><span>ES|QL Rule — Kill chain correlation</span><span class="clang cl-esql">ES|QL</span></div>
+<pre><span class="cc">// Étape 1 : Agrégez les comportements par IP sur les 30 dernières minutes</span>
+
+<span class="cp">FROM</span> tp-nginx, tp-auth, tp-syslog
+  <span class="cp">|</span> <span class="cp">WHERE</span> <span class="ck">@timestamp</span> >= <span class="cs">"now-30m"</span>
+      <span class="co">AND</span> <span class="ck">source.ip</span> <span class="co">IS NOT NULL</span>
+      <span class="co">AND</span> <span class="ck">source.is_private</span> != <span class="co">true</span>
+
+  <span class="cc">// Taguer chaque type d'événement suspect</span>
+  <span class="cp">|</span> <span class="cp">EVAL</span> is_scan     = <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*wp-login*"</span> <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*.env*"</span> <span class="co">OR</span> <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*phpmyadmin*"</span>
+  <span class="cp">|</span> <span class="cp">EVAL</span> is_sqli     = <span class="ck">url.path</span> <span class="co">LIKE</span> <span class="cs">"*UNION*"</span> <span class="co">OR</span> <span class="ck">user_agent.original</span> <span class="co">LIKE</span> <span class="cs">"*sqlmap*"</span>
+  <span class="cp">|</span> <span class="cp">EVAL</span> is_bruteforce= <span class="ck">event.outcome</span> == <span class="cs">"failure"</span> <span class="co">AND</span> <span class="ck">destination.port</span> == <span class="cn">22</span>
+  <span class="cp">|</span> <span class="cp">EVAL</span> is_blocked   = <span class="ck">event.action</span> == <span class="cs">"denied"</span>
+
+  <span class="cc">// Compter chaque type par IP</span>
+  <span class="cp">|</span> <span class="cp">STATS</span>
+      nb_scan       = <span class="cf">COUNT_DISTINCT</span>(<span class="ck">url.path</span>),
+      has_sqli      = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(is_sqli, <span class="cn">1</span>, <span class="co">null</span>)),
+      has_brute     = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(is_bruteforce, <span class="cn">1</span>, <span class="co">null</span>)),
+      has_blocked   = <span class="cf">COUNT</span>(<span class="cf">CASE</span>(is_blocked, <span class="cn">1</span>, <span class="co">null</span>)),
+      country       = <span class="cf">VALUES</span>(<span class="ck">source.geo.country_name</span>),
+      total_events  = <span class="cf">COUNT</span>(*)
+      <span class="co">BY</span> <span class="ck">source.ip</span>
+
+  <span class="cc">// Calculer un score de menace composite</span>
+  <span class="cp">|</span> <span class="cp">EVAL</span> threat_score =
+      (<span class="cf">CASE</span>(nb_scan > <span class="cn">5</span>, <span class="cn">25</span>, <span class="cn">0</span>)) +
+      (<span class="cf">CASE</span>(has_sqli > <span class="cn">0</span>,  <span class="cn">40</span>, <span class="cn">0</span>)) +
+      (<span class="cf">CASE</span>(has_brute > <span class="cn">5</span>, <span class="cn">30</span>, <span class="cn">0</span>)) +
+      (<span class="cf">CASE</span>(has_blocked > <span class="cn">0</span>, <span class="cn">5</span>, <span class="cn">0</span>))
+
+  <span class="cc">// N'alerter que si score > 50 (au moins 2 types d'attaque)</span>
+  <span class="cp">|</span> <span class="cp">WHERE</span> threat_score > <span class="cn">50</span>
+
+  <span class="cp">|</span> <span class="cp">SORT</span> threat_score <span class="co">DESC</span>
+  <span class="cp">|</span> <span class="cp">LIMIT</span> <span class="cn">10</span></pre></div>
+
+  <div class="box danger">
+    <div class="box-i">🚨</div>
+    <div class="box-b"><strong>Cette règle est votre alarme principale</strong><p>Un score > 50 signifie qu'une IP combine <em>au moins deux vecteurs d'attaque</em> différents en 30 minutes. C'est le signal d'une intrusion organisée, pas du scan aléatoire. Configurez une action <strong>PagerDuty CRITICAL</strong> et pas juste un Slack.</p></div>
+  </div>
+
+  <h3>Récapitulatif des recettes par cas d'usage</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Cas d'usage</th><th>Type recommandé</th><th>Schedule</th><th>Sévérité</th></tr></thead>
+    <tbody>
+      <tr><td>Trop de 5xx HTTP</td><td><span class="badge b-blue">Threshold</span></td><td>1 min</td><td><span class="badge b-warn">Warning</span></td></tr>
+      <tr><td>Brute force SSH</td><td><span class="badge b-purple">ES|QL</span></td><td>1 min</td><td><span class="badge b-danger">Critical</span></td></tr>
+      <tr><td>Pays interdit</td><td><span class="badge b-purple">ES|QL</span></td><td>5 min</td><td><span class="badge b-danger">Critical</span></td></tr>
+      <tr><td>Injection SQL</td><td><span class="badge b-purple">ES|QL</span></td><td>1 min</td><td><span class="badge b-danger">Critical</span></td></tr>
+      <tr><td>Impossible travel</td><td><span class="badge b-watch">Watcher</span></td><td>5 min</td><td><span class="badge b-danger">Critical</span></td></tr>
+      <tr><td>Exfiltration volumétrique</td><td><span class="badge b-purple">ES|QL</span></td><td>5 min</td><td><span class="badge b-danger">Critical</span></td></tr>
+      <tr><td>Anomalie de trafic</td><td><span class="badge b-ml">ML Anomaly</span></td><td>15 min</td><td><span class="badge b-warn">Warning</span></td></tr>
+      <tr><td>Connexion hors-heures</td><td><span class="badge b-purple">ES|QL</span></td><td>1 h</td><td><span class="badge b-warn">Warning</span></td></tr>
+      <tr><td>Déviation baseline</td><td><span class="badge b-watch">Watcher</span></td><td>15 min</td><td><span class="badge b-warn">Warning</span></td></tr>
+      <tr><td>Kill chain multi-vecteur</td><td><span class="badge b-purple">ES|QL</span></td><td>5 min</td><td><span class="badge b-danger">Critical</span></td></tr>
+      <tr><td>Connexion Tor/VPN</td><td><span class="badge b-purple">ES|QL + GeoIP</span></td><td>5 min</td><td><span class="badge b-danger">High</span></td></tr>
+      <tr><td>Rapport horaire top IPs</td><td><span class="badge b-watch">Watcher</span></td><td>1 h</td><td><span class="badge b-blue">Info</span></td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+</main>
+</div>
+
+<script>
+const PAGES={intro:'sec-intro',threshold:'sec-threshold',esql:'sec-esql',geo:'sec-geo',ml:'sec-ml',watcher:'sec-watcher',actions:'sec-actions',recipes:'sec-recipes'};
+
+function goTo(page, anchor) {
+  Object.entries(PAGES).forEach(([k,v]) => document.getElementById(v).classList.toggle('active', k === page));
+  document.querySelectorAll('.tnav').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.sblink').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === page && (b.dataset.anchor||'') === (anchor||''));
+  });
+  if (anchor) {
+    setTimeout(() => {
+      const el = document.getElementById(anchor);
+      if (el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 70, behavior:'smooth'});
+    }, 35);
+  } else {
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  closeSidebar();
+}
+
+document.querySelectorAll('[data-page]').forEach(b => {
+  b.addEventListener('click', () => goTo(b.dataset.page, b.dataset.anchor||''));
+});
+document.querySelectorAll('.at-card').forEach(c => {
+  c.style.cursor = 'pointer';
+});
+
+document.getElementById('ham').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+});
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+document.getElementById('overlay').addEventListener('click', closeSidebar);
+
+document.querySelectorAll('.copy-b').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const pre = btn.closest('.ctop')?.nextElementSibling;
+    if (pre) navigator.clipboard.writeText(pre.textContent).then(() => {
+      btn.textContent = '✓'; btn.classList.add('ok');
+      setTimeout(() => { btn.textContent = 'copier'; btn.classList.remove('ok'); }, 2000);
+    });
+  });
+});
+</script>
+</body>
+</html>
